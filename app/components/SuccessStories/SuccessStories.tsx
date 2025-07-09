@@ -9,26 +9,23 @@ export default function SuccessStories() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Casos de Éxito</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Historias reales de empresas reales que transformaron su éxito con Just5Stars
-          </p>
         </div>
         <div className="flex justify-center">
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
             {[
               {
-                name: "Sarah Chen",
-                role: "CEO, TechStart Inc.",
-                content: "Just5Stars transformó completamente nuestro negocio. Pasamos de 3.2 estrellas a calificaciones consistentes de 5 estrellas en solo 3 meses. ¡Los ingresos aumentaron un 340%!",
+                name: "Daniel Martinez",
+                role: "Fisioterapeuta",
+                content: "Con el servicio de visibilidad en Google Maps he conseguido captar más clientes. ¡Una pasada!",
                 image: testimonial1,
                 rating: 5,
                 growth: "+340% Ingresos",
                 isPhoto: true
               },
               {
-                name: "Miguel Rodríguez",
-                role: "Fundador, Local Eats",
-                content: "El sistema de gestión de reseñas es increíble. Ahora respondemos a cada reseña instantáneamente y nuestra satisfacción del cliente nunca ha sido mayor.",
+                name: "Susana Díaz",
+                role: "Peluquera",
+                content: "El cartelito es increíble. Nuestra valoración en Google nunca ha sido mejor.",
                 image: testimonial2,
                 rating: 5,
                 growth: "+250% Reseñas",

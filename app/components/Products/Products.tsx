@@ -49,43 +49,38 @@ export default function Products() {
                 text: "Más vendido",
                 color: "#adadad"
               },
-              features: ["Tecnología NFC + Código QR", 
-                "Preconfigurado a tu perfil de Google Business", 
-                "Chip NFC NTAG216 de alta calidad compatible con la mayoría de dispositivos Android e iOS", 
-                "Construcción resistente de alta calidad"]
+              features: ["Expositor NFC + Código QR", 
+                "Preconfigurado a tu perfil de Google Business"]
             },
             {
               title: "Expositor + Pack Visibilidad en Google Maps",
               description: "La combinación perfecta para posicionar tu negocio en Google Maps.",
               image: localSeoIcon,
-              price: "99,90 €/mes",
+              price: "59,90 €/mes",
               cta_text: "Comprar Ahora",
               label: {
                 text: "Mejor calidad precio",
                 color: "#7f6d2a"
               },
-              features: ["Tecnología NFC + Código QR", 
+              features: ["Expositor NFC + Código QR", 
                 "Preconfigurado a tu perfil de Google Business", 
-                "Chip NFC NTAG216 de alta calidad compatible con la mayoría de dispositivos Android e iOS", 
-                "Construcción resistente de alta calidad", 
                 "Auditoría inicial de tu perfil de Google Business", 
                 "Recomendaciones para mejorar el posicionamiento en Google Maps", 
                 "Seguimiento de la evolución en el ranking"]
             },
             {
-              title: "Gestión 360 Digital | Visibilidad Google Maps + Web",
+              title: "Gestión 360 Digital | Google Maps + Web",
               description: "Delega la gestión de tu presencia digital a nuestros expertos.",
               image: allInclusive,
               price: "199,90 €/mes",
               cta_text: "Comprar Ahora",
-              features: ["Tecnología NFC + Código QR", 
+              features: ["Expositor NFC + Código QR", 
                 "Preconfigurado a tu perfil de Google Business", 
-                "Chip NFC NTAG216 de alta calidad compatible con la mayoría de dispositivos Android e iOS", 
-                "Construcción resistente de alta calidad", 
                 "Auditoría inicial de tu perfil de Google Business", 
                 "Recomendaciones para mejorar el posicionamiento en Google Maps", 
                 "Seguimiento de la evolución en el ranking", 
-                "Creación y mantenimiento de la web", 
+                "Creación de la web", 
+                "Mantenimiento de la web", 
                 "SEO web"]
             }
           ].map((product, index) => (
@@ -113,7 +108,7 @@ export default function Products() {
                 <p className="text-gray-600 mb-6">{product.description}</p>
                 
                 <div className="mb-6">
-                  <div className="text-4xl font-bold text-[#7f6d2a] text-center">
+                  <div className="text-3xl font-bold text-[#7f6d2a] text-center border-2 border-[#7f6d2a] rounded-xl py-2 px-4">
                     {product.price}
                   </div>
                 </div>

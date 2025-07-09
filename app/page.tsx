@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import FeaturedIn from "./components/FeaturedIn";
 import Products from "./components/Products";
-import WhyJust5Stars from "./components/WhyJust5Stars";
+import { NFCExpositors } from "./components/NFCExpositors";
 import SuccessStories from "./components/SuccessStories";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
@@ -18,7 +18,7 @@ export default function Home() {
       <Hero />
       <FeaturedIn />
       <Products />
-      <WhyJust5Stars />
+      <NFCExpositors />
       <SuccessStories />
       <CTA />
       <Footer />

@@ -19,8 +19,10 @@ export default function Hero() {
               <br />
               de 5 Estrellas
             </h1>
-            <p className="text-xl text-gray-600 leading-relaxed">
-              Ayudamos a pequeños negocios a crecer con nuestros 3 servicios principales:
+            <div>
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Ayudamos a pequeños negocios a crecer con nuestros 3 servicios principales:
+              </p>
               <ul className="mt-4 space-y-2">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-2" />
@@ -35,7 +37,7 @@ export default function Hero() {
                   Gestión 360 para maximizar tu presencia digital
                 </li>
               </ul>
-            </p>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="bg-[#7f6d2a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#6a5a23] transition-all transform hover:scale-105 flex items-center justify-center">
                 Descubre nuestros servicios

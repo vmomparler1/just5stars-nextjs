@@ -9,6 +9,7 @@ import SuccessStories from "./components/SuccessStories";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
 import { DiscountRibbon } from "./components/DiscountRibbon";
+import { WhatsAppButton } from "./components/WhatsAppButton";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <SuccessStories />
       <CTA />
       <Footer />
+      <WhatsAppButton />
     </main>
   );
 }

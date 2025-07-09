@@ -19,7 +19,7 @@ export default function Navbar() {
         <div className="flex items-center space-x-2">
           <Image
             src={logo}
-            alt="Just5Stars Logo"
+            alt="Logo Just5Stars"
             width={120}
             height={40}
             className="h-8 w-auto"
@@ -30,16 +30,16 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <a href="#products" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
-            Products
+            Productos
           </a>
           <a href="#why" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
-            Why Us
+            Por Qué Nosotros
           </a>
           <a href="#stories" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
-            Success Stories
+            Casos de Éxito
           </a>
           <button className="bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors">
-            Get Started
+            Empezar
           </button>
         </div>
 
@@ -67,24 +67,24 @@ export default function Navbar() {
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
               onClick={toggleMenu}
             >
-              Products
+              Productos
             </a>
             <a 
               href="#why" 
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
               onClick={toggleMenu}
             >
-              Why Us
+              Por Qué Nosotros
             </a>
             <a 
               href="#stories" 
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
               onClick={toggleMenu}
             >
-              Success Stories
+              Casos de Éxito
             </a>
             <button className="w-full bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors">
-              Get Started
+              Empezar
             </button>
           </div>
         </div>

@@ -3,36 +3,36 @@ export default function WhyJust5Stars() {
     <section id="why" className="py-32 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Why Choose Just5Stars?</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">¿Por Qué Elegir Just5Stars?</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            We're not just another service provider. We're your partner in achieving unprecedented success.
+            No somos solo otro proveedor de servicios. Somos tu socio para lograr un éxito sin precedentes.
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
             {
-              title: "Proven Results",
-              description: "Our clients consistently achieve 5-star ratings and exceptional growth",
+              title: "Resultados Probados",
+              description: "Nuestros clientes logran consistentemente calificaciones de 5 estrellas y crecimiento excepcional",
               icon: "🏆",
-              stat: "98% Success Rate"
+              stat: "98% Tasa de Éxito"
             },
             {
-              title: "Expert Team",
-              description: "Industry veterans with decades of combined experience",
+              title: "Equipo Experto",
+              description: "Veteranos de la industria con décadas de experiencia combinada",
               icon: "👥",
-              stat: "50+ Experts"
+              stat: "50+ Expertos"
             },
             {
-              title: "24/7 Support",
-              description: "Round-the-clock assistance whenever you need it",
+              title: "Soporte 24/7",
+              description: "Asistencia las 24 horas cuando lo necesites",
               icon: "🔧",
-              stat: "< 1hr Response"
+              stat: "< 1hr Respuesta"
             },
             {
-              title: "Cutting-Edge Tech",
-              description: "Latest technology and AI-powered solutions",
+              title: "Tecnología Avanzada",
+              description: "Tecnología de última generación y soluciones potenciadas por IA",
               icon: "🤖",
-              stat: "AI-Powered"
+              stat: "Potenciado por IA"
             }
           ].map((item, index) => (
             <div key={index} className="text-center p-6">

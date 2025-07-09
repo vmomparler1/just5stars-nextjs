@@ -1,54 +1,88 @@
 import { CheckIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import standsImage from "./stand_02.png";
+import localSeoIcon from "./stand_local_seo.png";
+import allInclusive from "./stand_local_seo_360.png";
+
 
 export default function Products() {
   return (
     <section id="products" className="py-32 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Products</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover our suite of powerful tools designed to elevate your business to 5-star excellence
-          </p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestros Servicios</h2>
+
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
             {
-              title: "Analytics Pro",
-              description: "Advanced analytics and insights to track your performance and optimize results",
-              icon: "📊",
-              price: "$49/month",
-              features: ["Real-time analytics", "Custom dashboards", "AI insights"]
+              title: "Sólo Expositor NFC con código QR",
+              description: "Consigue más reseñas en Google con nuestros expositores NFC.",
+              image: standsImage,
+              price: "24,90€",
+              cta_text: "Comprar Ahora",
+              features: ["Tecnología NFC + Código QR", 
+                "Preconfigurado a tu perfil de Google Business", 
+                "Chip NFC NTAG216 de alta calidad compatible con la mayoría de dispositivos Android e iOS", 
+                "Construcción resistente de alta calidad"]
             },
             {
-              title: "Review Manager",
-              description: "Manage and optimize your online reviews across all platforms",
-              icon: "⭐",
-              price: "$79/month",
-              features: ["Review monitoring", "Response automation", "Sentiment analysis"]
+              title: "Expositor + Pack Visibilidad en Google Maps",
+              description: "La combinación perfecta para posicionar tu negocio en Google Maps.",
+              image: localSeoIcon,
+              price: "99,90€ / mes",
+              cta_text: "Comprar Ahora",
+              features: ["Tecnología NFC + Código QR", 
+                "Preconfigurado a tu perfil de Google Business", 
+                "Chip NFC NTAG216 de alta calidad compatible con la mayoría de dispositivos Android e iOS", 
+                "Construcción resistente de alta calidad", 
+                "Auditoría inicial de tu perfil de Google Business", 
+                "Recomendaciones para mejorar el posicionamiento en Google Maps", 
+                "Seguimiento de la evolución en el ranking"]
             },
             {
-              title: "Success Accelerator",
-              description: "Complete solution for businesses seeking rapid growth and 5-star results",
-              icon: "🚀",
-              price: "$149/month",
-              features: ["Full suite access", "Priority support", "Custom training"]
+              title: "Gestión 360 Digital | Visibilidad Google Maps + Web",
+              description: "Delega la gestión de tu presencia digital a nuestros expertos.",
+              image: allInclusive,
+              price: "199,90€ / mes",
+              cta_text: "Comprar Ahora",
+              features: ["Tecnología NFC + Código QR", 
+                "Preconfigurado a tu perfil de Google Business", 
+                "Chip NFC NTAG216 de alta calidad compatible con la mayoría de dispositivos Android e iOS", 
+                "Construcción resistente de alta calidad", 
+                "Auditoría inicial de tu perfil de Google Business", 
+                "Recomendaciones para mejorar el posicionamiento en Google Maps", 
+                "Seguimiento de la evolución en el ranking", "Creación y mantenimiento de la web", "SEO de la web"]
             }
           ].map((product, index) => (
             <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
-              <div className="text-4xl mb-4">{product.icon}</div>
+              <div className="flex justify-center mb-6">
+                <Image
+                  src={product.image}
+                  alt={product.title}
+                  width={300}
+                  className="w-64 h-64 object-contain"
+                />
+              </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-3">{product.title}</h3>
               <p className="text-gray-600 mb-6">{product.description}</p>
-              <div className="text-3xl font-bold text-[#7f6d2a] mb-6">{product.price}</div>
+              
+              <div className="mb-6">
+                <div className="text-3xl font-bold text-[#7f6d2a] text-center">
+                  {product.price}
+                </div>
+              </div>
+
               <ul className="space-y-3 mb-8">
                 {product.features.map((feature, i) => (
                   <li key={i} className="flex items-center text-gray-700">
-                    <CheckIcon className="w-5 h-5 text-green-500 mr-3" />
+                    <CheckIcon className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
                     {feature}
                   </li>
                 ))}
               </ul>
               <button className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors">
-                Get Started
+                {product.cta_text}
               </button>
             </div>
           ))}

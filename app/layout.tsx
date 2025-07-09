@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Just5Stars - Achieve 5-Star Excellence",
-  description: "Transform your business with our proven system that consistently delivers 5-star results. Join thousands of companies who've revolutionized their success story.",
+  title: "Just5Stars - Alcanza la Excelencia de 5 Estrellas",
+  description: "Transforma tu negocio con nuestro sistema probado que ofrece consistentemente resultados de 5 estrellas. Únete a miles de empresas que han revolucionado su historia de éxito.",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

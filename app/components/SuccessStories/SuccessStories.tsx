@@ -5,9 +5,9 @@ export default function SuccessStories() {
     <section id="stories" className="py-32 bg-gradient-to-br from-amber-50 to-yellow-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Success Stories</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Casos de Éxito</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Real stories from real businesses that transformed their success with Just5Stars
+            Historias reales de empresas reales que transformaron su éxito con Just5Stars
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -15,26 +15,26 @@ export default function SuccessStories() {
             {
               name: "Sarah Chen",
               role: "CEO, TechStart Inc.",
-              content: "Just5Stars transformed our business completely. We went from 3.2 stars to consistent 5-star ratings in just 3 months. Revenue increased by 340%!",
+              content: "Just5Stars transformó completamente nuestro negocio. Pasamos de 3.2 estrellas a calificaciones consistentes de 5 estrellas en solo 3 meses. ¡Los ingresos aumentaron un 340%!",
               image: "👩‍💼",
               rating: 5,
-              growth: "+340% Revenue"
+              growth: "+340% Ingresos"
             },
             {
-              name: "Mike Rodriguez",
-              role: "Founder, Local Eats",
-              content: "The review management system is incredible. We now respond to every review instantly and our customer satisfaction has never been higher.",
+              name: "Miguel Rodríguez",
+              role: "Fundador, Local Eats",
+              content: "El sistema de gestión de reseñas es increíble. Ahora respondemos a cada reseña instantáneamente y nuestra satisfacción del cliente nunca ha sido mayor.",
               image: "👨‍🍳",
               rating: 5,
-              growth: "+250% Reviews"
+              growth: "+250% Reseñas"
             },
             {
               name: "Jennifer Walsh",
-              role: "Director, HealthCare Plus",
-              content: "The analytics provided insights we never had before. We identified key areas for improvement and our patient satisfaction scores soared.",
+              role: "Directora, HealthCare Plus",
+              content: "Los análisis proporcionaron información que nunca habíamos tenido antes. Identificamos áreas clave de mejora y nuestras puntuaciones de satisfacción del paciente se dispararon.",
               image: "👩‍⚕️",
               rating: 5,
-              growth: "+180% Satisfaction"
+              growth: "+180% Satisfacción"
             }
           ].map((story, index) => (
             <div key={index} className="bg-white rounded-2xl p-8 shadow-lg">

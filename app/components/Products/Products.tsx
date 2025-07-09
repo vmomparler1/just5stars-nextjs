@@ -1,17 +1,41 @@
+"use client";
+
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import standsImage from "./stand_02.png";
 import localSeoIcon from "./stand_local_seo.png";
 import allInclusive from "./stand_local_seo_360.png";
+import { useEffect, useState } from "react";
 
+const getMonthName = () => {
+  const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+  return months[new Date().getMonth()];
+};
+
+const getDaysLeftInMonth = () => {
+  const today = new Date();
+  const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+  return lastDay.getDate() - today.getDate();
+};
 
 export default function Products() {
+  const [daysLeft, setDaysLeft] = useState(getDaysLeftInMonth());
+  const monthCode = `${getMonthName()}50`;
+
+  useEffect(() => {
+    // Update days left every day at midnight
+    const timer = setInterval(() => {
+      setDaysLeft(getDaysLeftInMonth());
+    }, 86400000); // 24 hours in milliseconds
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <section id="products" className="py-32 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestros Servicios</h2>
-
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[
@@ -19,7 +43,7 @@ export default function Products() {
               title: "Sólo Expositor NFC con código QR",
               description: "Consigue más reseñas en Google con nuestros expositores NFC.",
               image: standsImage,
-              price: "24,90 €",
+              price: "39,90 €",
               cta_text: "Comprar Ahora",
               label: {
                 text: "Más vendido",

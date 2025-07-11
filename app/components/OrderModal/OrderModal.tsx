@@ -66,6 +66,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [userFeedback, setUserFeedback] = useState<'none' | 'confirmed' | 'rejected'>('none');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Product configuration mapping from centralized data
   const productConfig = {
@@ -316,23 +317,52 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     return `${currentPriceEntry.stands_units_discount}% descuento por cantidad`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log('Order submitted:', {
-      productId: currentProductId,
-      productConfig: currentProductConfig,
-      quantity,
-      stands,
-      formData,
-      selectedPlace,
-      priceEntry: currentPriceEntry,
-      appliedVoucher,
-      subtotal: calculateSubtotal(),
-      discount: calculateDiscount(),
-      total: calculateTotal()
-    });
-    onClose();
+    
+    if (!currentPriceEntry || !currentProductConfig) {
+      alert('Error: No product selected');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    // Prepare order data for email
+    const orderData = {
+      productName: currentProductConfig.name,
+      voucherApplied: appliedVoucher ? `${appliedVoucher.code} (${appliedVoucher.discount_percentage}% off)` : null,
+      price: calculateTotal().toFixed(2),
+      numberOfStands: quantity,
+      colorStands: stands,
+      businessName: formData.businessName,
+      businessPostcode: formData.postcode,
+      businessCountry: formData.businessCountry,
+      email: formData.email,
+      phoneNumber: formData.phone,
+      googleBusinessId: selectedPlace?.place_id || null
+    };
+
+    try {
+      const response = await fetch('/api/send-order-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (response.ok) {
+        alert('¡Pedido enviado correctamente! Te contactaremos pronto.');
+        onClose();
+      } else {
+        throw new Error('Failed to send order');
+      }
+    } catch (error) {
+      console.error('Error sending order:', error);
+      alert('Error al enviar el pedido. Por favor, inténtalo de nuevo.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen || !currentProductConfig) return null;
@@ -810,10 +840,20 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             
             <button
               type="submit"
-              disabled={!currentPriceEntry}
-              className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!currentPriceEntry || isSubmitting}
+              className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              Confirmar Pedido
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Enviando...
+                </>
+              ) : (
+                'Confirmar Pedido'
+              )}
             </button>
           </div>
         </form>

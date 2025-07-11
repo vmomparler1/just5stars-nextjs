@@ -27,24 +27,6 @@
       "payment_link": "https://paymentlink_3_stand"
     },
     {
-      "number_of_stands": 1,
-      "local_seo": 1,
-      "full_service": 0,
-      "price": 59.9,
-      "stands_units_discount": 0,
-      "shipping": 0,
-      "payment_link": "https://paymentlink_local_1_stand"
-    },
-    {
-      "number_of_stands": 2,
-      "local_seo": 1,
-      "full_service": 0,
-      "price": 87.83,
-      "stands_units_discount": 15,
-      "shipping": 0,
-      "payment_link": "https://paymentlink_local_2_stand"
-    },
-    {
       "number_of_stands": 3,
       "local_seo": 1,
       "full_service": 0,
@@ -52,24 +34,6 @@
       "stands_units_discount": 20,
       "shipping": 0,
       "payment_link": "https://paymentlink_local_3_stand"
-    },
-    {
-      "number_of_stands": 1,
-      "local_seo": 0,
-      "full_service": 1,
-      "price": 199.9,
-      "stands_units_discount": 0,
-      "shipping": 0,
-      "payment_link": "https://paymentlink_full_1_stand"
-    },
-    {
-      "number_of_stands": 2,
-      "local_seo": 0,
-      "full_service": 1,
-      "price": 227.83,
-      "stands_units_discount": 15,
-      "shipping": 0,
-      "payment_link": "https://paymentlink_full_2_stand"
     },
     {
       "number_of_stands": 3,

@@ -1,0 +1,76 @@
+{
+  "vouchers": [
+    {
+      "code": "ENERO50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Enero",
+      "active": true
+    },
+    {
+      "code": "FEBRERO50", 
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Febrero",
+      "active": true
+    },
+    {
+      "code": "MARZO50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Marzo", 
+      "active": true
+    },
+    {
+      "code": "ABRIL50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Abril",
+      "active": true
+    },
+    {
+      "code": "MAYO50",
+      "discount_percentage": 50, 
+      "description": "50% de descuento - Promoción de Mayo",
+      "active": true
+    },
+    {
+      "code": "JUNIO50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Junio",
+      "active": true
+    },
+    {
+      "code": "JULIO50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Julio",
+      "active": true
+    },
+    {
+      "code": "AGOSTO50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Agosto", 
+      "active": true
+    },
+    {
+      "code": "SEPTIEMBRE50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Septiembre",
+      "active": true
+    },
+    {
+      "code": "OCTUBRE50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Octubre",
+      "active": true
+    },
+    {
+      "code": "NOVIEMBRE50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Noviembre",
+      "active": true
+    },
+    {
+      "code": "DICIEMBRE50",
+      "discount_percentage": 50,
+      "description": "50% de descuento - Promoción de Diciembre",
+      "active": true
+    }
+  ]
+}

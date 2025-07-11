@@ -24,6 +24,6 @@ export default function Home() {
       <CTA />
       <Footer />
       <WhatsAppButton />
-    </main>
+      </main>
   );
 }

@@ -3,12 +3,12 @@ import nodemailer from "nodemailer";
 
 // Create a transporter with SMTP settings
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "mail.just5stars.com",
-  port: Number(process.env.SMTP_PORT) || 465,
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
   secure: true, 
   auth: {
-    user: process.env.SMTP_USER || "info@just5stars.com",
-    pass: process.env.SMTP_PASS || "J5s12355789.", // Replace with environment variable in production
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS, // Replace with environment variable in production
   },
   tls: {
     rejectUnauthorized: false, // For development testing only - set to true in production

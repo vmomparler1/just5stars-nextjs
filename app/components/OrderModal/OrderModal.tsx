@@ -147,48 +147,63 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setSearchError(null);
     setUserFeedback('none');
 
+    // Add timeout to prevent getting stuck
+    const searchTimeout = setTimeout(() => {
+      setIsSearching(false);
+      setSearchError('Tiempo de búsqueda agotado. Por favor, inténtalo de nuevo.');
+    }, 10000); // 10 second timeout
+
     const performSearch = () => {
-      if (mapRef.current) {
-        const newMap = new window.google.maps.Map(mapRef.current, {
-          center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
-          zoom: 2,
-        });
-        setMap(newMap);
+      try {
+        if (mapRef.current) {
+          const newMap = new window.google.maps.Map(mapRef.current, {
+            center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
+            zoom: 2,
+          });
+          setMap(newMap);
 
-        // Create Places service
-        const placesService = new window.google.maps.places.PlacesService(newMap);
+          // Create Places service
+          const placesService = new window.google.maps.places.PlacesService(newMap);
 
-        // Search for the business
-        const searchQuery = `${formData.businessName} ${formData.postcode}`;
-        const request = {
-          query: searchQuery,
-          fields: ['name', 'geometry', 'place_id', 'formatted_address'],
-        };
+          // Search for the business
+          const searchQuery = `${formData.businessName} ${formData.postcode} ${formData.businessCountry}`;
+          const request = {
+            query: searchQuery,
+            fields: ['name', 'geometry', 'place_id', 'formatted_address'],
+          };
 
-        placesService.textSearch(request, (results: any[], status: string) => {
-          setIsSearching(false);
-          if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-            const place = results[0];
-            setSelectedPlace(place);
+          placesService.textSearch(request, (results: any[], status: string) => {
+            clearTimeout(searchTimeout);
+            setIsSearching(false);
+            
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
+              const place = results[0];
+              setSelectedPlace(place);
 
-            // Center map on the place
-            newMap.setCenter(place.geometry.location);
-            newMap.setZoom(15);
+              // Center map on the place
+              newMap.setCenter(place.geometry.location);
+              newMap.setZoom(15);
 
-            // Add marker
-            if (marker) {
-              marker.setMap(null);
+              // Add marker
+              if (marker) {
+                marker.setMap(null);
+              }
+              const newMarker = new window.google.maps.Marker({
+                position: place.geometry.location,
+                map: newMap,
+                title: place.name,
+              });
+              setMarker(newMarker);
+            } else {
+              setSearchError('No se encontró el negocio con ese nombre y código postal');
             }
-            const newMarker = new window.google.maps.Marker({
-              position: place.geometry.location,
-              map: newMap,
-              title: place.name,
-            });
-            setMarker(newMarker);
-          } else {
-            setSearchError('No se encontró el negocio con ese nombre y código postal');
-          }
-        });
+          });
+        }
+      } catch (error) {
+        clearTimeout(searchTimeout);
+        setIsSearching(false);
+        setSearchError('Error al buscar el negocio. Por favor, inténtalo de nuevo.');
+        console.error('Search error:', error);
       }
     };
 
@@ -200,15 +215,38 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
       if (existingScript) {
         // Script is already loading, wait for it
-        window.initMap = performSearch;
+        window.initMap = () => {
+          try {
+            performSearch();
+          } catch (error) {
+            clearTimeout(searchTimeout);
+            setIsSearching(false);
+            setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
+            console.error('Maps loading error:', error);
+          }
+        };
       } else {
         // Load Google Maps script for the first time
         const script = document.createElement('script');
         script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
         script.async = true;
         script.defer = true;
+        script.onerror = () => {
+          clearTimeout(searchTimeout);
+          setIsSearching(false);
+          setSearchError('Error al cargar Google Maps. Verifica tu conexión a internet.');
+        };
         document.head.appendChild(script);
-        window.initMap = performSearch;
+        window.initMap = () => {
+          try {
+            performSearch();
+          } catch (error) {
+            clearTimeout(searchTimeout);
+            setIsSearching(false);
+            setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
+            console.error('Maps loading error:', error);
+          }
+        };
       }
     }
   };
@@ -675,6 +713,20 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Código Postal del Negocio *
+              </label>
+              <input
+                type="text"
+                value={formData.postcode}
+                onChange={(e) => handleInputChange('postcode', e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
+                placeholder="28001"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Nombre del Negocio *
               </label>
               <input
@@ -685,20 +737,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
                 placeholder="Nombre de tu negocio"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Código Postal del Negocio *
-              </label>
-              <input
-                type="text"
-                value={formData.postcode}
-                onChange={(e) => handleInputChange('postcode', e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
-                placeholder="28001"
               />
             </div>
           </div>
@@ -717,19 +755,24 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             />
           </div>
 
+          {/* Business Search Status */}
+          {formData.businessName && formData.postcode && isSearching && (
+            <div className="text-center py-2">
+              <p className="text-gray-600">Buscando tu negocio...</p>
+            </div>
+          )}
+          
+          {formData.businessName && formData.postcode && searchError && (
+            <div className="text-center py-2">
+              <p className="text-red-600">{searchError}</p>
+            </div>
+          )}
+
           {/* Business Search Map */}
-          {formData.businessName && formData.postcode && (
+          {(isSearching || selectedPlace) && (
             <div className="space-y-4">
-              <h4 className="font-medium text-gray-700">¿Es este tu negocio?</h4>
+              {selectedPlace && <h4 className="font-medium text-gray-700">¿Es este tu negocio?</h4>}
               <div ref={mapRef} className="w-full h-64 rounded-lg border" />
-              
-              {isSearching && (
-                <p className="text-center text-gray-600">Buscando tu negocio...</p>
-              )}
-              
-              {searchError && (
-                <p className="text-center text-red-600">{searchError}</p>
-              )}
               
               {selectedPlace && userFeedback === 'none' && (
                 <div className="bg-[#7f6d2a]/10 border border-[#7f6d2a]/30 rounded-lg p-4">

@@ -5,9 +5,12 @@ import { XMarkIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import pricesData from '@/app/data/prices.json';
 import vouchersData from '@/app/data/vouchers.json';
+import productsData from '@/app/data/products.json';
 import standsImage from '../Products/stand_02.png';
 import localSeoIcon from '../Products/stand_local_seo.png';
 import allInclusive from '../Products/stand_local_seo_360.png';
+import standWhite from '../Products/stand_white.png';
+import standBlack from '../Products/stand_black.png';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -25,7 +28,7 @@ interface PriceEntry {
   local_seo: number;
   full_service: number;
   price: number;
-  stands_units_discount: number;
+  stands_units_discount?: number;
   shipping: number;
   payment_link: string;
 }
@@ -46,7 +49,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     email: '',
     phone: '',
     businessName: '',
-    postcode: ''
+    postcode: '',
+    businessCountry: 'España'
   });
   
   // Voucher states
@@ -61,29 +65,33 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const [selectedPlace, setSelectedPlace] = useState<any>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [userFeedback, setUserFeedback] = useState<'none' | 'confirmed' | 'rejected'>('none');
 
-  // Product configuration mapping
+  // Product configuration mapping from centralized data
   const productConfig = {
     stand_only: { 
-      local_seo: 0, 
-      full_service: 0, 
-      name: "Sólo Expositor NFC con código QR",
+      local_seo: productsData.stand_only.local_seo, 
+      full_service: productsData.stand_only.full_service, 
+      name: productsData.stand_only.title,
       image: standsImage,
-      label: { text: "Más vendido", color: "#adadad" }
+      label: productsData.stand_only.label,
+      secondary_label: productsData.stand_only.secondary_label
     },
     stand_visibility: { 
-      local_seo: 1, 
-      full_service: 0, 
-      name: "Expositor + Pack Visibilidad en Google Maps",
+      local_seo: productsData.stand_visibility.local_seo, 
+      full_service: productsData.stand_visibility.full_service, 
+      name: productsData.stand_visibility.title,
       image: localSeoIcon,
-      label: { text: "Mejor calidad precio", color: "#7f6d2a" }
+      label: productsData.stand_visibility.label,
+      secondary_label: productsData.stand_visibility.secondary_label
     },
     stand_visibility_web: { 
-      local_seo: 0, 
-      full_service: 1, 
-      name: "Gestión 360 Digital | Visibilidad Google Maps + Web",
+      local_seo: productsData.stand_visibility_web.local_seo, 
+      full_service: productsData.stand_visibility_web.full_service, 
+      name: productsData.stand_visibility_web.title,
       image: allInclusive,
-      label: null
+      label: productsData.stand_visibility_web.label,
+      secondary_label: productsData.stand_visibility_web.secondary_label
     }
   };
 
@@ -93,8 +101,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const findPriceEntry = (numberOfStands: number): PriceEntry | null => {
     if (!currentProductConfig) return null;
     
+    // For local_seo and full_service, always use 3 stands
+    const standsToFind = (currentProductConfig.local_seo === 1 || currentProductConfig.full_service === 1) ? 3 : numberOfStands;
+    
     return pricesData.find(entry => 
-      entry.number_of_stands === numberOfStands &&
+      entry.number_of_stands === standsToFind &&
       entry.local_seo === currentProductConfig.local_seo &&
       entry.full_service === currentProductConfig.full_service
     ) || null;
@@ -107,13 +118,12 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setCurrentProductId(selectedProductId);
   }, [selectedProductId]);
 
-  // Auto-set quantity to 3 for local_seo or full_service products
+  // Auto-set quantity to 3 for local_seo or full_service products only
   useEffect(() => {
     if (currentProductConfig && (currentProductConfig.local_seo === 1 || currentProductConfig.full_service === 1)) {
       setQuantity(3);
-    } else if (currentProductConfig && currentProductConfig.local_seo === 0 && currentProductConfig.full_service === 0) {
-      setQuantity(1); // Reset to 1 for stand_only
     }
+    // Don't automatically reset stand_only products to 1 - let user control quantity
   }, [currentProductConfig]);
 
   useEffect(() => {
@@ -129,20 +139,14 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
   }, [quantity, stands.length]);
 
-  useEffect(() => {
+  const searchBusiness = () => {
     if (!isOpen || !formData.businessName || !formData.postcode) return;
 
     setIsSearching(true);
     setSearchError(null);
+    setUserFeedback('none');
 
-    // Load Google Maps script
-    const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-
-    window.initMap = () => {
+    const performSearch = () => {
       if (mapRef.current) {
         const newMap = new window.google.maps.Map(mapRef.current, {
           center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
@@ -187,13 +191,39 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       }
     };
 
-    return () => {
-      if (document.head.contains(script)) {
-        document.head.removeChild(script);
+    // Check if Google Maps is already loaded
+    if (window.google && window.google.maps) {
+      performSearch();
+    } else {
+      // Check if script is already being loaded
+      const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+      if (existingScript) {
+        // Script is already loading, wait for it
+        window.initMap = performSearch;
+      } else {
+        // Load Google Maps script for the first time
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+        window.initMap = performSearch;
       }
-      delete window.initMap;
+    }
+  };
+
+  // Cleanup on modal close
+  useEffect(() => {
+    return () => {
+      if ('initMap' in window) {
+        delete (window as any).initMap;
+      }
     };
-  }, [formData.businessName, formData.postcode, isOpen]);
+  }, [isOpen]);
+
+  const handleBusinessConfirmation = (confirmed: boolean) => {
+    setUserFeedback(confirmed ? 'confirmed' : 'rejected');
+  };
 
   const handleProductChange = (productId: string) => {
     setCurrentProductId(productId);
@@ -224,6 +254,13 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Reset user feedback when business name or postcode changes
+    if (field === 'businessName' || field === 'postcode') {
+      setUserFeedback('none');
+      setSelectedPlace(null);
+      setSearchError(null);
+    }
   };
 
   const validateVoucher = (voucherCode: string) => {
@@ -273,7 +310,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   };
 
   const getDiscountInfo = () => {
-    if (!currentPriceEntry || currentPriceEntry.stands_units_discount === 0) return null;
+    // Only show stands unit discount for stand_only product (product 1)
+    if (!currentPriceEntry || !currentPriceEntry.stands_units_discount || currentPriceEntry.stands_units_discount === 0) return null;
+    if (!currentProductConfig || currentProductConfig.local_seo === 1 || currentProductConfig.full_service === 1) return null;
     return `${currentPriceEntry.stands_units_discount}% descuento por cantidad`;
   };
 
@@ -324,6 +363,19 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   })()}
                 </span>
               </span>
+              <button
+                type="button"
+                onClick={() => {
+                  const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+                  const voucherCode = `${months[new Date().getMonth()]}50`;
+                  navigator.clipboard.writeText(voucherCode);
+                  handleInputChange('voucher', voucherCode);
+                  setShowVoucherInput(true);
+                }}
+                className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs font-medium transition-colors"
+              >
+                Copiar
+              </button>
             </div>
           </div>
         </div>
@@ -333,9 +385,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           <div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
               {Object.entries(productConfig).map(([productId, config]) => {
-                // Find price for this specific product
+                // Find price for this specific product - use correct number of stands
+                const standsToLookFor = (config.local_seo === 1 || config.full_service === 1) ? 3 : 1;
                 const productPriceEntry = pricesData.find(entry => 
-                  entry.number_of_stands === 1 &&
+                  entry.number_of_stands === standsToLookFor &&
                   entry.local_seo === config.local_seo &&
                   entry.full_service === config.full_service
                 );
@@ -380,10 +433,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                         {currentProductId === productId && appliedVoucher ? (
                           <div className="space-y-1">
                             <p className="text-sm text-gray-500 line-through">
-                              {currentPriceEntry?.price.toFixed(2)}€
+                              {currentPriceEntry?.price.toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
                             </p>
                             <p className="text-[#7f6d2a] font-bold">
-                              {currentPriceEntry ? (currentPriceEntry.price - (currentPriceEntry.price * appliedVoucher.discount_percentage / 100)).toFixed(2) : productPriceEntry.price.toFixed(2)}€
+                              {currentPriceEntry ? (currentPriceEntry.price - (currentPriceEntry.price * appliedVoucher.discount_percentage / 100)).toFixed(2) : productPriceEntry.price.toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
                             </p>
                             <span className="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
                               -{appliedVoucher.discount_percentage}%
@@ -392,10 +445,19 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                         ) : (
                           <p className="text-[#7f6d2a] font-bold">
                             {currentProductId === productId && currentPriceEntry ? 
-                              `${currentPriceEntry.price.toFixed(2)}€` : 
-                              `Desde ${productPriceEntry.price.toFixed(2)}€`
+                              `${currentPriceEntry.price.toFixed(2)}€${(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}` : 
+                              `${productPriceEntry.price.toFixed(2)}€${(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}`
                             }
                           </p>
+                        )}
+                        {config.secondary_label && (
+                          <div className="mt-2">
+                            <span 
+                              className="text-[#7f6d2a] text-xs font-semibold px-2 py-1 rounded-full border border-[#7f6d2a]"
+                            >
+                              {config.secondary_label.text}
+                            </span>
+                          </div>
                         )}
                       </div>
                     )}
@@ -411,7 +473,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               <button
                 type="button"
                 onClick={() => setShowVoucherInput(!showVoucherInput)}
-                className="text-sm text-blue-600 hover:text-blue-800 underline"
+                className="text-sm text-[#7f6d2a] hover:text-[#6a5a23] underline"
               >
                 ¿Tienes un descuento?
               </button>
@@ -419,8 +481,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             
             {/* Voucher Input Area */}
             {showVoucherInput && (
-              <div className="bg-white rounded-lg p-4 border border-gray-200 mb-2">
-                <div className="flex gap-2 max-w-[350px]">
+              <div className="bg-white rounded-lg p-4 border border-gray-200 mb-2 max-w-[400px]">
+                <div className="flex gap-2">
                   <input
                     type="text"
                     value={formData.voucher}
@@ -479,7 +541,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                     >
                       <PlusIcon className="w-5 h-5" />
                     </button>
-                    <span className="text-sm text-blue-600 font-medium ml-4">Pack fijo de 3 expositores</span>
+                    <span className="text-sm text-[#7f6d2a] font-medium ml-4">Pack fijo de 3 expositores</span>
                   </div>
                 </div>
               ) : (
@@ -516,27 +578,38 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             {/* Color selection for each stand */}
             <div className="space-y-3">
               <label className="block text-sm font-medium text-gray-700">Color de los Expositores</label>
-              {stands.map((stand, index) => (
-                <div key={index} className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600">Expositor {index + 1}:</span>
-                  <div className="flex space-x-2">
-                    {['blanco', 'negro'].map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() => handleStandColorChange(index, color)}
-                        className={`px-4 py-2 rounded-lg border transition-colors ${
-                          stand.color === color
-                            ? 'bg-[#7f6d2a] text-white border-[#7f6d2a]'
-                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#7f6d2a]'
-                        }`}
-                      >
-                        {color.charAt(0).toUpperCase() + color.slice(1)}
-                      </button>
-                    ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {stands.map((stand, index) => (
+                  <div key={index} className="flex flex-col items-center space-y-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <div className="flex justify-center">
+                      <Image
+                        src={stand.color === 'blanco' ? standWhite : standBlack}
+                        alt={`Expositor ${index + 1} ${stand.color}`}
+                        width={60}
+                        height={60}
+                        className="w-12 h-12 object-contain"
+                      />
+                    </div>
+
+                    <div className="flex space-x-2">
+                      {['blanco', 'negro'].map((color) => (
+                        <button
+                          key={color}
+                          type="button"
+                          onClick={() => handleStandColorChange(index, color)}
+                          className={`px-3 py-1 rounded-lg border transition-colors text-sm ${
+                            stand.color === color
+                              ? 'bg-[#7f6d2a] text-white border-[#7f6d2a]'
+                              : 'bg-white text-gray-700 border-gray-300 hover:border-[#7f6d2a]'
+                          }`}
+                        >
+                          {color.charAt(0).toUpperCase() + color.slice(1)}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -593,9 +666,24 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               type="text"
               value={formData.businessName}
               onChange={(e) => handleInputChange('businessName', e.target.value)}
+              onBlur={searchBusiness}
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
               placeholder="Nombre de tu negocio"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              País del Negocio *
+            </label>
+            <input
+              type="text"
+              value={formData.businessCountry}
+              onChange={(e) => handleInputChange('businessCountry', e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
+              placeholder="España"
             />
           </div>
 
@@ -613,10 +701,65 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 <p className="text-center text-red-600">{searchError}</p>
               )}
               
-              {selectedPlace && (
+              {selectedPlace && userFeedback === 'none' && (
+                <div className="bg-[#7f6d2a]/10 border border-[#7f6d2a]/30 rounded-lg p-4">
+                  <h5 className="font-semibold text-[#7f6d2a] mb-2">{selectedPlace.name}</h5>
+                  <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlace.formatted_address}</p>
+                  
+                  <div className="flex flex-col space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => handleBusinessConfirmation(true)}
+                      className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-w-[170px]"
+                    >
+                      Sí, es mi negocio
+                    </button>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => handleBusinessConfirmation(false)}
+                        className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+                      >
+                        No, no es mi negocio
+                      </button>
+                      <span className="text-xs text-[#7f6d2a]/70 italic">
+                        (Nosotros lo encontraremos por ti)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {selectedPlace && userFeedback === 'confirmed' && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <h5 className="font-semibold text-green-800">{selectedPlace.name}</h5>
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h5 className="font-semibold text-green-800">¡Perfecto!</h5>
+                  </div>
+                  <p className="text-sm text-green-600 mb-2">Hemos confirmado tu negocio:</p>
+                  <p className="font-medium text-green-800">{selectedPlace.name}</p>
                   <p className="text-sm text-green-600">{selectedPlace.formatted_address}</p>
+                </div>
+              )}
+              
+              {userFeedback === 'rejected' && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                  <div className="flex items-center mb-2">
+                    <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center mr-3">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                      </svg>
+                    </div>
+                    <h5 className="font-semibold text-yellow-800">No te preocupes</h5>
+                  </div>
+                  <p className="text-sm text-yellow-700">
+                    No te preocupes, nosotros encontraremos tu negocio por ti. 
+                    Continúa con tu pedido y nos pondremos en contacto contigo para confirmar la ubicación exacta.
+                  </p>
                 </div>
               )}
             </div>

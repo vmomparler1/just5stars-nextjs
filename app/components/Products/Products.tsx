@@ -8,6 +8,7 @@ import localSeoIcon from "./stand_local_seo.png";
 import allInclusive from "./stand_local_seo_360.png";
 import { OrderModal } from "../OrderModal";
 import pricesData from '@/app/data/prices.json';
+import productsData from '@/app/data/products.json';
 
 const getMonthName = () => {
   const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
@@ -72,54 +73,39 @@ export default function Products() {
 
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                id: "stand_only",
-                title: "Sólo Expositor NFC con código QR",
-                description: "Consigue más reseñas en Google con nuestros expositores NFC.",
-                image: standsImage,
-                price: `${standOnlyPrice.toFixed(2)}€`,
-                cta_text: "Comprar Ahora",
-                label: {
-                  text: "Más vendido",
-                  color: "#adadad"
-                },
-                features: ["Tecnología NFC + Código QR", 
-                  "Preconfigurado a tu perfil de Google Business"]
-              },
-              {
-                id: "stand_visibility",
-                title: "3 Expositores + Visibilidad en Google Maps",
-                description: "Incluye 3 expositores + gestión de tu visibilidad en Google Maps.",
-                image: localSeoIcon,
-                price: `${localSeoPrice.toFixed(2)}€ / mes`,
-                cta_text: "Comprar Ahora",
-                label: {
-                  text: "Mejor calidad precio",
-                  color: "#7f6d2a"
-                },
-                features: ["3 Expositores con Tecnología NFC + Código QR", 
-                  "Preconfigurado a tu perfil de Google Business", 
-                  "Auditoría inicial de tu perfil de Google Business", 
-                  "Recomendaciones para mejorar el posicionamiento en Google Maps", 
-                  "Seguimiento de la evolución en el ranking"]
-              },
-              {
-                id: "stand_visibility_web",
-                title: "3 Expositores + Visibilidad en Google Maps + Web",
-                description: "Incluye 3 expositores + gestión completa de tu presencia digital.",
-                image: allInclusive,
-                price: `${fullServicePrice.toFixed(2)} € / mes`,
-                cta_text: "Comprar Ahora",
-                features: ["3 Expositores con Tecnología NFC + Código QR", 
-                  "Preconfigurado a tu perfil de Google Business", 
-                  "Auditoría inicial de tu perfil de Google Business", 
-                  "Recomendaciones para mejorar el posicionamiento en Google Maps", 
-                  "Seguimiento de la evolución en el ranking", 
-                  "Creación y mantenimiento de la web", 
-                  "SEO web"]
-              }
-            ].map((product, index) => (
+            {Object.entries(productsData).map(([productId, productData], index) => {
+              // Get appropriate image based on product ID
+              const getProductImage = (id: string) => {
+                switch(id) {
+                  case 'stand_only': return standsImage;
+                  case 'stand_visibility': return localSeoIcon;
+                  case 'stand_visibility_web': return allInclusive;
+                  default: return standsImage;
+                }
+              };
+
+              // Get appropriate price based on product configuration
+              const getProductPrice = (id: string) => {
+                switch(id) {
+                  case 'stand_only': return `${standOnlyPrice.toFixed(2)}€`;
+                  case 'stand_visibility': return `${localSeoPrice.toFixed(2)}€/mes`;
+                  case 'stand_visibility_web': return `${fullServicePrice.toFixed(2)}€/mes`;
+                  default: return '0€';
+                }
+              };
+
+              const product = {
+                id: productData.id,
+                title: productData.title,
+                description: productData.description,
+                image: getProductImage(productId),
+                price: getProductPrice(productId),
+                cta_text: productData.cta_text,
+                label: productData.label,
+                features: productData.features
+              };
+
+              return (
               <div key={index} className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow relative flex flex-col h-full">
                 {product.label && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
@@ -144,9 +130,18 @@ export default function Products() {
                   <p className="text-gray-600 mb-6">{product.description}</p>
                   
                   <div className="mb-6">
-                    <div className="text-4xl font-bold text-[#7f6d2a] text-center">
+                    <div className="text-4xl font-bold text-[#7f6d2a] text-center border-2 border-[#7f6d2a] rounded-[9px] py-2 px-4">
                       {product.price}
                     </div>
+                    {productData.secondary_label && (
+                      <div className="text-center mt-2">
+                        <span 
+                          className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
+                        >
+                          {productData.secondary_label.text}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <ul className="space-y-3 mb-8">
@@ -165,7 +160,8 @@ export default function Products() {
                   {product.cta_text}
                 </button>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

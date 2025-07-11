@@ -1,0 +1,67 @@
+{
+  "stand_only": {
+    "id": "stand_only",
+    "title": "Expositor NFC con código QR",
+    "description": "Consigue más reseñas en Google con nuestros expositores NFC.",
+    "image": "/components/Products/stand_02.png",
+    "cta_text": "Comprar Ahora",
+    "local_seo": 0,
+    "full_service": 0,
+    "label": {
+      "text": "Más vendido",
+      "color": "#adadad"
+    },
+    "secondary_label": null,
+    "features": [
+      "Tecnología NFC + Código QR",
+      "Preconfigurado a tu perfil de Google Business"
+    ]
+  },
+  "stand_visibility": {
+    "id": "stand_visibility",
+    "title": "3 Expositores + Visibilidad en Google Maps",
+    "description": "Incluye 3 expositores + gestión de tu visibilidad en Google Maps.",
+    "image": "/components/Products/stand_local_seo.png",
+    "cta_text": "Comprar Ahora",
+    "local_seo": 1,
+    "full_service": 0,
+    "label": {
+      "text": "Mejor calidad precio",
+      "color": "#7f6d2a"
+    },
+    "secondary_label": {
+      "text": "Sin permanencia",
+      "color": "#7f6d2a"
+    },
+    "features": [
+      "3 Expositores con Tecnología NFC + Código QR",
+      "Preconfigurado a tu perfil de Google Business",
+      "Auditoría inicial de tu perfil de Google Business",
+      "Recomendaciones para mejorar el posicionamiento en Google Maps",
+      "Seguimiento de la evolución en el ranking"
+    ]
+  },
+  "stand_visibility_web": {
+    "id": "stand_visibility_web",
+    "title": "3 Expositores + Visibilidad en Google Maps + Web",
+    "description": "Incluye 3 expositores + gestión completa de tu presencia digital.",
+    "image": "/components/Products/stand_local_seo_360.png",
+    "cta_text": "Comprar Ahora",
+    "local_seo": 0,
+    "full_service": 1,
+    "label": null,
+    "secondary_label": {
+      "text": "Sin permanencia",
+      "color": "#7f6d2a"
+    },
+    "features": [
+      "3 Expositores con Tecnología NFC + Código QR",
+      "Preconfigurado a tu perfil de Google Business",
+      "Auditoría inicial de tu perfil de Google Business",
+      "Recomendaciones para mejorar el posicionamiento en Google Maps",
+      "Seguimiento de la evolución en el ranking",
+      "Creación y mantenimiento de la web",
+      "SEO web"
+    ]
+  }
+} 

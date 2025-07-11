@@ -396,10 +396,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 return (
                   <div
                     key={productId}
-                    className={`relative bg-white rounded-xl p-4 cursor-pointer transition-all overflow-visible ${
+                    className={`relative bg-white rounded-xl cursor-pointer transition-all overflow-visible ${
                       currentProductId === productId
-                        ? 'border-4 border-[#7f6d2a] shadow-lg'
-                        : 'border-2 border-gray-200 hover:border-gray-300'
+                        ? 'border-4 border-[#7f6d2a] shadow-lg p-3'
+                        : 'border-2 border-gray-200 hover:border-gray-300 p-4'
                     }`}
                     onClick={() => handleProductChange(productId)}
                   >
@@ -645,6 +645,21 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Nombre del Negocio *
+              </label>
+              <input
+                type="text"
+                value={formData.businessName}
+                onChange={(e) => handleInputChange('businessName', e.target.value)}
+                onBlur={searchBusiness}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
+                placeholder="Nombre de tu negocio"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Código Postal del Negocio *
               </label>
               <input
@@ -656,21 +671,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 placeholder="28001"
               />
             </div>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nombre del Negocio *
-            </label>
-            <input
-              type="text"
-              value={formData.businessName}
-              onChange={(e) => handleInputChange('businessName', e.target.value)}
-              onBlur={searchBusiness}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
-              placeholder="Nombre de tu negocio"
-            />
           </div>
 
           <div>
@@ -707,14 +707,14 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlace.formatted_address}</p>
                   
                   <div className="flex flex-col space-y-3">
-                    <button
-                      type="button"
-                      onClick={() => handleBusinessConfirmation(true)}
-                      className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-w-[170px]"
-                    >
-                      Sí, es mi negocio
-                    </button>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex space-x-3">
+                      <button
+                        type="button"
+                        onClick={() => handleBusinessConfirmation(true)}
+                        className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-w-[170px]"
+                      >
+                        Sí, es mi negocio
+                      </button>
                       <button
                         type="button"
                         onClick={() => handleBusinessConfirmation(false)}
@@ -722,16 +722,23 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                       >
                         No, no es mi negocio
                       </button>
-                      <span className="text-xs text-[#7f6d2a]/70 italic">
-                        (Nosotros lo encontraremos por ti)
-                      </span>
+                    </div>
+                    <div className="text-xs text-[#7f6d2a]/70 italic">
+                      (Nosotros lo encontraremos por ti)
                     </div>
                   </div>
                 </div>
               )}
               
               {selectedPlace && userFeedback === 'confirmed' && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 relative">
+                  <button
+                    type="button"
+                    onClick={() => setUserFeedback('none')}
+                    className="absolute top-2 right-2 text-green-600 hover:text-green-800 transition-colors"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
                   <div className="flex items-center mb-2">
                     <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center mr-3">
                       <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

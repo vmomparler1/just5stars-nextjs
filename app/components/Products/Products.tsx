@@ -2,7 +2,7 @@
 
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import standsImage from "./stand_02.png";
 import localSeoIcon from "./stand_local_seo.png";
 import allInclusive from "./stand_local_seo_360.png";
@@ -29,10 +29,24 @@ const getDaysLeftInMonth = () => {
 };
 
 export default function Products() {
-  const [timeLeft, setTimeLeft] = useState(getDaysLeftInMonth());
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [isClient, setIsClient] = useState(false);
   const monthCode = `${getMonthName()}50`;
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
+
+  useEffect(() => {
+    // Set initial time and mark as client-side
+    setIsClient(true);
+    setTimeLeft(getDaysLeftInMonth());
+
+    // Update countdown every second
+    const timer = setInterval(() => {
+      setTimeLeft(getDaysLeftInMonth());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleOrderClick = (productId: string) => {
     setSelectedProductId(productId);
@@ -55,12 +69,21 @@ export default function Products() {
             </div>
             <div className="text-sm md:text-base flex items-center gap-2">
               <span>Promoción válida hasta:</span>
-              <div className="flex items-center gap-1 font-mono">
-                <span className="py-1 rounded">{timeLeft.days} días,</span>
-                <span className="py-1 rounded">{timeLeft.hours.toString().padStart(2, '0')}h</span>
-                <span className="py-1 rounded">{timeLeft.minutes.toString().padStart(2, '0')}m</span>
-                <span className="py-1 rounded">{timeLeft.seconds.toString().padStart(2, '0')}s</span>
-              </div>
+              {isClient ? (
+                <div className="flex items-center gap-1 font-mono">
+                  <span className="py-1 rounded">{timeLeft.days} días,</span>
+                  <span className="py-1 rounded">{timeLeft.hours.toString().padStart(2, '0')}h</span>
+                  <span className="py-1 rounded">{timeLeft.minutes.toString().padStart(2, '0')}m</span>
+                  <span className="py-1 rounded">{timeLeft.seconds.toString().padStart(2, '0')}s</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 font-mono">
+                  <span className="py-1 rounded">-- días,</span>
+                  <span className="py-1 rounded">--h</span>
+                  <span className="py-1 rounded">--m</span>
+                  <span className="py-1 rounded">--s</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

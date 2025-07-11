@@ -29,17 +29,11 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
-          <a href="#products" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
-            Productos
-          </a>
-          <a href="#why" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
-            Por Qué Nosotros
-          </a>
           <a href="#stories" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
             Casos de Éxito
           </a>
           <button className="bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors">
-            Empezar
+            Ver Servicios
           </button>
         </div>
 
@@ -63,20 +57,6 @@ export default function Navbar() {
         <div className="md:hidden mt-4 bg-white rounded-lg shadow-lg border border-gray-200">
           <div className="px-6 py-4 space-y-4">
             <a 
-              href="#products" 
-              className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
-              onClick={toggleMenu}
-            >
-              Productos
-            </a>
-            <a 
-              href="#why" 
-              className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
-              onClick={toggleMenu}
-            >
-              Por Qué Nosotros
-            </a>
-            <a 
               href="#stories" 
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
               onClick={toggleMenu}
@@ -84,7 +64,7 @@ export default function Navbar() {
               Casos de Éxito
             </a>
             <button className="w-full bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors">
-              Empezar
+              Ver Servicios
             </button>
           </div>
         </div>

@@ -14,9 +14,9 @@ export default function SuccessStories() {
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl">
             {[
               {
-                name: "Daniel Martinez",
+                name: "Daniel Martínez",
                 role: "Fisioterapeuta",
-                content: "Con el servicio de visibilidad en Google Maps he conseguido captar más clientes. ¡Una pasada!",
+                content: "Con el servicio de visibilidad en Google Maps he conseguido captar más clientes. ¡Muy Top!",
                 image: testimonial1,
                 rating: 5,
                 growth: "+340% Ingresos",

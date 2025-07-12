@@ -850,20 +850,22 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                       <button
                         type="button"
                         onClick={() => handleBusinessConfirmation(true)}
-                        className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-w-[170px]"
+                        className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-h-[36px]"
                       >
                         Sí, es mi negocio
                       </button>
-                      <button
+                      <div>
+                        <button
                         type="button"
                         onClick={() => handleBusinessConfirmation(false)}
                         className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
-                      >
+                        >
                         No, no es mi negocio
-                      </button>
-                    </div>
-                    <div className="text-xs text-[#7f6d2a]/70 italic">
-                      (Nosotros lo encontraremos por ti)
+                        </button>
+                        <div className="text-xs text-[#7f6d2a]/70 italic">
+                            (No pasa nada. Nosotros nos encargaremos de encontrarlo por ti.)
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

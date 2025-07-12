@@ -12,6 +12,18 @@ export default function Navbar() {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const scrollToProducts = () => {
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+    // Close mobile menu if open
+    setIsMenuOpen(false);
+  };
+
   return (
     <nav className="absolute top-0 left-0 right-0 z-50 px-6 py-4">
       <div className="max-w-7xl mx-auto flex justify-between items-center">
@@ -32,7 +44,10 @@ export default function Navbar() {
           <a href="#stories" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
             Casos de Éxito
           </a>
-          <button className="bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors">
+          <button 
+            onClick={scrollToProducts}
+            className="bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors"
+          >
             Ver Servicios
           </button>
         </div>
@@ -63,7 +78,10 @@ export default function Navbar() {
             >
               Casos de Éxito
             </a>
-            <button className="w-full bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors">
+            <button 
+              onClick={scrollToProducts}
+              className="w-full bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors"
+            >
               Ver Servicios
             </button>
           </div>

@@ -1,8 +1,20 @@
+"use client";
+
 import { ChevronRightIcon, StarIcon, CheckIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import standHeroImage from "./hero_just5.png";
 
 export default function Hero() {
+  const scrollToProducts = () => {
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return (
     <section className="relative overflow-hidden pt-20 pb-32">
       <div className="max-w-7xl mx-auto px-6">
@@ -39,7 +51,10 @@ export default function Hero() {
               </ul>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-[#7f6d2a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#6a5a23] transition-all transform hover:scale-105 flex items-center justify-center">
+              <button 
+                onClick={scrollToProducts}
+                className="bg-[#7f6d2a] text-white px-8 py-4 rounded-lg font-semibold hover:bg-[#6a5a23] transition-all transform hover:scale-105 flex items-center justify-center"
+              >
                 Descubre nuestros servicios
                 <ChevronRightIcon className="w-5 h-5 ml-2" />
               </button>

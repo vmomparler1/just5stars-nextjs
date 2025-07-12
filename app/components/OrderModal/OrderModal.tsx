@@ -11,7 +11,7 @@ import localSeoIcon from '../Products/stand_local_seo.png';
 import allInclusive from '../Products/stand_local_seo_360.png';
 import standWhite from '../Products/stand_white.png';
 import standBlack from '../Products/stand_black.png';
-import { appendUTMToUrl } from '@/app/utils/utmTracking';
+import { appendUTMToUrl, getStoredUTMParameters } from '@/app/utils/utmTracking';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -380,45 +380,107 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
     setIsSubmitting(true);
 
-    // Prepare order data for email
-    const orderData = {
-      productName: currentProductConfig.name,
-      voucherApplied: appliedVoucher ? `${appliedVoucher.code} (${appliedVoucher.discount_percentage}% off)` : null,
-      price: calculateTotal().toFixed(2),
-      numberOfStands: quantity,
-      colorStands: stands,
-      businessName: formData.businessName,
-      businessPostcode: formData.postcode,
-      businessCountry: formData.businessCountry,
-      email: formData.email,
-      phoneNumber: formData.phone,
-      googleBusinessId: selectedPlace?.place_id || null
-    };
+    try {
+      // Get UTM parameters for database storage
+      const utmParams = getStoredUTMParameters() || {};
 
-    // Send order data in background (fire-and-forget)
-    fetch('/api/send-order-email', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData),
-    }).catch(error => {
-      console.error('Error sending order email (non-blocking):', error);
-      // Don't show error to user since they're already being redirected
-    });
+      // Prepare order data for database storage
+      const orderDataForDB = {
+        product_name: currentProductConfig.name,
+        product_id: currentProductId,
+        quantity: quantity,
+        price: currentPriceEntry.price,
+        discount_amount: appliedVoucher ? (currentPriceEntry.price * appliedVoucher.discount_percentage / 100) : 0,
+        voucher_code: appliedVoucher?.code || null,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        business_name: formData.businessName,
+        business_postcode: formData.postcode,
+        business_country: formData.businessCountry,
+        google_business_id: selectedPlace?.place_id || null,
+        stand_colors: stands,
+        utm_params: utmParams
+      };
 
-    // Prepare payment link with voucher code if applied
-    let paymentUrl = currentPriceEntry.payment_link;
-    if (appliedVoucher) {
+      // Store order in database
+      const storeResponse = await fetch('/api/store-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderDataForDB),
+      });
+
+      if (!storeResponse.ok) {
+        throw new Error('Failed to store order in database');
+      }
+
+      const { order_id } = await storeResponse.json();
+      console.log('Order stored successfully with ID:', order_id);
+
+      // Prepare order data for email
+      const orderDataForEmail = {
+        productName: currentProductConfig.name,
+        voucherApplied: appliedVoucher ? `${appliedVoucher.code} (${appliedVoucher.discount_percentage}% off)` : null,
+        price: calculateTotal().toFixed(2),
+        numberOfStands: quantity,
+        colorStands: stands,
+        businessName: formData.businessName,
+        businessPostcode: formData.postcode,
+        businessCountry: formData.businessCountry,
+        email: formData.email,
+        phoneNumber: formData.phone,
+        googleBusinessId: selectedPlace?.place_id || null
+      };
+
+      // Send order data in background (fire-and-forget)
+      fetch('/api/send-order-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderDataForEmail),
+      }).catch(error => {
+        console.error('Error sending order email (non-blocking):', error);
+        // Don't show error to user since they're already being redirected
+      });
+
+      // Prepare payment link with all parameters
+      let paymentUrl = currentPriceEntry.payment_link;
+      const urlParams = new URLSearchParams();
+      
+      // Add client_reference_id (order ID for tracking)
+      urlParams.set('client_reference_id', order_id);
+      
+      // Add prefilled_email
+      urlParams.set('prefilled_email', formData.email);
+      
+      // Add voucher code if applied
+      if (appliedVoucher) {
+        urlParams.set('prefilled_promo_code', appliedVoucher.code);
+      }
+      
+      // Add UTM parameters if available
+      Object.entries(utmParams).forEach(([key, value]) => {
+        if (value) {
+          urlParams.set(key, value);
+        }
+      });
+      
+      // Construct final payment URL
       const separator = paymentUrl.includes('?') ? '&' : '?';
-      paymentUrl += `${separator}prefilled_promo_code=${encodeURIComponent(appliedVoucher.code)}`;
+      paymentUrl += `${separator}${urlParams.toString()}`;
+
+      console.log('Final payment URL:', paymentUrl);
+
+      // Redirect immediately to payment
+      window.location.href = paymentUrl;
+
+    } catch (error) {
+      console.error('Error processing order:', error);
+      alert('Error al procesar el pedido. Por favor, inténtalo de nuevo.');
+      setIsSubmitting(false);
     }
-
-    // Append UTM parameters if available
-    paymentUrl = appendUTMToUrl(paymentUrl);
-
-    // Redirect immediately to payment without waiting for email
-    window.location.href = paymentUrl;
   };
 
   if (!isOpen || !currentProductConfig) return null;

@@ -14,9 +14,9 @@ const createTransporter = () => {
       rejectUnauthorized: false, // For development testing only - set to true in production
     },
     // Add timeout configurations for better performance
-    connectionTimeout: 10000, // 10 seconds
-    greetingTimeout: 5000, // 5 seconds
-    socketTimeout: 15000, // 15 seconds
+    connectionTimeout: 30000, // 30 seconds
+    greetingTimeout: 15000, // 15 seconds
+    socketTimeout: 45000, // 45 seconds
   });
 };
 
@@ -57,10 +57,10 @@ export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResp
       html: options.html,
     });
 
-    // Race between sending email and timeout (20 seconds max)
+    // Race between sending email and timeout (60 seconds max)
     await Promise.race([
       sendPromise,
-      createTimeoutPromise(20000)
+      createTimeoutPromise(60000)
     ]);
 
     console.log(`Email sent successfully to: ${options.to}`);

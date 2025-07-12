@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
+    "@libsql/client": "^0.15.9",
     "@types/nodemailer": "^6.4.17",
     "next": "15.3.5",
     "nodemailer": "^7.0.5",

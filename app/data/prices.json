@@ -6,7 +6,7 @@
       "price": 39.8,
       "stands_units_discount": 0,
       "shipping": 0,
-      "payment_link": "https://paymentlink_1_stand"
+      "payment_link": "https://buy.stripe.com/6oU5kE7wXe4Wagpe5RcEw00"
     },
     {
       "number_of_stands": 2,
@@ -15,7 +15,7 @@
       "price": 67.83,
       "stands_units_discount": 15,
       "shipping": 0,
-      "payment_link": "https://paymentlink_2_stand"
+      "payment_link": "https://buy.stripe.com/fZucN66sT4um6094vhcEw03"
     },
     {
       "number_of_stands": 3,
@@ -24,7 +24,7 @@
       "price": 95.76,
       "stands_units_discount": 20,
       "shipping": 0,
-      "payment_link": "https://paymentlink_3_stand"
+      "payment_link": "https://buy.stripe.com/28E4gA3gH8KCcox4vhcEw04"
     },
     {
       "number_of_stands": 3,
@@ -32,7 +32,7 @@
       "full_service": 0,
       "price": 119.80,
       "shipping": 0,
-      "payment_link": "https://paymentlink_local_3_stand"
+      "payment_link": "https://buy.stripe.com/7sY6oIg3t0e6dsB2n9cEw01"
     },
     {
       "number_of_stands": 3,
@@ -40,6 +40,6 @@
       "full_service": 1,
       "price": 299.80,
       "shipping": 0,
-      "payment_link": "https://paymentlink_full_3_stand"
+      "payment_link": "https://buy.stripe.com/8x2cN67wX5yq0FPbXJcEw02"
     }
   ]

@@ -50,7 +50,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     phone: '',
     businessName: '',
     postcode: '',
-    businessCountry: 'España'
+    businessCountry: 'España',
+    acceptPrivacyPolicy: false,
+    acceptTermsAndConditions: false
   });
   
   // Voucher states
@@ -298,7 +300,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setStands(newStands);
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Reset user feedback when business name or postcode changes
@@ -760,6 +762,63 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
               placeholder="España"
             />
+          </div>
+
+          {/* Privacy Policy and Terms Checkboxes */}
+          <div className="space-y-3">
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="privacy-policy"
+                  type="checkbox"
+                  checked={formData.acceptPrivacyPolicy}
+                  onChange={(e) => handleInputChange('acceptPrivacyPolicy', e.target.checked)}
+                  required
+                  className="w-4 h-4 text-[#7f6d2a] bg-gray-100 border-gray-300 rounded focus:ring-[#7f6d2a] focus:ring-2"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="privacy-policy" className="text-gray-700">
+                  He leído y acepto la{' '}
+                  <a
+                    href="/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#7f6d2a] hover:underline font-medium"
+                  >
+                    Política de Privacidad
+                  </a>
+                  {' '}*
+                </label>
+              </div>
+            </div>
+
+            <div className="flex items-start">
+              <div className="flex items-center h-5">
+                <input
+                  id="terms-conditions"
+                  type="checkbox"
+                  checked={formData.acceptTermsAndConditions}
+                  onChange={(e) => handleInputChange('acceptTermsAndConditions', e.target.checked)}
+                  required
+                  className="w-4 h-4 text-[#7f6d2a] bg-gray-100 border-gray-300 rounded focus:ring-[#7f6d2a] focus:ring-2"
+                />
+              </div>
+              <div className="ml-3 text-sm">
+                <label htmlFor="terms-conditions" className="text-gray-700">
+                  He leído y acepto los{' '}
+                  <a
+                    href="/terms-and-conditions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#7f6d2a] hover:underline font-medium"
+                  >
+                    Términos y Condiciones
+                  </a>
+                  {' '}*
+                </label>
+              </div>
+            </div>
           </div>
 
           {/* Business Search Status */}

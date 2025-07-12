@@ -67,6 +67,13 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const [searchError, setSearchError] = useState<string | null>(null);
   const [userFeedback, setUserFeedback] = useState<'none' | 'confirmed' | 'rejected'>('none');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [monthCode, setMonthCode] = useState('');
+
+  // Generate month code on client side only
+  useEffect(() => {
+    const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+    setMonthCode(`${months[new Date().getMonth()]}50`);
+  }, []);
 
   // Product configuration mapping from centralized data
   const productConfig = {
@@ -363,6 +370,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       return;
     }
 
+    if (!currentPriceEntry.payment_link) {
+      alert('Error: No payment link available for this product combination');
+      return;
+    }
+
     setIsSubmitting(true);
 
     // Prepare order data for email
@@ -381,6 +393,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     };
 
     try {
+      // Send order data for record-keeping
       const response = await fetch('/api/send-order-email', {
         method: 'POST',
         headers: {
@@ -390,17 +403,17 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       });
 
       if (response.ok) {
-        alert('¡Pedido enviado correctamente! Te contactaremos pronto.');
-        onClose();
+        // Successfully sent order data, now redirect to payment
+        window.location.href = currentPriceEntry.payment_link;
       } else {
         throw new Error('Failed to send order');
       }
     } catch (error) {
       console.error('Error sending order:', error);
       alert('Error al enviar el pedido. Por favor, inténtalo de nuevo.');
-    } finally {
       setIsSubmitting(false);
     }
+    // Note: We don't set setIsSubmitting(false) in finally because we're redirecting
   };
 
   if (!isOpen || !currentProductConfig) return null;
@@ -425,19 +438,14 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               <span className="font-bold">¡50% de descuento!</span>
               <span>
                 Usa el código <span className="font-mono bg-white/20 px-2 py-1 rounded text-xs">
-                  {(() => {
-                    const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-                    return `${months[new Date().getMonth()]}50`;
-                  })()}
+                  {monthCode || '---50'}
                 </span>
               </span>
               <button
                 type="button"
                 onClick={() => {
-                  const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-                  const voucherCode = `${months[new Date().getMonth()]}50`;
-                  navigator.clipboard.writeText(voucherCode);
-                  handleInputChange('voucher', voucherCode);
+                  navigator.clipboard.writeText(monthCode);
+                  handleInputChange('voucher', monthCode);
                   setShowVoucherInput(true);
                 }}
                 className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded text-xs font-medium transition-colors"
@@ -895,7 +903,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   Enviando...
                 </>
               ) : (
-                'Confirmar Pedido'
+                'Proceder al Pago'
               )}
             </button>
           </div>

@@ -23,12 +23,13 @@ const getTimeLeftInMonth = () => {
 export default function DiscountRibbon() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [isClient, setIsClient] = useState(false);
-  const monthCode = `${getMonthName()}50`;
+  const [monthCode, setMonthCode] = useState('');
 
   useEffect(() => {
     // Set initial time and mark as client-side
     setIsClient(true);
     setTimeLeft(getTimeLeftInMonth());
+    setMonthCode(`${getMonthName()}50`);
 
     // Update countdown every second
     const timer = setInterval(() => {
@@ -44,7 +45,7 @@ export default function DiscountRibbon() {
         <div className="flex justify-center items-center gap-4 md:gap-8">
           <div className="text-xl md:text-xl font-bold">¡Ahora con 50% de descuento!</div>
           <div className="text-base md:text-lg">
-            Usa el código <span className="font-mono bg-white/20 px-2 py-1 rounded">{monthCode}</span>
+            Usa el código <span className="font-mono bg-white/20 px-2 py-1 rounded">{monthCode || '---50'}</span>
           </div>
           <div className="text-sm md:text-base flex items-center gap-2">
             <span>Promoción válida hasta:</span>

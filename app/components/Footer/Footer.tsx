@@ -20,7 +20,7 @@ export default function Footer() {
             </p>
           </div>
           <div className="text-center md:text-right">
-            <a href="#" className="text-gray-400 hover:text-white transition-colors text-lg">
+            <a href="/contact" className="text-gray-400 hover:text-white transition-colors text-lg">
               Contáctanos
             </a>
           </div>

@@ -44,6 +44,9 @@ export default function Navbar() {
           <a href="#stories" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
             Casos de Éxito
           </a>
+          <a href="/contact" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
+            Contacto
+          </a>
           <button 
             onClick={scrollToProducts}
             className="bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors"
@@ -77,6 +80,13 @@ export default function Navbar() {
               onClick={toggleMenu}
             >
               Casos de Éxito
+            </a>
+            <a 
+              href="/contact" 
+              className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
+              onClick={toggleMenu}
+            >
+              Contacto
             </a>
             <button 
               onClick={scrollToProducts}

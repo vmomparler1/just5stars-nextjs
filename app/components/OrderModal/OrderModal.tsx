@@ -11,6 +11,7 @@ import localSeoIcon from '../Products/stand_local_seo.png';
 import allInclusive from '../Products/stand_local_seo_360.png';
 import standWhite from '../Products/stand_white.png';
 import standBlack from '../Products/stand_black.png';
+import { appendUTMToUrl } from '@/app/utils/utmTracking';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -412,6 +413,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       const separator = paymentUrl.includes('?') ? '&' : '?';
       paymentUrl += `${separator}prefilled_promo_code=${encodeURIComponent(appliedVoucher.code)}`;
     }
+
+    // Append UTM parameters if available
+    paymentUrl = appendUTMToUrl(paymentUrl);
 
     // Redirect immediately to payment without waiting for email
     window.location.href = paymentUrl;

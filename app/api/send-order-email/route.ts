@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const result = await sendEmail({
       to: process.env.SMTP_TO || "info@just5stars.com",
       replyTo: orderData.email,
-      subject: "New Order Confirmation - Just5Stars",
+      subject: "New Order Confirmation - just5stars",
       text,
       html,
     });

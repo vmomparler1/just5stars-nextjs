@@ -25,8 +25,24 @@ export default function Footer() {
             </a>
           </div>
         </div>
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2025 just5stars. Todos los derechos reservados.</p>
+        <div className="border-t border-gray-800 mt-8 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-gray-400">
+            <p>&copy; 2025 just5stars. Todos los derechos reservados.</p>
+            <div className="flex flex-wrap justify-center md:justify-end gap-6 text-sm">
+              <a 
+                href="/privacy-policy" 
+                className="hover:text-white transition-colors"
+              >
+                Política de Privacidad
+              </a>
+              <a 
+                href="/terms-and-conditions" 
+                className="hover:text-white transition-colors"
+              >
+                Términos y Condiciones
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

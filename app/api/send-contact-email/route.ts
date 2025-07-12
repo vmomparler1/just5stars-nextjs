@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     const result = await sendEmail({
       to: process.env.SMTP_TO || "info@just5stars.com",
       replyTo: contactData.email,
-      subject: `Contact Form: ${contactData.subject || 'General inquiry'} - Just5Stars`,
+      subject: `Contact Form: ${contactData.subject || 'General inquiry'} - just5stars`,
       text,
       html,
     });

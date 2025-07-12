@@ -392,28 +392,27 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       googleBusinessId: selectedPlace?.place_id || null
     };
 
-    try {
-      // Send order data for record-keeping
-      const response = await fetch('/api/send-order-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
+    // Send order data in background (fire-and-forget)
+    fetch('/api/send-order-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    }).catch(error => {
+      console.error('Error sending order email (non-blocking):', error);
+      // Don't show error to user since they're already being redirected
+    });
 
-      if (response.ok) {
-        // Successfully sent order data, now redirect to payment
-        window.location.href = currentPriceEntry.payment_link;
-      } else {
-        throw new Error('Failed to send order');
-      }
-    } catch (error) {
-      console.error('Error sending order:', error);
-      alert('Error al enviar el pedido. Por favor, inténtalo de nuevo.');
-      setIsSubmitting(false);
+    // Prepare payment link with voucher code if applied
+    let paymentUrl = currentPriceEntry.payment_link;
+    if (appliedVoucher) {
+      const separator = paymentUrl.includes('?') ? '&' : '?';
+      paymentUrl += `${separator}prefilled_promo_code=${encodeURIComponent(appliedVoucher.code)}`;
     }
-    // Note: We don't set setIsSubmitting(false) in finally because we're redirecting
+
+    // Redirect immediately to payment without waiting for email
+    window.location.href = paymentUrl;
   };
 
   if (!isOpen || !currentProductConfig) return null;

@@ -143,7 +143,6 @@ async function handleCheckoutCompleted(session: any) {
           eventId: `purchase_${clientReferenceId}`,
           email: order.customer_email,
           phone: order.customer_phone,
-          zipCode: order.business_postcode,
           value: order.price - (order.discount_amount || 0),
           currency: 'EUR'
         });
@@ -183,7 +182,6 @@ async function handleCheckoutCompleted(session: any) {
         eventId: `purchase_${pendingOrder.id}`,
         email: pendingOrder.customer_email,
         phone: pendingOrder.customer_phone,
-        zipCode: pendingOrder.business_postcode,
         value: pendingOrder.price - (pendingOrder.discount_amount || 0),
         currency: 'EUR'
       });

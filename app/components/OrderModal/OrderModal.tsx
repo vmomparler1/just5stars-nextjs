@@ -146,7 +146,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             eventId: `add_to_cart_${Date.now()}`,
             email: formData.email || undefined,
             phone: formData.phone || undefined,
-            zipCode: formData.postcode || undefined,
             value: currentPriceEntry?.price || 0,
             currency: 'EUR'
           }
@@ -421,7 +420,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             eventId: `initiate_checkout_${Date.now()}`,
             email: formData.email,
             phone: formData.phone,
-            zipCode: formData.postcode,
             value: calculateTotal(),
             currency: 'EUR'
           }

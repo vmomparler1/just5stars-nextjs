@@ -25,7 +25,6 @@ interface BaseEventData {
   clientIPAddress?: string;
   email?: string;
   phone?: string;
-  zipCode?: string;
   eventId?: string;
   value?: number;
   currency?: string;
@@ -64,9 +63,7 @@ function createServerEvent(eventName: string, eventData: BaseEventData): ServerE
     userData.setPhone(hashData(eventData.phone));
   }
   
-  if (eventData.zipCode) {
-    userData.setZipCode(hashData(eventData.zipCode));
-  }
+  // zipCode removed - not needed for Meta Ads tracking
   
   serverEvent.setUserData(userData);
 

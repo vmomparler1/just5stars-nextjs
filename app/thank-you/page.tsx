@@ -70,8 +70,7 @@ export default function ThankYouPage() {
           "delivery_country": order.delivery_country,
           "estimated_delivery_date": order.estimated_delivery_date,
           
-          // OPTIONAL FIELDS
-          "products": [{"gtin": "JUST5STARS_NFC_STAND"}] // Generic GTIN for NFC stands
+          // OPTIONAL FIELDS - GTIN removed as it was causing validation errors
         });
       });
     };

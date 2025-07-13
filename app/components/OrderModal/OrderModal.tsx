@@ -78,6 +78,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setMonthCode(`${months[new Date().getMonth()]}50`);
   }, []);
 
+
+
   // Product configuration mapping from centralized data
   const productConfig = {
     stand_only: { 
@@ -128,6 +130,32 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   useEffect(() => {
     setCurrentProductId(selectedProductId);
   }, [selectedProductId]);
+
+  // Track Add to Cart when modal opens
+  useEffect(() => {
+    if (isOpen && currentProductConfig) {
+      // Track Add to Cart event
+      fetch('/api/meta-ads/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventType: 'AddToCart',
+          eventData: {
+            eventId: `add_to_cart_${Date.now()}`,
+            email: formData.email || undefined,
+            phone: formData.phone || undefined,
+            zipCode: formData.postcode || undefined,
+            value: currentPriceEntry?.price || 0,
+            currency: 'EUR'
+          }
+        }),
+      }).catch(error => {
+        console.error('Error tracking Add to Cart:', error);
+      });
+    }
+  }, [isOpen, currentProductConfig, currentPriceEntry?.price, formData.email, formData.phone, formData.postcode]);
 
   // Auto-set quantity to 3 for local_seo or full_service products only
   useEffect(() => {
@@ -381,6 +409,27 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setIsSubmitting(true);
 
     try {
+      // Track Initiate Checkout event
+      fetch('/api/meta-ads/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          eventType: 'InitiateCheckout',
+          eventData: {
+            eventId: `initiate_checkout_${Date.now()}`,
+            email: formData.email,
+            phone: formData.phone,
+            zipCode: formData.postcode,
+            value: calculateTotal(),
+            currency: 'EUR'
+          }
+        }),
+      }).catch(error => {
+        console.error('Error tracking Initiate Checkout:', error);
+      });
+
       // Get UTM parameters for database storage
       const utmParams = getStoredUTMParameters() || {};
 

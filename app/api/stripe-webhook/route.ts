@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateOrderStatus, OrderStatus, initializeDatabase, getOrderById } from "@/app/utils/database";
+import { updateOrderStatus, OrderStatus, initializeDatabase, getOrderById, getOrdersByEmail } from "@/app/utils/database";
 import { headers } from "next/headers";
 import crypto from "crypto";
+import { trackPurchase, createEventDataFromRequest } from "@/app/utils/metaAdsTracking";
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -83,6 +84,9 @@ async function handleCheckoutCompleted(session: any) {
     if (clientReferenceId) {
       console.log('Found client_reference_id:', clientReferenceId);
       
+      // Get order details for Meta tracking
+      const order = await getOrderById(clientReferenceId);
+      
       // Update order status using the direct order ID
       await updateOrderStatus(
         clientReferenceId,
@@ -91,6 +95,21 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
       console.log('Order confirmed via client_reference_id:', clientReferenceId);
+      
+      // Track Purchase event
+      if (order) {
+        await trackPurchase({
+          eventSourceUrl: 'https://just5stars.com',
+          clientUserAgent: 'Stripe-Webhook',
+          eventId: `purchase_${clientReferenceId}`,
+          email: order.customer_email,
+          phone: order.customer_phone,
+          zipCode: order.business_postcode,
+          value: order.price - (order.discount_amount || 0),
+          currency: 'EUR'
+        });
+      }
+      
       return;
     }
     
@@ -104,8 +123,6 @@ async function handleCheckoutCompleted(session: any) {
 
     console.log('Fallback: searching by customer email:', customerEmail);
     
-    // Import the function to get orders by email
-    const { getOrdersByEmail } = await import('@/app/utils/database');
     const orders = await getOrdersByEmail(customerEmail);
     
     // Find the most recent pending order for this customer
@@ -119,6 +136,18 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
       console.log('Order confirmed via customer email fallback:', pendingOrder.id);
+      
+      // Track Purchase event
+      await trackPurchase({
+        eventSourceUrl: 'https://just5stars.com',
+        clientUserAgent: 'Stripe-Webhook',
+        eventId: `purchase_${pendingOrder.id}`,
+        email: pendingOrder.customer_email,
+        phone: pendingOrder.customer_phone,
+        zipCode: pendingOrder.business_postcode,
+        value: pendingOrder.price - (pendingOrder.discount_amount || 0),
+        currency: 'EUR'
+      });
     } else {
       console.log('No pending order found for customer:', customerEmail);
     }

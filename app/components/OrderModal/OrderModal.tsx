@@ -525,6 +525,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         }
       });
       
+      // Add success URL to redirect to thank you page
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://just5stars.com';
+      urlParams.set('success_url', `${baseUrl}/thank-you?chsid={CHECKOUT_SESSION_ID}`);
+      
       // Construct final payment URL
       const separator = paymentUrl.includes('?') ? '&' : '?';
       paymentUrl += `${separator}${urlParams.toString()}`;

@@ -4,7 +4,11 @@ import { headers } from "next/headers";
 import crypto from "crypto";
 import { trackPurchase, createEventDataFromRequest } from "@/app/utils/metaAdsTracking";
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+if (!endpointSecret) {
+  console.error('STRIPE_WEBHOOK_SECRET environment variable is not set');
+};
 
 // Initialize database on first request
 let isDbInitialized = false;
@@ -17,9 +21,24 @@ export async function POST(request: NextRequest) {
       isDbInitialized = true;
     }
 
+    // Check if webhook secret is configured
+    if (!endpointSecret) {
+      console.error('STRIPE_WEBHOOK_SECRET environment variable is not configured');
+      return NextResponse.json(
+        { error: 'Webhook secret not configured' },
+        { status: 500 }
+      );
+    }
+
     const body = await request.text();
     const headersList = await headers();
     const signature = headersList.get("stripe-signature");
+
+    console.log('Webhook request received:', {
+      bodyLength: body.length,
+      hasSignature: !!signature,
+      secretConfigured: !!endpointSecret
+    });
 
     if (!signature) {
       console.error('Missing Stripe signature');
@@ -30,15 +49,35 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify webhook signature manually
+    // Parse the signature header: t=timestamp,v1=signature1,v1=signature2
+    const sigElements = signature.split(',');
+    const timestamp = sigElements.find(el => el.startsWith('t='))?.split('=')[1];
+    const signatures = sigElements.filter(el => el.startsWith('v1=')).map(el => el.split('=')[1]);
+    
+    if (!timestamp || signatures.length === 0) {
+      console.error('Invalid signature format');
+      return NextResponse.json(
+        { error: 'Invalid signature format' },
+        { status: 400 }
+      );
+    }
+    
+    // Create the signed payload
+    const signedPayload = `${timestamp}.${body}`;
     const expectedSignature = crypto
       .createHmac('sha256', endpointSecret)
-      .update(body, 'utf8')
+      .update(signedPayload, 'utf8')
       .digest('hex');
     
-    const actualSignature = signature.replace('v1=', '');
+    // Check if any of the signatures match
+    const isSignatureValid = signatures.some(sig => sig === expectedSignature);
     
-    if (expectedSignature !== actualSignature) {
+    if (!isSignatureValid) {
       console.error('Webhook signature verification failed');
+      console.error('Expected signature:', expectedSignature);
+      console.error('Received signatures:', signatures);
+      console.error('Timestamp:', timestamp);
+      console.error('Body length:', body.length);
       return NextResponse.json(
         { error: 'Webhook signature verification failed' },
         { status: 400 }

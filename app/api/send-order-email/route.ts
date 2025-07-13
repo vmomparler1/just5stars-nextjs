@@ -3,7 +3,31 @@ import { sendEmail, createOrderEmailContent } from "@/app/utils/emailService";
 
 export async function POST(request: NextRequest) {
   try {
-    const orderData = await request.json();
+    // Get raw body text for debugging
+    const bodyText = await request.text();
+    console.log('Raw request body:', bodyText);
+    
+    // Check if body is empty
+    if (!bodyText || bodyText.trim() === '') {
+      console.error('Empty request body received');
+      return NextResponse.json(
+        { error: 'Empty request body' },
+        { status: 400 }
+      );
+    }
+    
+    // Parse JSON with better error handling
+    let orderData;
+    try {
+      orderData = JSON.parse(bodyText);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError);
+      console.error('Body that failed to parse:', bodyText);
+      return NextResponse.json(
+        { error: 'Invalid JSON in request body' },
+        { status: 400 }
+      );
+    }
     
     // Create email content using the utility function
     const { text, html } = createOrderEmailContent(orderData);

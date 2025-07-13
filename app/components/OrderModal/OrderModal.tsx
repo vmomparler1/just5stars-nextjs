@@ -482,17 +482,25 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         googleBusinessId: selectedPlace?.place_id || null
       };
 
-      // Send order data in background (fire-and-forget)
-      fetch('/api/send-order-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderDataForEmail),
-      }).catch(error => {
-        console.error('Error sending order email (non-blocking):', error);
-        // Don't show error to user since they're already being redirected
-      });
+      // Send order email (wait for completion to avoid interruption)
+      try {
+        const emailResponse = await fetch('/api/send-order-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderDataForEmail),
+        });
+        
+        if (!emailResponse.ok) {
+          console.error('Failed to send order email:', await emailResponse.text());
+        } else {
+          console.log('Order email sent successfully');
+        }
+      } catch (error) {
+        console.error('Error sending order email:', error);
+        // Don't block the payment flow if email fails
+      }
 
       // Determine payment link based on environment
       const isProduction = process.env.NEXT_PUBLIC_APP_ENVIRONMENT === 'production';

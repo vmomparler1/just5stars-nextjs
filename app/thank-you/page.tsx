@@ -23,8 +23,16 @@ export default function ThankYouPage() {
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by ensuring component is mounted
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
+    if (!mounted) return; // Only run on client side after mount
+    
     const checkoutSessionId = searchParams.get('chsid');
     
     if (!checkoutSessionId) {
@@ -56,7 +64,7 @@ export default function ThankYouPage() {
     };
 
     fetchOrderInfo();
-  }, [searchParams]);
+  }, [searchParams, mounted]);
 
   const loadGoogleSurveyScript = (order: OrderInfo) => {
     // Set up global renderOptIn function
@@ -83,7 +91,8 @@ export default function ThankYouPage() {
     document.head.appendChild(script);
   };
 
-  if (loading) {
+  // Show loading state during SSR and initial client render to prevent hydration mismatch
+  if (!mounted || loading) {
     return (
       <main className="min-h-screen bg-gray-50">
         <Navbar />

@@ -154,7 +154,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         console.error('Error tracking Add to Cart:', error);
       });
     }
-  }, [isOpen, currentProductConfig]); // Removed form data dependencies to prevent multiple triggers
+  }, [isOpen, selectedProductId]); // Use selectedProductId instead of currentProductConfig to prevent submission re-triggers
 
   // Auto-set quantity to 3 for local_seo or full_service products only
   useEffect(() => {
@@ -406,27 +406,37 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
 
     setIsSubmitting(true);
+    console.log('🚀 Starting order submission process...');
 
     try {
-      // Track Initiate Checkout event
-      fetch('/api/meta-ads/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          eventType: 'InitiateCheckout',
-          eventData: {
-            eventId: `initiate_checkout_${Date.now()}`,
-            email: formData.email,
-            phone: formData.phone,
-            value: calculateTotal(),
-            currency: 'EUR'
-          }
-        }),
-      }).catch(error => {
+      // Track Initiate Checkout event (wait for completion to avoid race conditions)
+      try {
+        const trackingResponse = await fetch('/api/meta-ads/track', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            eventType: 'InitiateCheckout',
+            eventData: {
+              eventId: `initiate_checkout_${Date.now()}`,
+              email: formData.email,
+              phone: formData.phone,
+              value: calculateTotal(),
+              currency: 'EUR'
+            }
+          }),
+        });
+        
+        if (!trackingResponse.ok) {
+          console.error('Failed to track InitiateCheckout:', await trackingResponse.text());
+        } else {
+          console.log('✅ InitiateCheckout tracking completed');
+        }
+      } catch (error) {
         console.error('Error tracking Initiate Checkout:', error);
-      });
+        // Don't block the payment flow if tracking fails
+      }
 
       // Get UTM parameters for database storage
       const utmParams = getStoredUTMParameters() || {};
@@ -450,6 +460,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       };
 
       // Store order in database
+      console.log('💾 Storing order in database...');
       const storeResponse = await fetch('/api/store-order', {
         method: 'POST',
         headers: {
@@ -463,7 +474,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       }
 
       const { order_id } = await storeResponse.json();
-      console.log('Order stored successfully with ID:', order_id);
+      console.log('✅ Order stored successfully with ID:', order_id);
 
       // Prepare order data for email
       const orderDataForEmail = {
@@ -481,6 +492,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       };
 
       // Send order email (wait for completion to avoid interruption)
+      console.log('📧 Sending order email...');
       try {
         const emailResponse = await fetch('/api/send-order-email', {
           method: 'POST',
@@ -493,7 +505,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         if (!emailResponse.ok) {
           console.error('Failed to send order email:', await emailResponse.text());
         } else {
-          console.log('Order email sent successfully');
+          console.log('✅ Order email sent successfully');
         }
       } catch (error) {
         console.error('Error sending order email:', error);
@@ -501,6 +513,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       }
 
       // Determine payment link based on environment
+      console.log('🔗 Building payment URL...');
       const isProduction = process.env.NEXT_PUBLIC_APP_ENVIRONMENT === 'production';
       const testPaymentLink = 'https://buy.stripe.com/test_5kQ5kFbrR1YU53N2gz3ks00';
       let paymentUrl = isProduction ? currentPriceEntry.payment_link : testPaymentLink;
@@ -542,6 +555,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       console.log('Final payment URL:', paymentUrl);
 
       // Redirect immediately to payment
+      console.log('🚀 Redirecting to Stripe...');
       window.location.href = paymentUrl;
 
     } catch (error) {

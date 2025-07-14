@@ -134,7 +134,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   // Track Add to Cart when modal opens
   useEffect(() => {
     if (isOpen && currentProductConfig) {
-      // Track Add to Cart event
+      // Track Add to Cart event only when modal opens (not on form changes)
       fetch('/api/meta-ads/track', {
         method: 'POST',
         headers: {
@@ -154,7 +154,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         console.error('Error tracking Add to Cart:', error);
       });
     }
-  }, [isOpen, currentProductConfig, currentPriceEntry?.price, formData.email, formData.phone, formData.postcode]);
+  }, [isOpen, currentProductConfig]); // Removed form data dependencies to prevent multiple triggers
 
   // Auto-set quantity to 3 for local_seo or full_service products only
   useEffect(() => {

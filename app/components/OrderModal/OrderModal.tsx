@@ -199,7 +199,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     // Add timeout to prevent getting stuck
     const searchTimeout = setTimeout(() => {
       setIsSearching(false);
-      setSearchError('Tiempo de búsqueda agotado. Por favor, inténtalo de nuevo.');
+      console.log('Search timeout: Business search timed out after 10 seconds');
     }, 10000); // 10 second timeout
 
     const performSearch = () => {
@@ -244,7 +244,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               });
               setMarker(newMarker);
             } else {
-              setSearchError('No se encontró el negocio con ese nombre y código postal');
+              console.log('Business not found: No business found with the provided name and postcode');
             }
           });
         }
@@ -997,11 +997,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             </div>
           )}
           
-          {formData.businessName && formData.postcode && searchError && (
-            <div className="text-center py-2">
-              <p className="text-red-600">{searchError}</p>
-            </div>
-          )}
+
 
           {/* Business Search Map */}
           {(isSearching || selectedPlace) && (

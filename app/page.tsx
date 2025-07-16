@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 import FeaturedIn from "./components/FeaturedIn";
 import Products from "./components/Products";
 import { NFCExpositors } from "./components/NFCExpositors";
+import LocalSEO from "./components/LocalSEO";
 import SuccessStories from "./components/SuccessStories";
 import CTA from "./components/CTA";
 import Footer from "./components/Footer";
@@ -21,6 +22,7 @@ export default function Home() {
       <FeaturedIn />
       <Products />
       <NFCExpositors />
+      <LocalSEO />
       <SuccessStories />
       <CTA />
       <Footer />

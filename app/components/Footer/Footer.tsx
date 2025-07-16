@@ -41,6 +41,12 @@ export default function Footer() {
               >
                 Términos y Condiciones
               </a>
+              <a 
+                href="/politica-de-devoluciones" 
+                className="hover:text-white transition-colors"
+              >
+                Política de Devoluciones
+              </a>
             </div>
           </div>
         </div>

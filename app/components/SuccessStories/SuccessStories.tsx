@@ -23,7 +23,7 @@ export default function SuccessStories() {
                 isPhoto: true
               },
               {
-                name: "Susana Díaz",
+                name: "Susana Estevez",
                 role: "Peluquera",
                 content: "El cartelito es increíble. Nuestra valoración en Google nunca ha sido mejor.",
                 image: testimonial2,

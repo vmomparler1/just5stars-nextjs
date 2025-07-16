@@ -146,17 +146,25 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   // Track modal open event separately
   useEffect(() => {
     if (isOpen && currentProductConfig) {
-      // Push openModalProceedPayment event to dataLayer
-      if (typeof window !== 'undefined' && (window as any).dataLayer) {
-        (window as any).dataLayer.push({
-          event: 'openModalProceedPayment',
-          product_name: currentProductConfig.name,
-          product_id: currentProductId,
-          value: currentPriceEntry?.price || 0,
-          currency: 'EUR'
-        });
-        console.log('✅ GTM - openModalProceedPayment event pushed to dataLayer');
-      }
+      // Ensure dataLayer exists and push event
+      const pushToDataLayer = () => {
+        if (typeof window !== 'undefined') {
+          // Initialize dataLayer if it doesn't exist
+          (window as any).dataLayer = (window as any).dataLayer || [];
+          
+          (window as any).dataLayer.push({
+            event: 'openModalProceedPayment',
+            product_name: currentProductConfig.name,
+            product_id: currentProductId,
+            value: currentPriceEntry?.price || 0,
+            currency: 'EUR'
+          });
+          console.log('✅ GTM - openModalProceedPayment event pushed to dataLayer');
+        }
+      };
+
+      // Push immediately
+      pushToDataLayer();
     }
   }, [isOpen, selectedProductId]); // Track when modal opens or product changes
 
@@ -434,7 +442,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
     try {
       // Push proceedToStripe event to dataLayer
-      if (typeof window !== 'undefined' && (window as any).dataLayer) {
+      if (typeof window !== 'undefined') {
+        // Initialize dataLayer if it doesn't exist
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        
         (window as any).dataLayer.push({
           event: 'proceedToStripe',
           product_name: currentProductConfig.name,

@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import Navbar from '../components/Navbar';
@@ -18,7 +19,24 @@ interface OrderInfo {
   voucher_code?: string;
 }
 
-export default function ThankYouPage() {
+function LoadingFallback() {
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <Navbar />
+      <div className="pt-32 pb-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7f6d2a] mx-auto"></div>
+            <p className="mt-4 text-gray-600">Cargando información del pedido...</p>
+          </div>
+        </div>
+      </div>
+      <Footer />
+    </main>
+  );
+}
+
+function ThankYouContent() {
   const searchParams = useSearchParams();
   const [orderInfo, setOrderInfo] = useState<OrderInfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -273,4 +291,12 @@ export default function ThankYouPage() {
       <Footer />
     </main>
   );
-} 
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ThankYouContent />
+    </Suspense>
+  );
+}

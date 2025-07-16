@@ -27,16 +27,19 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        {/* Initialize dataLayer before GTM loads */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer = window.dataLayer || [];`,
-          }}
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        {/* Initialize dataLayer */}
+        <Script
+          id="init-datalayer"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];`,
+          }}
+        />
+        
         {/* Google Tag Manager */}
         <Script
           id="google-tag-manager"

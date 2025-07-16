@@ -44,7 +44,7 @@ export default function SuccessStories() {
                   </div>
                 ) : (
                   <div className="bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center" style={{ height: '38rem' }}>
-                    <div className="text-8xl">{story.image}</div>
+                    <div className="text-8xl">👤</div>
                   </div>
                 )}
                 

@@ -2,7 +2,7 @@
 
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import standsImage from "./stand_02.png";
 import localSeoIcon from "./stand_local_seo.png";
 import allInclusive from "./stand_local_seo_360.png";
@@ -15,16 +15,22 @@ import productsData from '@/app/data/products.json';
 export default function Products() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
+  const [isClient, setIsClient] = useState(false);
 
   const handleOrderClick = (productId: string) => {
     setSelectedProductId(productId);
     setIsOrderModalOpen(true);
   };
 
-  // Get prices from prices.json
-  const standOnlyPrice = pricesData.find(p => p.number_of_stands === 1 && p.local_seo === 0 && p.full_service === 0)?.price || 39.9;
-  const localSeoPrice = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 1 && p.full_service === 0)?.price || 115.76;
-  const fullServicePrice = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 0 && p.full_service === 1)?.price || 255.76;
+  // Set client-side flag after mounting to prevent hydration issues
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Get price entries from prices.json
+  const standOnlyPriceEntry = pricesData.find(p => p.number_of_stands === 1 && p.local_seo === 0 && p.full_service === 0);
+  const localSeoPriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 1 && p.full_service === 0);
+  const fullServicePriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 0 && p.full_service === 1);
 
   return (
     <>
@@ -46,25 +52,38 @@ export default function Products() {
                 }
               };
 
-              // Get appropriate price based on product configuration
-              const getProductPrice = (id: string) => {
+              // Get appropriate price entry based on product configuration
+              const getPriceEntry = (id: string) => {
                 switch(id) {
-                  case 'stand_only': return `${standOnlyPrice.toFixed(2)}€`;
-                  case 'stand_visibility': return `${localSeoPrice.toFixed(2)}€/mes`;
-                  case 'stand_visibility_web': return `${fullServicePrice.toFixed(2)}€/mes`;
-                  default: return '0€';
+                  case 'stand_only': return standOnlyPriceEntry;
+                  case 'stand_visibility': return localSeoPriceEntry;
+                  case 'stand_visibility_web': return fullServicePriceEntry;
+                  default: return null;
                 }
               };
+
+              const priceEntry = getPriceEntry(productId);
+              const monthlyText = (productId === 'stand_visibility' || productId === 'stand_visibility_web') ? '/mes' : '';
+              const originalPrice = priceEntry?.price || 0;
+              
+              // Only calculate discount-related values client-side to prevent hydration issues
+              const hasDiscount = isClient ? (priceEntry?.voucher && priceEntry?.voucher_percent) : false;
+              const discountedPrice = isClient && hasDiscount ? originalPrice * (1 - (priceEntry?.voucher_percent || 0)) : originalPrice;
 
               const product = {
                 id: productData.id,
                 title: productData.title,
                 description: productData.description,
                 image: getProductImage(productId),
-                price: getProductPrice(productId),
                 cta_text: productData.cta_text,
                 label: productData.label,
-                features: productData.features
+                features: productData.features,
+                priceEntry,
+                originalPrice,
+                discountedPrice,
+                hasDiscount,
+                monthlyText,
+                isClient
               };
 
               return (
@@ -92,9 +111,23 @@ export default function Products() {
                   <p className="text-gray-600 mb-6">{product.description}</p>
                   
                   <div className="mb-6">
-                    <div className="text-4xl font-bold text-[#7f6d2a] text-center border-2 border-[#7f6d2a] rounded-[9px] py-2 px-4">
-                      {product.price}
-                    </div>
+                    {product.isClient && product.hasDiscount ? (
+                      <div className="text-center space-y-2">
+                        <div className="text-2xl text-gray-500 line-through">
+                          {product.originalPrice.toFixed(2)}€{product.monthlyText}
+                        </div>
+                        <div className="text-4xl font-bold text-[#7f6d2a] border-2 border-[#7f6d2a] rounded-[9px] py-2 px-4">
+                          {product.discountedPrice.toFixed(2)}€{product.monthlyText}
+                        </div>
+                        <div className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                          -50% descuento
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-4xl font-bold text-[#7f6d2a] text-center border-2 border-[#7f6d2a] rounded-[9px] py-2 px-4">
+                        {product.originalPrice.toFixed(2)}€{product.monthlyText}
+                      </div>
+                    )}
                     {productData.secondary_label && (
                       <div className="text-center mt-2">
                         <span 

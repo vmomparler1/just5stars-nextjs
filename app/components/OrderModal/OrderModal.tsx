@@ -71,11 +71,13 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const [userFeedback, setUserFeedback] = useState<'none' | 'confirmed' | 'rejected'>('none');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [monthCode, setMonthCode] = useState('');
+  const [isClient, setIsClient] = useState(false);
 
   // Generate month code on client side only
   useEffect(() => {
     const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
     setMonthCode(`${months[new Date().getMonth()]}50`);
+    setIsClient(true);
   }, []);
 
 
@@ -131,7 +133,17 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setCurrentProductId(selectedProductId);
   }, [selectedProductId]);
 
-  // Track modal open event
+  // Auto-apply voucher when modal opens (client-side only)
+  useEffect(() => {
+    if (isOpen && isClient && monthCode) {
+      // Auto-apply current month's voucher when modal opens (client-side only)
+      handleInputChange('voucher', monthCode);
+      validateVoucher(monthCode);
+      setShowVoucherInput(true); // Show voucher section since we auto-applied one
+    }
+  }, [isOpen, isClient, monthCode]); // Only depend on modal open state, client state, and month code
+
+  // Track modal open event separately
   useEffect(() => {
     if (isOpen && currentProductConfig) {
       // Push openModalProceedPayment event to dataLayer
@@ -146,7 +158,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         console.log('✅ GTM - openModalProceedPayment event pushed to dataLayer');
       }
     }
-  }, [isOpen, selectedProductId]); // Use selectedProductId instead of currentProductConfig to prevent submission re-triggers
+  }, [isOpen, selectedProductId]); // Track when modal opens or product changes
 
   // Auto-set quantity to 3 for local_seo or full_service products only
   useEffect(() => {
@@ -280,8 +292,28 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
   };
 
-  // Cleanup on modal close
+  // Reset form and cleanup on modal close
   useEffect(() => {
+    if (!isOpen) {
+      // Reset form data when modal closes
+      setFormData({
+        voucher: '',
+        email: '',
+        phone: '',
+        businessName: '',
+        postcode: '',
+        businessCountry: 'España',
+        acceptPrivacyPolicy: false,
+        acceptTermsAndConditions: false
+      });
+      setAppliedVoucher(null);
+      setVoucherError(null);
+      setShowVoucherInput(false);
+      setSelectedPlace(null);
+      setUserFeedback('none');
+      setSearchError(null);
+    }
+    
     return () => {
       if ('initMap' in window) {
         delete (window as any).initMap;
@@ -678,7 +710,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 onClick={() => setShowVoucherInput(!showVoucherInput)}
                 className="text-sm text-[#7f6d2a] hover:text-[#6a5a23] underline"
               >
-                ¿Tienes un descuento?
+                {appliedVoucher ? "✓ Descuento aplicado - Modificar código" : "¿Tienes un descuento?"}
               </button>
             </div>
             

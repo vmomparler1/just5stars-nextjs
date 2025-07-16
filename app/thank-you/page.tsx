@@ -50,6 +50,21 @@ export default function ThankYouPage() {
         if (data.success) {
           setOrderInfo(data.order);
           
+          // Push purchase event to dataLayer
+          if (typeof window !== 'undefined' && (window as any).dataLayer) {
+            (window as any).dataLayer.push({
+              event: 'purchase',
+              transaction_id: data.order.order_id,
+              value: data.order.price - (data.order.discount_amount || 0),
+              currency: 'EUR',
+              product_name: data.order.product_name,
+              product_id: data.order.product_id,
+              quantity: data.order.quantity,
+              customer_email: data.order.customer_email
+            });
+            console.log('✅ GTM - purchase event pushed to dataLayer');
+          }
+          
           // Load Google survey opt-in script after order info is loaded
           loadGoogleSurveyScript(data.order);
         } else {

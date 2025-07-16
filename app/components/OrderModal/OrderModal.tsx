@@ -131,28 +131,20 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setCurrentProductId(selectedProductId);
   }, [selectedProductId]);
 
-  // Track Add to Cart when modal opens
+  // Track modal open event
   useEffect(() => {
     if (isOpen && currentProductConfig) {
-      // Track Add to Cart event only when modal opens (not on form changes)
-      fetch('/api/meta-ads/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          eventType: 'AddToCart',
-          eventData: {
-            eventId: `add_to_cart_${Date.now()}`,
-            email: formData.email || undefined,
-            phone: formData.phone || undefined,
-            value: currentPriceEntry?.price || 0,
-            currency: 'EUR'
-          }
-        }),
-      }).catch(error => {
-        console.error('Error tracking Add to Cart:', error);
-      });
+      // Push openModalProceedPayment event to dataLayer
+      if (typeof window !== 'undefined' && (window as any).dataLayer) {
+        (window as any).dataLayer.push({
+          event: 'openModalProceedPayment',
+          product_name: currentProductConfig.name,
+          product_id: currentProductId,
+          value: currentPriceEntry?.price || 0,
+          currency: 'EUR'
+        });
+        console.log('✅ GTM - openModalProceedPayment event pushed to dataLayer');
+      }
     }
   }, [isOpen, selectedProductId]); // Use selectedProductId instead of currentProductConfig to prevent submission re-triggers
 
@@ -409,33 +401,19 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     console.log('🚀 Starting order submission process...');
 
     try {
-      // Track Initiate Checkout event (wait for completion to avoid race conditions)
-      try {
-        const trackingResponse = await fetch('/api/meta-ads/track', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            eventType: 'InitiateCheckout',
-            eventData: {
-              eventId: `initiate_checkout_${Date.now()}`,
-              email: formData.email,
-              phone: formData.phone,
-              value: calculateTotal(),
-              currency: 'EUR'
-            }
-          }),
+      // Push proceedToStripe event to dataLayer
+      if (typeof window !== 'undefined' && (window as any).dataLayer) {
+        (window as any).dataLayer.push({
+          event: 'proceedToStripe',
+          product_name: currentProductConfig.name,
+          product_id: currentProductId,
+          quantity: quantity,
+          value: calculateTotal(),
+          currency: 'EUR',
+          customer_email: formData.email,
+          customer_phone: formData.phone
         });
-        
-        if (!trackingResponse.ok) {
-          console.error('Failed to track InitiateCheckout:', await trackingResponse.text());
-        } else {
-          console.log('✅ InitiateCheckout tracking completed');
-        }
-      } catch (error) {
-        console.error('Error tracking Initiate Checkout:', error);
-        // Don't block the payment flow if tracking fails
+        console.log('✅ GTM - proceedToStripe event pushed to dataLayer');
       }
 
       // Get UTM parameters for database storage

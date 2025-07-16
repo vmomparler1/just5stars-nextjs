@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateOrderStatus, OrderStatus, initializeDatabase, getOrderById, getOrdersByEmail } from "@/app/utils/database";
 import { headers } from "next/headers";
 import crypto from "crypto";
-import { trackPurchase, createEventDataFromRequest } from "@/app/utils/metaAdsTracking";
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -123,9 +122,6 @@ async function handleCheckoutCompleted(session: any) {
     if (clientReferenceId) {
       console.log('Found client_reference_id:', clientReferenceId);
       
-      // Get order details for Meta tracking
-      const order = await getOrderById(clientReferenceId);
-      
       // Update order status using the direct order ID
       await updateOrderStatus(
         clientReferenceId,
@@ -134,19 +130,6 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
       console.log('Order confirmed via client_reference_id:', clientReferenceId);
-      
-      // Track Purchase event
-      if (order) {
-        await trackPurchase({
-          eventSourceUrl: 'https://just5stars.com',
-          clientUserAgent: 'Stripe-Webhook',
-          eventId: `purchase_${clientReferenceId}`,
-          email: order.customer_email,
-          phone: order.customer_phone,
-          value: order.price - (order.discount_amount || 0),
-          currency: 'EUR'
-        });
-      }
       
       return;
     }
@@ -174,17 +157,6 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
       console.log('Order confirmed via customer email fallback:', pendingOrder.id);
-      
-      // Track Purchase event
-      await trackPurchase({
-        eventSourceUrl: 'https://just5stars.com',
-        clientUserAgent: 'Stripe-Webhook',
-        eventId: `purchase_${pendingOrder.id}`,
-        email: pendingOrder.customer_email,
-        phone: pendingOrder.customer_phone,
-        value: pendingOrder.price - (pendingOrder.discount_amount || 0),
-        currency: 'EUR'
-      });
     } else {
       console.log('No pending order found for customer:', customerEmail);
     }

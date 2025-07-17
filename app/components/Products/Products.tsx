@@ -108,36 +108,58 @@ export default function Products() {
                     />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-3">{product.title}</h3>
-                  <p className="text-gray-600 mb-6">{product.description}</p>
                   
                   <div className="mb-6">
                     {product.isClient && product.hasDiscount ? (
                       <div className="text-center space-y-2">
-                        <div className="text-2xl text-gray-500 line-through">
-                          {product.originalPrice.toFixed(2)}€{product.monthlyText}
+                        <div className="font-bold text-[#7f6d2a] py-2 px-4">
+                          <span className="text-5xl">{product.discountedPrice.toFixed(2)}</span>
+                          <span className="text-2xl">€{product.monthlyText}</span>
                         </div>
-                        <div className="text-4xl font-bold text-[#7f6d2a] border-2 border-[#7f6d2a] rounded-[9px] py-2 px-4">
-                          {product.discountedPrice.toFixed(2)}€{product.monthlyText}
+                        <div className="text-gray-500 line-through">
+                          <span className="text-xl">{product.originalPrice.toFixed(2)}</span>
+                          <span className="text-base">€{product.monthlyText}</span>
                         </div>
-                        <div className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                          -50% descuento
+                        {/* Discount and Permanencia in same row */}
+                        <div className="flex justify-center items-center gap-3 flex-wrap">
+                          <div className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                            -50% dto.
+                          </div>
+                          {productData.secondary_label && (
+                            <span 
+                              className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
+                            >
+                              {productData.secondary_label.text}
+                            </span>
+                          )}
                         </div>
                       </div>
                     ) : (
-                      <div className="text-4xl font-bold text-[#7f6d2a] text-center border-2 border-[#7f6d2a] rounded-[9px] py-2 px-4">
-                        {product.originalPrice.toFixed(2)}€{product.monthlyText}
-                      </div>
-                    )}
-                    {productData.secondary_label && (
-                      <div className="text-center mt-2">
-                        <span 
-                          className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
-                        >
-                          {productData.secondary_label.text}
-                        </span>
+                      <div className="text-center">
+                        <div className="font-bold text-[#7f6d2a] py-2 px-4">
+                          <span className="text-5xl">{product.originalPrice.toFixed(2)}</span>
+                          <span className="text-2xl">€{product.monthlyText}</span>
+                        </div>
+                        {productData.secondary_label && (
+                          <div className="mt-2">
+                            <span 
+                              className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
+                            >
+                              {productData.secondary_label.text}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
+
+                  {/* Move button here, right after price */}
+                  <button 
+                    onClick={() => handleOrderClick(product.id)}
+                    className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mb-6"
+                  >
+                    {product.cta_text}
+                  </button>
 
                   <ul className="space-y-3 mb-8">
                     {product.features.map((feature, i) => (
@@ -148,12 +170,6 @@ export default function Products() {
                     ))}
                   </ul>
                 </div>
-                <button 
-                  onClick={() => handleOrderClick(product.id)}
-                  className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mt-auto"
-                >
-                  {product.cta_text}
-                </button>
               </div>
               );
             })}

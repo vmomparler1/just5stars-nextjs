@@ -7,16 +7,31 @@ import standWhite1 from "./stand_white_1.png";
 import standWhite2 from "./stand_white_2.webp";
 import standWhite3 from "./stand_white_3.webp";
 import standWhite4 from "./stand_white_4.gif";
+import standGoogleBlack from "./stand_google_black.png";
+import blackStandDimensions from "./black_stand_dimensions.webp";
 
 export default function NFCExpositors() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedColor, setSelectedColor] = useState<'white' | 'black'>('white');
   
-  const images = [
-    { src: standWhite1, alt: "Expositor NFC blanco - Vista 1" },
-    { src: standWhite2, alt: "Expositor NFC blanco - Vista 2" },
-    { src: standWhite3, alt: "Expositor NFC blanco - Vista 3" },
-    { src: standWhite4, alt: "Expositor NFC blanco - Animación" }
-  ];
+  const getImages = () => {
+    if (selectedColor === 'black') {
+      return [
+        { src: standGoogleBlack, alt: "Expositor NFC negro - Vista 1" },
+        { src: blackStandDimensions, alt: "Expositor NFC negro - Dimensiones" },
+        { src: standWhite3, alt: "Expositor NFC blanco - Vista 3" },
+        { src: standWhite4, alt: "Expositor NFC blanco - Animación" }
+      ];
+    }
+    return [
+      { src: standWhite1, alt: "Expositor NFC blanco - Vista 1" },
+      { src: standWhite2, alt: "Expositor NFC blanco - Vista 2" },
+      { src: standWhite3, alt: "Expositor NFC blanco - Vista 3" },
+      { src: standWhite4, alt: "Expositor NFC blanco - Animación" }
+    ];
+  };
+
+  const images = getImages();
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
@@ -28,6 +43,11 @@ export default function NFCExpositors() {
 
   const goToImage = (index: number) => {
     setCurrentImageIndex(index);
+  };
+
+  const handleColorChange = (color: 'white' | 'black') => {
+    setSelectedColor(color);
+    setCurrentImageIndex(0); // Reset to first image when color changes
   };
 
   return (
@@ -83,6 +103,31 @@ export default function NFCExpositors() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-3xl font-bold text-gray-900 mb-4">Indícanos el nombre de tu negocio y su código postal y nosotros nos encargamos del resto</h3>
+              
+              {/* Color Selection */}
+              <p className="text-gray-600 mb-3">Tenemos el expositor en blanco y negro. Elije el tuyo:</p>
+              <div className="flex gap-4 mb-6">
+                <button
+                  onClick={() => handleColorChange('white')}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                    selectedColor === 'white'
+                      ? 'bg-white text-[#7f6d2a] shadow-lg border-2 border-[#7f6d2a]'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-transparent'
+                  }`}
+                >
+                  Blanco
+                </button>
+                <button
+                  onClick={() => handleColorChange('black')}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                    selectedColor === 'black'
+                      ? 'bg-gray-900 text-white shadow-lg border-2 border-gray-900'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border-2 border-transparent'
+                  }`}
+                >
+                  Negro
+                </button>
+              </div>
             </div>
             <div className="relative">
               <div className="bg-white rounded-xl shadow-lg overflow-hidden relative aspect-square">

@@ -74,12 +74,6 @@ function GoogleStandHero() {
                 Ver Expositores
                 <ChevronRightIcon className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
-              <a 
-                href="/contact"
-                className="border-2 border-[#7f6d2a] text-[#7f6d2a] px-8 py-4 rounded-xl font-semibold text-lg hover:bg-[#7f6d2a] hover:text-white transition-colors text-center"
-              >
-                Consulta Gratis
-              </a>
             </div>
           </div>
           <div className="relative">

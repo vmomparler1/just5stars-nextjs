@@ -22,7 +22,7 @@ export default function Hero() {
           <div className="space-y-8">
             <div className="inline-flex items-center px-4 py-2 bg-yellow-50 rounded-full text-[#7f6d2a] text-sm font-medium">
               <StarIcon className="w-4 h-4 mr-2" />
-              Más de 10,000 empresas confían en nosotros
+              Más de 1,000 negocios confían en nosotros
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
               Alcanza la

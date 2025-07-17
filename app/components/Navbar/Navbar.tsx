@@ -42,6 +42,18 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
+          <Link 
+            href="/stand-google"
+            className="text-gray-600 hover:text-[#7f6d2a] transition-colors"
+          >
+            Expositor NFC Google
+          </Link>
+          <Link 
+            href="/seo-local"
+            className="text-gray-600 hover:text-[#7f6d2a] transition-colors"
+          >
+            SEO Local
+          </Link>
           <a href="/#stories" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
             Casos de Éxito
           </a>
@@ -75,6 +87,20 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden mt-4 bg-white rounded-lg shadow-lg border border-gray-200">
           <div className="px-6 py-4 space-y-4">
+            <Link 
+              href="/stand-google" 
+              className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
+              onClick={toggleMenu}
+            >
+              Expositor NFC Google
+            </Link>
+            <Link 
+              href="/seo-local" 
+              className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
+              onClick={toggleMenu}
+            >
+              SEO Local
+            </Link>
             <a 
               href="/#stories" 
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"

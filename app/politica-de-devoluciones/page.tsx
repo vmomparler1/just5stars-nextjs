@@ -1,5 +1,6 @@
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import LastUpdatedDate from '../components/LastUpdatedDate';
 
 export default function PoliticaDevolucionesPage() {
   return (
@@ -78,9 +79,7 @@ export default function PoliticaDevolucionesPage() {
               </ul>
 
               <div className="mt-8 pt-6 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
-                  Última actualización: {new Date().toLocaleDateString('es-ES')}
-                </p>
+                <LastUpdatedDate />
               </div>
             </div>
           </div>

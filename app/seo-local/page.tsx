@@ -14,6 +14,7 @@ import Image from "next/image";
 import { MapPinIcon, CheckIcon, ChevronRightIcon, MagnifyingGlassIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import localSeoImage from "../components/LocalSEO/seo_local.png";
 
+
 // Custom Hero component specifically for SEO Local
 function SEOLocalHero() {
   const scrollToProducts = () => {
@@ -120,19 +121,154 @@ function SEOLocalHero() {
 }
 
 export default function SEOLocalPage() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Service",
+        "@id": "https://just5stars.com/seo-local#service-local-seo",
+        "name": "SEO Local Google Maps",
+        "description": "Servicio completo de posicionamiento local para aparecer en las primeras posiciones de Google Maps. Incluye optimización de Google My Business, estrategia de palabras clave locales y gestión de reputación online.",
+        "provider": {
+          "@type": "Organization",
+          "name": "Just5Stars",
+          "url": "https://just5stars.com"
+        },
+        "serviceType": "SEO Local",
+        "areaServed": {
+          "@type": "Country",
+          "name": "España"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://just5stars.com/seo-local",
+          "priceCurrency": "EUR",
+          "price": "119.80",
+          "priceValidUntil": "2024-12-31",
+          "availability": "https://schema.org/InStock"
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Servicios SEO Local",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Optimización completa de Google My Business"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Estrategia de palabras clave locales"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Gestión de reseñas y reputación online"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Reportes mensuales de posicionamiento"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "@type": "Service",
+        "@id": "https://just5stars.com/seo-local#service-full-digital",
+        "name": "Gestión Completa Presencia Digital",
+        "description": "Servicio 360 que incluye SEO local, creación y mantenimiento web, plus gestión completa de la presencia digital de tu negocio.",
+        "provider": {
+          "@type": "Organization",
+          "name": "Just5Stars",
+          "url": "https://just5stars.com"
+        },
+        "serviceType": "Marketing Digital Integral",
+        "areaServed": {
+          "@type": "Country",
+          "name": "España"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": "https://just5stars.com/seo-local",
+          "priceCurrency": "EUR",
+          "price": "299.80",
+          "priceValidUntil": "2024-12-31",
+          "availability": "https://schema.org/InStock"
+        },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Servicios Marketing Digital Integral",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Auditoría inicial de tu perfil de Google Business"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Recomendaciones para mejorar el posicionamiento en Google Maps"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Seguimiento de la evolución en el ranking"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Creación y mantenimiento de la web"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "SEO web"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  };
+
   return (
-    <main>
-      <Navbar />
-      <DiscountRibbon />
-      <SEOLocalHero />
-      <FeaturedIn />
-      <LocalSEO />
-      <Products />
-      <SuccessStories />
-      <CTA />
-      <Footer />
-      <WhatsAppButton />
-      <CookiesBanner />
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <main>
+        <Navbar />
+        <DiscountRibbon />
+        <SEOLocalHero />
+        <FeaturedIn />
+        <LocalSEO />
+        <Products />
+        <SuccessStories />
+        <CTA />
+        <Footer />
+        <WhatsAppButton />
+        <CookiesBanner />
+      </main>
+    </>
   );
 } 

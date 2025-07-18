@@ -54,9 +54,6 @@ export default function Navbar() {
           >
             SEO Local
           </Link>
-          <a href="/#stories" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
-            Casos de Éxito
-          </a>
           <a href="/contact" className="text-gray-600 hover:text-[#7f6d2a] transition-colors">
             Contacto
           </a>
@@ -101,13 +98,6 @@ export default function Navbar() {
             >
               SEO Local
             </Link>
-            <a 
-              href="/#stories" 
-              className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
-              onClick={toggleMenu}
-            >
-              Casos de Éxito
-            </a>
             <a 
               href="/contact" 
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"

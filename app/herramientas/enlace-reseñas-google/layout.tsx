@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Genera enlaces directos para que tus clientes dejen reseñas en Google fácilmente. Herramienta gratuita para crear links de reseñas personalizados.",
   keywords: "generador enlaces reseñas google, link reseñas google, herramienta reseñas google, enlace directo reseñas",
   alternates: {
-    canonical: "/herramientas/enlace-reseñas-google"
+    canonical: "/herramientas/enlace-resenas-google"
   }
 };
 

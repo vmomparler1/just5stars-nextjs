@@ -143,7 +143,7 @@ export default function SEOLocalPage() {
           "@type": "Offer",
           "url": "https://just5stars.com/seo-local",
           "priceCurrency": "EUR",
-          "price": "119.80",
+          "price": "59.80",
           "priceValidUntil": "2024-12-31",
           "availability": "https://schema.org/InStock"
         },

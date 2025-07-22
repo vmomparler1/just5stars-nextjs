@@ -43,7 +43,7 @@ export default function DiscountRibbon() {
     <div className="z-40 w-full bg-[#7f6d2a] text-white py-3 shadow-lg mt-[72px]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-center items-center gap-4 md:gap-8">
-          <div className="text-xl md:text-xl font-bold">¡Ahora con 50% de descuento!</div>
+          <div className="text-xl md:text-xl font-bold">¡50% de descuento!</div>
           <div className="text-base md:text-lg">
             Usa el código <span className="font-mono bg-white/20 px-2 py-1 rounded">{monthCode || '---50'}</span>
           </div>

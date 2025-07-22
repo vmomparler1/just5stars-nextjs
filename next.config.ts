@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/es/products/:path*',
+        destination: '/stand-google',
+        permanent: true,
+      },
     ]
   },
 };

@@ -71,6 +71,51 @@ export async function POST(request: NextRequest) {
     const orderId = await createOrder(orderData);
 
     console.log('Order stored successfully:', { orderId, customer_email: orderData.customer_email });
+
+    // Send data to Zapier webhook
+    try {
+      const zapierData = {
+        order_id: orderId,
+        product_name: orderData.product_name,
+        product_id: orderData.product_id,
+        quantity: orderData.quantity,
+        price: orderData.price,
+        discount_amount: orderData.discount_amount,
+        voucher_code: orderData.voucher_code,
+        customer_email: orderData.customer_email,
+        customer_phone: orderData.customer_phone,
+        business_name: orderData.business_name,
+        business_postcode: orderData.business_postcode,
+        business_country: orderData.business_country,
+        google_business_id: orderData.google_business_id,
+        stand_colors: orderData.stand_colors,
+        utm_source: orderData.utm_source,
+        utm_medium: orderData.utm_medium,
+        utm_campaign: orderData.utm_campaign,
+        utm_term: orderData.utm_term,
+        utm_content: orderData.utm_content,
+        status: orderData.status,
+        created_at: new Date().toISOString()
+      };
+
+      const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(zapierData),
+      });
+
+      if (zapierResponse.ok) {
+        console.log('✅ Data sent to Zapier webhook successfully');
+      } else {
+        console.error('❌ Failed to send data to Zapier webhook:', zapierResponse.status);
+      }
+    } catch (zapierError) {
+      console.error('❌ Error sending data to Zapier webhook:', zapierError);
+      // Don't fail the entire request if Zapier webhook fails
+    }
+
     console.log('=== END STORE ORDER DEBUG ===');
 
     return NextResponse.json({ 

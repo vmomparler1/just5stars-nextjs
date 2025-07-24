@@ -116,6 +116,9 @@ async function handleCheckoutCompleted(session: any) {
   try {
     console.log('Checkout session completed:', session.id);
     
+    let confirmedOrderId: string | null = null;
+    let confirmedOrder: any = null;
+    
     // Try to find order by client_reference_id first (most accurate)
     const clientReferenceId = session.client_reference_id;
     
@@ -131,34 +134,85 @@ async function handleCheckoutCompleted(session: any) {
       );
       console.log('Order confirmed via client_reference_id:', clientReferenceId);
       
-      return;
-    }
-    
-    // Fallback: Try to find order by customer email
-    const customerEmail = session.customer_details?.email || session.customer_email;
-    
-    if (!customerEmail) {
-      console.error('No client_reference_id or customer email found in session');
-      return;
-    }
-
-    console.log('Fallback: searching by customer email:', customerEmail);
-    
-    const orders = await getOrdersByEmail(customerEmail);
-    
-    // Find the most recent pending order for this customer
-    const pendingOrder = orders.find(order => order.status === OrderStatus.PENDING);
-    
-    if (pendingOrder) {
-      await updateOrderStatus(
-        pendingOrder.id!,
-        OrderStatus.CONFIRMED,
-        session.payment_intent as string,
-        session.id
-      );
-      console.log('Order confirmed via customer email fallback:', pendingOrder.id);
+      confirmedOrderId = clientReferenceId;
+      confirmedOrder = await getOrderById(clientReferenceId);
     } else {
-      console.log('No pending order found for customer:', customerEmail);
+      // Fallback: Try to find order by customer email
+      const customerEmail = session.customer_details?.email || session.customer_email;
+      
+      if (!customerEmail) {
+        console.error('No client_reference_id or customer email found in session');
+        return;
+      }
+
+      console.log('Fallback: searching by customer email:', customerEmail);
+      
+      const orders = await getOrdersByEmail(customerEmail);
+      
+      // Find the most recent pending order for this customer
+      const pendingOrder = orders.find(order => order.status === OrderStatus.PENDING);
+      
+      if (pendingOrder) {
+        await updateOrderStatus(
+          pendingOrder.id!,
+          OrderStatus.CONFIRMED,
+          session.payment_intent as string,
+          session.id
+        );
+        console.log('Order confirmed via customer email fallback:', pendingOrder.id);
+        
+        confirmedOrderId = pendingOrder.id!;
+        confirmedOrder = await getOrderById(pendingOrder.id!);
+      } else {
+        console.log('No pending order found for customer:', customerEmail);
+      }
+    }
+    
+    // Send confirmed order data to Zapier webhook
+    if (confirmedOrder && confirmedOrderId) {
+      try {
+        const zapierData = {
+          order_id: confirmedOrderId,
+          product_name: confirmedOrder.product_name,
+          product_id: confirmedOrder.product_id,
+          quantity: confirmedOrder.quantity,
+          price: confirmedOrder.price,
+          discount_amount: confirmedOrder.discount_amount,
+          voucher_code: confirmedOrder.voucher_code,
+          customer_email: confirmedOrder.customer_email,
+          customer_phone: confirmedOrder.customer_phone,
+          business_name: confirmedOrder.business_name,
+          business_postcode: confirmedOrder.business_postcode,
+          business_country: confirmedOrder.business_country,
+          google_business_id: confirmedOrder.google_business_id,
+          stand_colors: confirmedOrder.stand_colors,
+          utm_source: confirmedOrder.utm_source,
+          utm_medium: confirmedOrder.utm_medium,
+          utm_campaign: confirmedOrder.utm_campaign,
+          utm_term: confirmedOrder.utm_term,
+          utm_content: confirmedOrder.utm_content,
+          status: 'confirmed',
+          stripe_payment_intent_id: session.payment_intent,
+          stripe_session_id: session.id,
+          confirmed_at: new Date().toISOString()
+        };
+
+        const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(zapierData),
+        });
+
+        if (zapierResponse.ok) {
+          console.log('✅ Confirmed order sent to Zapier webhook successfully');
+        } else {
+          console.error('❌ Failed to send confirmed order to Zapier webhook:', zapierResponse.status);
+        }
+      } catch (zapierError) {
+        console.error('❌ Error sending confirmed order to Zapier webhook:', zapierError);
+      }
     }
 
   } catch (error) {

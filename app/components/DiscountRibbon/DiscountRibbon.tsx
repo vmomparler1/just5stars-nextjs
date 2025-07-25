@@ -47,8 +47,7 @@ export default function DiscountRibbon() {
           <div className="text-base md:text-lg">
             Usa el código <span className="font-mono bg-white/20 px-2 py-1 rounded">{monthCode || '---50'}</span>
           </div>
-          <div className="text-sm md:text-base flex items-center gap-2">
-            <span>Promoción válida hasta:</span>
+          <div className="text-sm md:text-base">
             {isClient ? (
               <div className="flex items-center gap-1 font-mono">
                 <span className="py-1 rounded">{timeLeft.days} días,</span>

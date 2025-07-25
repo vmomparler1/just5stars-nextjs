@@ -213,6 +213,26 @@ async function handleCheckoutCompleted(session: any) {
       } catch (zapierError) {
         console.error('❌ Error sending confirmed order to Zapier webhook:', zapierError);
       }
+
+      // Send customer confirmation email with BCC to business
+      try {
+        console.log('📧 Sending customer confirmation email...');
+        const customerEmailResponse = await fetch('http://localhost:3000/api/send-customer-confirmation', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(confirmedOrder),
+        });
+
+        if (customerEmailResponse.ok) {
+          console.log('✅ Customer confirmation email sent successfully');
+        } else {
+          console.error('❌ Failed to send customer confirmation email:', await customerEmailResponse.text());
+        }
+      } catch (emailError) {
+        console.error('❌ Error sending customer confirmation email:', emailError);
+      }
     }
 
   } catch (error) {

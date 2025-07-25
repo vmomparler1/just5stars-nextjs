@@ -24,6 +24,7 @@ export interface EmailOptions {
   to: string;
   from?: string;
   replyTo?: string;
+  bcc?: string;
   subject: string;
   text: string;
   html?: string;
@@ -52,6 +53,7 @@ export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResp
       from: options.from || process.env.SMTP_FROM || "info@just5stars.com",
       to: options.to,
       replyTo: options.replyTo,
+      bcc: options.bcc,
       subject: options.subject,
       text: options.text,
       html: options.html,

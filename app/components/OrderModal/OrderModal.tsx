@@ -658,13 +658,13 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                     
                     {productPriceEntry && (
                       <div className="text-center">
-                        {currentProductId === productId && appliedVoucher ? (
+                        {appliedVoucher ? (
                           <div className="space-y-1">
                             <p className="text-sm text-gray-500 line-through">
-                              {currentPriceEntry?.price.toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
+                              {productPriceEntry.price.toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
                             </p>
                             <p className="text-[#7f6d2a] font-bold">
-                              {currentPriceEntry ? (currentPriceEntry.price - (currentPriceEntry.price * appliedVoucher.discount_percentage / 100)).toFixed(2) : productPriceEntry.price.toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
+                              {(productPriceEntry.price - (productPriceEntry.price * appliedVoucher.discount_percentage / 100)).toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
                             </p>
                             <span className="inline-block bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">
                               -{appliedVoucher.discount_percentage}%
@@ -672,10 +672,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                           </div>
                         ) : (
                           <p className="text-[#7f6d2a] font-bold">
-                            {currentProductId === productId && currentPriceEntry ? 
-                              `${currentPriceEntry.price.toFixed(2)}€${(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}` : 
-                              `${productPriceEntry.price.toFixed(2)}€${(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}`
-                            }
+                            {productPriceEntry.price.toFixed(2)}€{(config.local_seo === 1 || config.full_service === 1) ? '/mes' : ''}
                           </p>
                         )}
                         {config.secondary_label && (

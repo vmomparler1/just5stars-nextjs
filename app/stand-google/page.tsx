@@ -124,7 +124,7 @@ export default function StandGooglePage() {
         },
         "features": [
           "Tecnología NFC + Código QR",
-          "Preconfigurado a tu perfil de Google Business"
+          "Programado previamente para enlazar a tu página de reseñas en Google"
         ]
       },
       {
@@ -151,7 +151,7 @@ export default function StandGooglePage() {
         },
         "features": [
           "3 Expositores con Tecnología NFC + Código QR",
-          "Preconfigurado a tu perfil de Google Business",
+          "Programado previamente para enlazar a tu página de reseñas en Google",
           "Auditoría inicial de tu perfil de Google Business",
           "Recomendaciones para mejorar el posicionamiento en Google Maps",
           "Seguimiento de la evolución en el ranking"
@@ -181,7 +181,7 @@ export default function StandGooglePage() {
         },
         "features": [
           "3 Expositores con Tecnología NFC + Código QR",
-          "Preconfigurado a tu perfil de Google Business",
+          "Programado previamente para enlazar a tu página de reseñas en Google",
           "Auditoría inicial de tu perfil de Google Business",
           "Recomendaciones para mejorar el posicionamiento en Google Maps",
           "Seguimiento de la evolución en el ranking",

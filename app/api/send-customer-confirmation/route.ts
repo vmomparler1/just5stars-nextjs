@@ -1,6 +1,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { sendEmail } from "@/app/utils/emailService";
+import Stripe from 'stripe';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2024-06-20',
+});
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,14 +16,45 @@ export async function POST(request: NextRequest) {
     // Create customer confirmation email content
     const customerEmailContent = createCustomerConfirmationEmail(orderData);
     
+    // Try to get invoice PDF from Stripe
+    let invoiceAttachment = null;
+    if (orderData.stripe_session_id) {
+      try {
+        const session = await stripe.checkout.sessions.retrieve(orderData.stripe_session_id);
+        if (session.invoice) {
+          const invoice = await stripe.invoices.retrieve(session.invoice as string);
+          if (invoice.invoice_pdf) {
+            // Download the PDF
+            const response = await fetch(invoice.invoice_pdf);
+            if (response.ok) {
+              const pdfBuffer = await response.arrayBuffer();
+              invoiceAttachment = {
+                filename: `factura-${orderData.order_id}.pdf`,
+                content: Buffer.from(pdfBuffer),
+                contentType: 'application/pdf'
+              };
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Could not retrieve invoice PDF:', error);
+      }
+    }
+    
     // Send confirmation email to customer with BCC to business
-    const result = await sendEmail({
+    const emailOptions: any = {
       to: orderData.customer_email,
       bcc: process.env.SMTP_TO || "info@just5stars.com",
       subject: "Confirmación de tu pedido - Just5Stars",
       text: customerEmailContent.text,
       html: customerEmailContent.html,
-    });
+    };
+    
+    if (invoiceAttachment) {
+      emailOptions.attachments = [invoiceAttachment];
+    }
+    
+    const result = await sendEmail(emailOptions);
 
     if (result.success) {
       console.log('✅ Customer confirmation email sent successfully');
@@ -79,7 +115,7 @@ DETALLES DE LOS EXPOSITORES:
 ${standColorsData.map((stand: any, index: number) => `- Expositor ${index + 1}: Color ${stand.color}`).join('\n')}
 
 FACTURA:
-${stripe_session_id ? `Puedes descargar tu factura desde Stripe aquí: https://invoice.stripe.com/i/acct_1RhB49IOZf8c6fUy/${stripe_session_id}` : 'La factura estará disponible una vez procesado el pago.'}
+${stripe_session_id ? 'Tu factura está adjunta a este email como archivo PDF.' : 'La factura estará disponible una vez procesado el pago.'}
 
 PRÓXIMOS PASOS:
 1. Recibirás un email adicional con la información de seguimiento cuando tu pedido sea enviado
@@ -122,7 +158,7 @@ info@just5stars.com
 
   <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
     <h2 style="color: #333; margin-top: 0;">Factura</h2>
-    ${stripe_session_id ? `<p style="color: #666;"><strong>Tu factura:</strong> <a href="https://invoice.stripe.com/i/acct_1RhB49IOZf8c6fUy/${stripe_session_id}" style="color: #2563eb;" target="_blank">Descargar factura desde Stripe</a></p>` : '<p style="color: #666;">La factura estará disponible una vez procesado el pago.</p>'}
+    ${stripe_session_id ? '<p style="color: #666;"><strong>Tu factura:</strong> Está adjunta a este email como archivo PDF.</p>' : '<p style="color: #666;">La factura estará disponible una vez procesado el pago.</p>'}
   </div>
 
   <div style="background-color: #dbeafe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">

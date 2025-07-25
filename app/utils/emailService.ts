@@ -27,7 +27,12 @@ export interface EmailOptions {
   bcc?: string;
   subject: string;
   text: string;
-  html?: string;
+  html: string;
+  attachments?: Array<{
+    filename: string;
+    content: Buffer;
+    contentType: string;
+  }>;
 }
 
 export interface EmailServiceResponse {
@@ -45,11 +50,11 @@ const createTimeoutPromise = (ms: number): Promise<never> => {
 export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResponse> => {
   try {
     const transporter = createTransporter();
-    
+
     console.log(`Attempting to send email to: ${options.to}`);
-    
+
     // Create the email sending promise
-    const sendPromise = transporter.sendMail({
+    const mailOptions: any = {
       from: options.from || process.env.SMTP_FROM || "info@just5stars.com",
       to: options.to,
       replyTo: options.replyTo,
@@ -57,7 +62,13 @@ export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResp
       subject: options.subject,
       text: options.text,
       html: options.html,
-    });
+    };
+
+    if (options.attachments) {
+      mailOptions.attachments = options.attachments;
+    }
+
+    const sendPromise = transporter.sendMail(mailOptions);
 
     // Race between sending email and timeout (60 seconds max)
     await Promise.race([
@@ -189,4 +200,4 @@ This message was sent from the Just5Stars contact form.
   `;
 
   return { text: emailText, html: emailHtml };
-}; 
+};

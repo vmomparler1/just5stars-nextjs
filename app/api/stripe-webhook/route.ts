@@ -222,7 +222,10 @@ async function handleCheckoutCompleted(session: any) {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(confirmedOrder),
+          body: JSON.stringify({
+            ...confirmedOrder,
+            stripe_session_id: session.id
+          }),
         });
 
         if (customerEmailResponse.ok) {

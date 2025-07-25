@@ -51,7 +51,8 @@ function createCustomerConfirmationEmail(orderData: any) {
     business_name,
     business_postcode,
     business_country,
-    stand_colors
+    stand_colors,
+    stripe_session_id
   } = orderData;
 
   const finalPrice = (price - (discount_amount || 0)).toFixed(2);
@@ -76,6 +77,9 @@ INFORMACIÓN DEL NEGOCIO:
 
 DETALLES DE LOS EXPOSITORES:
 ${standColorsData.map((stand: any, index: number) => `- Expositor ${index + 1}: Color ${stand.color}`).join('\n')}
+
+FACTURA:
+${stripe_session_id ? `Puedes descargar tu factura desde Stripe aquí: https://invoice.stripe.com/i/acct_1PuYrqFJjcjp5vJf/${stripe_session_id}` : 'La factura estará disponible una vez procesado el pago.'}
 
 PRÓXIMOS PASOS:
 1. Recibirás un email adicional con la información de seguimiento cuando tu pedido sea enviado
@@ -114,6 +118,11 @@ info@just5stars.com
   <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
     <h2 style="color: #333; margin-top: 0;">Detalles de los expositores</h2>
     ${standColorsData.map((stand: any, index: number) => `<p><strong>Expositor ${index + 1}:</strong> Color ${stand.color}</p>`).join('')}
+  </div>
+
+  <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+    <h2 style="color: #333; margin-top: 0;">Factura</h2>
+    ${stripe_session_id ? `<p style="color: #666;"><strong>Tu factura:</strong> <a href="https://invoice.stripe.com/i/acct_1PuYrqFJjcjp5vJf/${stripe_session_id}" style="color: #2563eb;" target="_blank">Descargar factura desde Stripe</a></p>` : '<p style="color: #666;">La factura estará disponible una vez procesado el pago.</p>'}
   </div>
 
   <div style="background-color: #dbeafe; padding: 20px; border-radius: 8px; margin-bottom: 20px;">

@@ -514,7 +514,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
       // Skip email sending during preorder - emails will be sent after payment confirmation
       console.log('⏭️ Skipping email during preorder - will send confirmation after payment');
-      }
 
       // Determine payment link based on environment
       console.log('🔗 Building payment URL...');

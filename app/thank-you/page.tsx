@@ -71,17 +71,20 @@ function ThankYouContent() {
           
           // Push purchase event to dataLayer
           if (typeof window !== 'undefined' && (window as any).dataLayer) {
+            // Calculate the final value (price minus discount)
+            const finalValue = (data.order.price || 0) - (data.order.discount_amount || 0);
+            
             (window as any).dataLayer.push({
               event: 'purchase',
               transaction_id: data.order.order_id,
-              value: data.order.price - (data.order.discount_amount || 0),
+              value: finalValue,
               currency: 'EUR',
               product_name: data.order.product_name,
               product_id: data.order.product_id,
               quantity: data.order.quantity,
               customer_email: data.order.customer_email
             });
-            console.log('✅ GTM - purchase event pushed to dataLayer');
+            console.log('✅ GTM - purchase event pushed to dataLayer with value:', finalValue);
           }
           
           // Load Google survey opt-in script after order info is loaded

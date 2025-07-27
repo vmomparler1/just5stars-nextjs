@@ -1,10 +1,8 @@
 
 "use client";
 
-import { useEffect } from 'react';
-import { generateTransactionId } from '@/app/utils/transactionId';
-
 import { useEffect, useState, Suspense } from 'react';
+import { generateTransactionId } from '@/app/utils/transactionId';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import Navbar from '../components/Navbar';

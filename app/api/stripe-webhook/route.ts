@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
     const sigElements = signature.split(',');
     const timestamp = sigElements.find(el => el.startsWith('t='))?.split('=')[1];
     const signatures = sigElements.filter(el => el.startsWith('v1=')).map(el => el.split('=')[1]);
-    
+
     if (!timestamp || signatures.length === 0) {
       console.error('Invalid signature format');
       return NextResponse.json(
@@ -60,17 +60,17 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // Create the signed payload
     const signedPayload = `${timestamp}.${body}`;
     const expectedSignature = crypto
       .createHmac('sha256', endpointSecret)
       .update(signedPayload, 'utf8')
       .digest('hex');
-    
+
     // Check if any of the signatures match
     const isSignatureValid = signatures.some(sig => sig === expectedSignature);
-    
+
     if (!isSignatureValid) {
       console.error('Webhook signature verification failed');
       console.error('Expected signature:', expectedSignature);
@@ -115,16 +115,16 @@ export async function POST(request: NextRequest) {
 async function handleCheckoutCompleted(session: any) {
   try {
     console.log('Checkout session completed:', session.id);
-    
+
     let confirmedOrderId: string | null = null;
     let confirmedOrder: any = null;
-    
+
     // Try to find order by client_reference_id first (most accurate)
     const clientReferenceId = session.client_reference_id;
-    
+
     if (clientReferenceId) {
       console.log('Found client_reference_id:', clientReferenceId);
-      
+
       // Update order status using the direct order ID
       await updateOrderStatus(
         clientReferenceId,
@@ -133,25 +133,25 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
       console.log('Order confirmed via client_reference_id:', clientReferenceId);
-      
+
       confirmedOrderId = clientReferenceId;
       confirmedOrder = await getOrderById(clientReferenceId);
     } else {
       // Fallback: Try to find order by customer email
       const customerEmail = session.customer_details?.email || session.customer_email;
-      
+
       if (!customerEmail) {
         console.error('No client_reference_id or customer email found in session');
         return;
       }
 
       console.log('Fallback: searching by customer email:', customerEmail);
-      
+
       const orders = await getOrdersByEmail(customerEmail);
-      
+
       // Find the most recent pending order for this customer
       const pendingOrder = orders.find(order => order.status === OrderStatus.PENDING);
-      
+
       if (pendingOrder) {
         await updateOrderStatus(
           pendingOrder.id!,
@@ -160,14 +160,14 @@ async function handleCheckoutCompleted(session: any) {
           session.id
         );
         console.log('Order confirmed via customer email fallback:', pendingOrder.id);
-        
+
         confirmedOrderId = pendingOrder.id!;
         confirmedOrder = await getOrderById(pendingOrder.id!);
       } else {
         console.log('No pending order found for customer:', customerEmail);
       }
     }
-    
+
     // Send confirmed order data to Zapier webhook
     if (confirmedOrder && confirmedOrderId) {
       try {
@@ -246,7 +246,7 @@ async function handleCheckoutCompleted(session: any) {
 async function handlePaymentIntentSucceeded(paymentIntent: any) {
   try {
     console.log('Payment intent succeeded:', paymentIntent.id);
-    
+
     // Try to find order by payment intent ID
     const { client } = await import('@/app/utils/database');
     const result = await client.execute({
@@ -270,7 +270,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: any) {
 async function handlePaymentFailed(paymentIntent: any) {
   try {
     console.log('Payment intent failed:', paymentIntent.id);
-    
+
     // Try to find order by payment intent ID
     const { client } = await import('@/app/utils/database');
     const result = await client.execute({
@@ -289,4 +289,6 @@ async function handlePaymentFailed(paymentIntent: any) {
   } catch (error) {
     console.error('Error handling payment failed:', error);
   }
-} 
+}
+import { getStoredUTMParameters } from "@/app/utils/utmTracking";
+import { generateTransactionId } from "@/app/utils/transactionId";

@@ -11,7 +11,8 @@ import localSeoIcon from '../Products/stand_local_seo.png';
 import allInclusive from '../Products/stand_local_seo_360.png';
 import standWhite from '../Products/stand_white.png';
 import standBlack from '../Products/stand_black.png';
-import { appendUTMToUrl, getStoredUTMParameters } from '@/app/utils/utmTracking';
+import { getStoredUTMParameters } from "@/app/utils/utmTracking";
+import { getOrCreateTransactionId, clearTransactionId } from "@/app/utils/transactionId";
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -55,12 +56,12 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     acceptPrivacyPolicy: false,
     acceptTermsAndConditions: false
   });
-  
+
   // Voucher states
   const [showVoucherInput, setShowVoucherInput] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<any>(null);
   const [voucherError, setVoucherError] = useState<string | null>(null);
-  
+
   // Business search states
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<any>(null);
@@ -115,10 +116,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   // Find price entry based on quantity and product type
   const findPriceEntry = (numberOfStands: number): PriceEntry | null => {
     if (!currentProductConfig) return null;
-    
+
     // For local_seo and full_service, always use 3 stands
     const standsToFind = (currentProductConfig.local_seo === 1 || currentProductConfig.full_service === 1) ? 3 : numberOfStands;
-    
+
     return pricesData.find(entry => 
       entry.number_of_stands === standsToFind &&
       entry.local_seo === currentProductConfig.local_seo &&
@@ -151,13 +152,16 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         if (typeof window !== 'undefined') {
           // Initialize dataLayer if it doesn't exist
           (window as any).dataLayer = (window as any).dataLayer || [];
-          
+
+          const transactionId = getOrCreateTransactionId();
+
           (window as any).dataLayer.push({
             event: 'openModalProceedPayment',
             product_name: currentProductConfig.name,
             product_id: currentProductId,
             value: currentPriceEntry?.price || 0,
-            currency: 'EUR'
+            currency: 'EUR',
+            transaction_id: transactionId,
           });
           console.log('✅ GTM - openModalProceedPayment event pushed to dataLayer');
         }
@@ -224,7 +228,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           placesService.textSearch(request, (results: any[], status: string) => {
             clearTimeout(searchTimeout);
             setIsSearching(false);
-            
+
             if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
               const place = results[0];
               setSelectedPlace(place);
@@ -320,8 +324,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       setSelectedPlace(null);
       setUserFeedback('none');
       setSearchError(null);
+      clearTransactionId();
     }
-    
+
     return () => {
       if ('initMap' in window) {
         delete (window as any).initMap;
@@ -335,7 +340,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const handleProductChange = (productId: string) => {
     setCurrentProductId(productId);
-    
+
     // Auto-set quantity based on product type
     const newProductConfig = productConfig[productId as keyof typeof productConfig];
     if (newProductConfig && (newProductConfig.local_seo === 1 || newProductConfig.full_service === 1)) {
@@ -343,7 +348,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     } else if (newProductConfig && newProductConfig.local_seo === 0 && newProductConfig.full_service === 0) {
       setQuantity(1);
     }
-    
+
     if (onProductChange) {
       onProductChange(productId);
     }
@@ -362,7 +367,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
+
     // Reset user feedback when business name or postcode changes
     if (field === 'businessName' || field === 'postcode') {
       setUserFeedback('none');
@@ -375,7 +380,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     const voucher = vouchersData.vouchers.find(v => 
       v.code.toUpperCase() === voucherCode.toUpperCase() && v.active
     );
-    
+
     if (voucher) {
       setAppliedVoucher(voucher);
       setVoucherError(null);
@@ -426,7 +431,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!currentPriceEntry || !currentProductConfig) {
       alert('Error: No product selected');
       return;
@@ -445,7 +450,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       if (typeof window !== 'undefined') {
         // Initialize dataLayer if it doesn't exist
         (window as any).dataLayer = (window as any).dataLayer || [];
-        
+
+        const transactionId = getOrCreateTransactionId();
+
         (window as any).dataLayer.push({
           event: 'proceedToStripe',
           product_name: currentProductConfig.name,
@@ -454,7 +461,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           value: calculateTotal(),
           currency: 'EUR',
           customer_email: formData.email,
-          customer_phone: formData.phone
+          customer_phone: formData.phone,
+          transaction_id: transactionId,
         });
         console.log('✅ GTM - proceedToStripe event pushed to dataLayer');
       }
@@ -520,37 +528,37 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       const isProduction = process.env.NEXT_PUBLIC_APP_ENVIRONMENT === 'production';
       const testPaymentLink = 'https://buy.stripe.com/test_5kQ5kFbrR1YU53N2gz3ks00';
       let paymentUrl = isProduction ? currentPriceEntry.payment_link : testPaymentLink;
-      
+
       console.log('Environment check:', { 
         isProduction, 
         environment: process.env.NEXT_PUBLIC_APP_ENVIRONMENT,
         usingLink: paymentUrl 
       });
-      
+
       const urlParams = new URLSearchParams();
-      
+
       // Add client_reference_id (order ID for tracking)
       urlParams.set('client_reference_id', order_id);
-      
+
       // Add prefilled_email
       urlParams.set('prefilled_email', formData.email);
-      
+
       // Add voucher code if applied
       if (appliedVoucher) {
         urlParams.set('prefilled_promo_code', appliedVoucher.code);
       }
-      
+
       // Add UTM parameters if available
       Object.entries(utmParams).forEach(([key, value]) => {
         if (value) {
           urlParams.set(key, value);
         }
       });
-      
+
       // Add success URL to redirect to thank you page
       const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://just5stars.com';
       urlParams.set('success_url', `${baseUrl}/thank-you?chsid={CHECKOUT_SESSION_ID}`);
-      
+
       // Construct final payment URL
       const separator = paymentUrl.includes('?') ? '&' : '?';
       paymentUrl += `${separator}${urlParams.toString()}`;
@@ -583,7 +591,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               <XMarkIcon className="w-6 h-6" />
             </button>
           </div>
-          
+
           {/* Simplified Discount Ribbon */}
           <div className="bg-[#7f6d2a] text-white py-2 px-6">
             <div className="flex justify-center items-center gap-4 text-sm">
@@ -620,7 +628,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   entry.local_seo === config.local_seo &&
                   entry.full_service === config.full_service
                 );
-                
+
                 return (
                   <div
                     key={productId}
@@ -641,7 +649,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                         </span>
                       </div>
                     )}
-                    
+
                     <div className="flex justify-center mb-3">
                       <Image
                         src={config.image}
@@ -651,11 +659,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                         className="w-20 h-20 object-contain"
                       />
                     </div>
-                    
+
                     <h4 className="font-medium text-sm text-center text-gray-900 mb-2">
                       {config.name}
                     </h4>
-                    
+
                     {productPriceEntry && (
                       <div className="text-center">
                         {appliedVoucher ? (
@@ -703,7 +711,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 {appliedVoucher ? "✓ Descuento aplicado - Modificar código" : "¿Tienes un descuento?"}
               </button>
             </div>
-            
+
             {/* Voucher Input Area */}
             {showVoucherInput && (
               <div className="bg-white rounded-lg p-4 border border-gray-200 mb-2 max-w-[400px]">
@@ -723,11 +731,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                     Aplicar
                   </button>
                 </div>
-                
+
                 {voucherError && (
                   <p className="text-red-500 text-sm mt-2">{voucherError}</p>
                 )}
-                
+
                 {appliedVoucher && (
                   <div className="bg-green-50 border border-green-200 rounded-lg p-2 mt-2">
                     <p className="text-green-800 text-sm font-medium">
@@ -975,7 +983,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               <p className="text-gray-600">Buscando tu negocio...</p>
             </div>
           )}
-          
+
 
 
           {/* Business Search Map */}
@@ -983,12 +991,12 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             <div className="space-y-4">
               {selectedPlace && <h4 className="font-medium text-gray-700">¿Es este tu negocio?</h4>}
               <div ref={mapRef} className="w-full h-64 rounded-lg border" />
-              
+
               {selectedPlace && userFeedback === 'none' && (
                 <div className="bg-[#7f6d2a]/10 border border-[#7f6d2a]/30 rounded-lg p-4">
                   <h5 className="font-semibold text-[#7f6d2a] mb-2">{selectedPlace.name}</h5>
                   <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlace.formatted_address}</p>
-                  
+
                   <div className="flex flex-col space-y-3">
                     <div className="flex space-x-3">
                       <button
@@ -1014,7 +1022,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   </div>
                 </div>
               )}
-              
+
               {selectedPlace && userFeedback === 'confirmed' && (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4 relative">
                   <button
@@ -1037,7 +1045,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   <p className="text-sm text-green-600">{selectedPlace.formatted_address}</p>
                 </div>
               )}
-              
+
               {userFeedback === 'rejected' && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                   <div className="flex items-center mb-2">
@@ -1066,14 +1074,14 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   {calculateSubtotal().toFixed(2)}€
                 </span>
               </div>
-              
+
               <div className="flex justify-between items-center">
                 <span className="text-lg">Envío a 🇪🇸 (1 a 3 días):</span>
                 <span className="text-lg text-gray-700">
                   {currentPriceEntry?.shipping ? `${currentPriceEntry.shipping.toFixed(2)}€` : 'Gratis'}
                 </span>
               </div>
-              
+
               {appliedVoucher && (
                 <div className="flex justify-between items-center">
                   <span className="text-lg text-green-600">
@@ -1084,7 +1092,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   </span>
                 </div>
               )}
-              
+
               <div className="flex justify-between items-center border-t pt-2">
                 <span className="text-xl font-semibold">Total:</span>
                 <span className="text-2xl font-bold text-[#7f6d2a]">
@@ -1092,7 +1100,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 </span>
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <button
                 type="submit"
@@ -1111,7 +1119,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   'Proceder al Pago'
                 )}
               </button>
-              
+
               {/* Development Mode Disclaimer */}
               {process.env.NEXT_PUBLIC_APP_ENVIRONMENT !== 'production' && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
@@ -1135,4 +1143,4 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       </div>
     </div>
   );
-} 
+}

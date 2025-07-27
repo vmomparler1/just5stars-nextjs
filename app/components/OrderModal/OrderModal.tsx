@@ -11,8 +11,9 @@ import localSeoIcon from '../Products/stand_local_seo.png';
 import allInclusive from '../Products/stand_local_seo_360.png';
 import standWhite from '../Products/stand_white.png';
 import standBlack from '../Products/stand_black.png';
-import { getStoredUTMParameters } from "@/app/utils/utmTracking";
-import { getOrCreateTransactionId, clearTransactionId } from "@/app/utils/transactionId";
+import { getStoredUTMParameters } from '@/app/utils/utmTracking';
+import { getOrCreateTransactionId } from '@/app/utils/transactionId';
+import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -453,6 +454,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
         const transactionId = getOrCreateTransactionId();
 
+        const hashedEmailValue = await hashEmail(formData.email);
+        const hashedPhoneValue = await hashPhone(formData.phone);
+
         (window as any).dataLayer.push({
           event: 'proceedToStripe',
           product_name: currentProductConfig.name,
@@ -462,6 +466,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           currency: 'EUR',
           customer_email: formData.email,
           customer_phone: formData.phone,
+          hashed_customer_email: hashedEmailValue,
+          hashed_customer_phone: hashedPhoneValue,
           transaction_id: transactionId,
         });
         console.log('✅ GTM - proceedToStripe event pushed to dataLayer');

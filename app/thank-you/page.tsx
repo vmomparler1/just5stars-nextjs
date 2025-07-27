@@ -1,10 +1,10 @@
-
 "use client";
 
 import { useEffect, useState, Suspense } from 'react';
 import { generateTransactionId } from '@/app/utils/transactionId';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -51,9 +51,9 @@ function ThankYouContent() {
 
   useEffect(() => {
     if (!mounted) return; // Only run on client side after mount
-    
+
     const checkoutSessionId = searchParams.get('chsid');
-    
+
     if (!checkoutSessionId) {
       setError('No se encontró información del pedido');
       setLoading(false);
@@ -65,12 +65,13 @@ function ThankYouContent() {
       try {
         const response = await fetch(`/api/order-by-session?session_id=${checkoutSessionId}`);
         const data = await response.json();
-        
+
         if (data.success) {
           setOrderInfo(data.order);
-          
+
           // Push purchase event to dataLayer
           if (typeof window !== 'undefined' && (window as any).dataLayer) {
+            const hashedEmail = await hashEmail(data.order.customer_email);
             (window as any).dataLayer.push({
               event: 'purchase',
               transaction_id: data.order.order_id,
@@ -79,11 +80,11 @@ function ThankYouContent() {
               product_name: data.order.product_name,
               product_id: data.order.product_id,
               quantity: data.order.quantity,
-              customer_email: data.order.customer_email
+              customer_email: hashedEmail
             });
             console.log('✅ GTM - purchase event pushed to dataLayer with value:', data.order.total_price);
           }
-          
+
           // Load Google survey opt-in script after order info is loaded
           loadGoogleSurveyScript(data.order);
         } else {
@@ -111,7 +112,7 @@ function ThankYouContent() {
           "email": order.customer_email,
           "delivery_country": order.delivery_country,
           "estimated_delivery_date": order.estimated_delivery_date,
-          
+
           // OPTIONAL FIELDS - GTIN removed as it was causing validation errors
         });
       });
@@ -217,7 +218,7 @@ function ThankYouContent() {
                   <p className="font-semibold text-[#7f6d2a] text-lg">€{orderInfo.total_price.toFixed(2)}</p>
                 </div>
               </div>
-              
+
               {orderInfo.voucher_code && (
                 <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                   <p className="text-sm text-green-800">

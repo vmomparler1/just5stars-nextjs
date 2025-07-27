@@ -12,7 +12,7 @@ import allInclusive from '../Products/stand_local_seo_360.png';
 import standWhite from '../Products/stand_white.png';
 import standBlack from '../Products/stand_black.png';
 import { getStoredUTMParameters } from '@/app/utils/utmTracking';
-import { getOrCreateTransactionId } from '@/app/utils/transactionId';
+import { getOrCreateTransactionId, clearTransactionId } from '@/app/utils/transactionId';
 import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
 
 interface OrderModalProps {

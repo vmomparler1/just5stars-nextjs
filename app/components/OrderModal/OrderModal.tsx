@@ -74,6 +74,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [monthCode, setMonthCode] = useState('');
   const [isClient, setIsClient] = useState(false);
+  const [rateLimitInfo, setRateLimitInfo] = useState<{ limit: number; remaining: number; reset: number; } | null>(null);
 
   // Generate month code on client side only
   useEffect(() => {
@@ -194,8 +195,35 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
   }, [quantity, stands.length]);
 
+  useEffect(() => {
+    const fetchRateLimit = async () => {
+      try {
+        const response = await fetch('/api/get-geolocation-rate-limit');
+        if (response.ok) {
+          const data = await response.json();
+          setRateLimitInfo(data);
+        } else {
+          console.error('Failed to fetch rate limit info:', response.status);
+          setSearchError('Error al obtener información del límite de búsqueda.');
+        }
+      } catch (error) {
+        console.error('Error fetching rate limit info:', error);
+        setSearchError('Error al obtener información del límite de búsqueda.');
+      }
+    };
+
+    if (isOpen) {
+      fetchRateLimit();
+    }
+  }, [isOpen]);
+
   const searchBusiness = () => {
     if (!isOpen || !formData.businessName || !formData.postcode) return;
+
+    if (rateLimitInfo && rateLimitInfo.remaining <= 0) {
+      setSearchError(`Has alcanzado el límite de búsquedas. Intenta de nuevo más tarde.`);
+      return;
+    }
 
     setIsSearching(true);
     setSearchError(null);
@@ -231,26 +259,31 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             setIsSearching(false);
 
             if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
-              const place = results[0];
-              setSelectedPlace(place);
+                const place = results[0];
+                setSelectedPlace(place);
 
-              // Center map on the place
-              newMap.setCenter(place.geometry.location);
-              newMap.setZoom(15);
+                // Center map on the place
+                newMap.setCenter(place.geometry.location);
+                newMap.setZoom(15);
 
-              // Add marker
-              if (marker) {
-                marker.setMap(null);
+                // Add marker
+                if (marker) {
+                  marker.setMap(null);
+                }
+                const newMarker = new window.google.maps.Marker({
+                  position: place.geometry.location,
+                  map: newMap,
+                  title: place.name,
+                });
+                setMarker(newMarker);
+
+                // Update rate limit info
+                if (rateLimitInfo) {
+                  setRateLimitInfo(prev => prev ? { ...prev, remaining: prev.remaining - 1 } : null);
+                }
+              } else {
+                console.log('Business not found: No business found with the provided name and postcode');
               }
-              const newMarker = new window.google.maps.Marker({
-                position: place.geometry.location,
-                map: newMap,
-                title: place.name,
-              });
-              setMarker(newMarker);
-            } else {
-              console.log('Business not found: No business found with the provided name and postcode');
-            }
           });
         }
       } catch (error) {
@@ -326,6 +359,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       setUserFeedback('none');
       setSearchError(null);
       clearTransactionId();
+      setRateLimitInfo(null);
     }
 
     return () => {
@@ -990,7 +1024,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             </div>
           )}
 
-
+          {rateLimitInfo && (
+            <div className="text-center py-2">
+              <p className="text-gray-600">Búsquedas restantes: {rateLimitInfo.remaining} / {rateLimitInfo.limit}</p>
+            </div>
+          )}
 
           {/* Business Search Map */}
           {(isSearching || selectedPlace) && (

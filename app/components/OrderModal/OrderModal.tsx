@@ -198,7 +198,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   useEffect(() => {
     const fetchRateLimit = async () => {
       try {
-        const response = await fetch('/api/get-geolocation-rate-limit');
+        const response = await fetch('/api/geolocation-rate-limit', {
+          method: 'GET'
+        });
         if (response.ok) {
           const data = await response.json();
           setRateLimitInfo(data);
@@ -217,11 +219,37 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
   }, [isOpen]);
 
-  const searchBusiness = () => {
+  const searchBusiness = async () => {
     if (!isOpen || !formData.businessName || !formData.postcode) return;
 
-    if (rateLimitInfo && rateLimitInfo.remaining <= 0) {
-      setSearchError(`Has alcanzado el límite de búsquedas. Intenta de nuevo más tarde.`);
+    // Check rate limit before performing search
+    try {
+      const rateLimitResponse = await fetch('/api/geolocation-rate-limit', {
+        method: 'POST'
+      });
+      
+      if (!rateLimitResponse.ok) {
+        const errorData = await rateLimitResponse.json();
+        setSearchError(errorData.error || 'Has alcanzado el límite de búsquedas. Intenta de nuevo más tarde.');
+        return;
+      }
+      
+      const rateLimitData = await rateLimitResponse.json();
+      if (!rateLimitData.allowed) {
+        setSearchError(rateLimitData.error || 'Has alcanzado el límite de búsquedas. Intenta de nuevo más tarde.');
+        return;
+      }
+      
+      // Update rate limit info
+      setRateLimitInfo({
+        limit: 20,
+        remaining: rateLimitData.remaining,
+        reset: rateLimitData.resetTime
+      });
+      
+    } catch (error) {
+      console.error('Error checking rate limit:', error);
+      setSearchError('Error al verificar el límite de búsquedas.');
       return;
     }
 
@@ -276,11 +304,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                   title: place.name,
                 });
                 setMarker(newMarker);
-
-                // Update rate limit info
-                if (rateLimitInfo) {
-                  setRateLimitInfo(prev => prev ? { ...prev, remaining: prev.remaining - 1 } : null);
-                }
               } else {
                 console.log('Business not found: No business found with the provided name and postcode');
               }

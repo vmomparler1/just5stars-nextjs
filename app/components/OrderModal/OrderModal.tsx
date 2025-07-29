@@ -204,6 +204,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         if (response.ok) {
           const data = await response.json();
           setRateLimitInfo(data);
+          
+          // Log rate limit info to console
+          console.log(`📊 Búsquedas restantes: ${data.remaining} / 20`);
         } else {
           console.error('Failed to fetch rate limit info:', response.status);
           setSearchError('Error al obtener información del límite de búsqueda.');
@@ -241,11 +244,15 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       }
       
       // Update rate limit info
-      setRateLimitInfo({
+      const newRateLimitInfo = {
         limit: 20,
         remaining: rateLimitData.remaining,
         reset: rateLimitData.resetTime
-      });
+      };
+      setRateLimitInfo(newRateLimitInfo);
+      
+      // Log rate limit info to console
+      console.log(`📊 Búsquedas restantes: ${newRateLimitInfo.remaining} / ${newRateLimitInfo.limit}`);
       
     } catch (error) {
       console.error('Error checking rate limit:', error);
@@ -1047,11 +1054,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             </div>
           )}
 
-          {rateLimitInfo && (
-            <div className="text-center py-2">
-              <p className="text-gray-600">Búsquedas restantes: {rateLimitInfo.remaining} / {rateLimitInfo.limit}</p>
-            </div>
-          )}
+          
 
           {/* Business Search Map */}
           {(isSearching || selectedPlace) && (

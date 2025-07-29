@@ -34,7 +34,7 @@ function getClientIP(request: NextRequest): string {
   }
   
   // Fallback to a default IP if none found
-  return request.ip || '127.0.0.1';
+  return '127.0.0.1';
 }
 
 export async function POST(request: NextRequest) {

@@ -89,10 +89,12 @@ export async function GET(request: NextRequest) {
     const orderInfo = {
       order_id: order.id,
       customer_email: order.customer_email,
+      customer_phone: order.customer_phone,
       delivery_country: countryCode,
       estimated_delivery_date: estimatedDeliveryDate,
       business_name: order.business_name,
       product_name: order.product_name,
+      product_id: order.product_id,
       quantity: order.quantity,
       total_price: order.price - (order.discount_amount || 0),
       voucher_code: order.voucher_code

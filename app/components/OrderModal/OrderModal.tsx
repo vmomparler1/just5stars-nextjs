@@ -528,8 +528,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           quantity: quantity,
           value: calculateTotal(),
           currency: 'EUR',
-          customer_email: formData.email,
-          customer_phone: formData.phone,
           hashed_customer_email: hashedEmailValue,
           hashed_customer_phone: hashedPhoneValue,
           transaction_id: transactionId,

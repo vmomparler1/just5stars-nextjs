@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { generateTransactionId } from '@/app/utils/transactionId';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
-import { hashEmail } from '@/app/utils/hashUtils';
+import { hashEmail, hashPhone } from "../utils/hashUtils";
 import { generateEventId } from '@/app/utils/eventId';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -73,6 +73,7 @@ function ThankYouContent() {
           // Push purchase event to dataLayer
           if (typeof window !== 'undefined' && (window as any).dataLayer) {
             const hashedEmail = await hashEmail(data.order.customer_email);
+            const hashedPhone = await hashPhone(data.order.customer_phone);
             const eventId = generateEventId();
             (window as any).dataLayer.push({
               event: 'purchase',
@@ -83,7 +84,8 @@ function ThankYouContent() {
               product_name: data.order.product_name,
               product_id: data.order.product_id,
               quantity: data.order.quantity,
-              customer_email: hashedEmail
+              hashed_customer_email: hashedEmail,
+              hashed_customer_phone: hashedPhone
             });
             console.log('✅ GTM - purchase event pushed to dataLayer with value:', data.order.total_price);
           }

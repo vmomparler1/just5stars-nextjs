@@ -521,6 +521,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         const hashedEmailValue = await hashEmail(formData.email);
         const hashedPhoneValue = await hashPhone(formData.phone);
 
+        // Store product_id in sessionStorage for use in purchase event
+        sessionStorage.setItem('product_id', currentProductId);
+
         (window as any).dataLayer.push({
           event: 'proceedToStripe',
           product_name: currentProductConfig.name,

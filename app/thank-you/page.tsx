@@ -77,6 +77,8 @@ function ThankYouContent() {
             const eventId = generateEventId();
             // Use the same transaction ID that was stored during proceedToStripe
             const transactionId = getOrCreateTransactionId();
+            // Retrieve product_id from sessionStorage (fallback to data.order.product_id if not found)
+            const productId = sessionStorage.getItem('product_id') || data.order.product_id;
             
             (window as any).dataLayer.push({
               event: 'purchase',
@@ -85,12 +87,12 @@ function ThankYouContent() {
               value: data.order.total_price,
               currency: 'EUR',
               product_name: data.order.product_name,
-              product_id: data.order.product_id,
+              product_id: productId,
               quantity: data.order.quantity,
               hashed_customer_email: hashedEmail,
               hashed_customer_phone: hashedPhone
             });
-            console.log('✅ GTM - purchase event pushed to dataLayer with transaction_id:', transactionId, 'value:', data.order.total_price);
+            console.log('✅ GTM - purchase event pushed to dataLayer with transaction_id:', transactionId, 'product_id:', productId, 'value:', data.order.total_price);
           }
 
           // Load Google survey opt-in script after order info is loaded

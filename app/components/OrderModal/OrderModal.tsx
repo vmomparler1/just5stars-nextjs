@@ -14,6 +14,7 @@ import standBlack from '../Products/stand_black.png';
 import { getStoredUTMParameters } from '@/app/utils/utmTracking';
 import { getOrCreateTransactionId, clearTransactionId } from '@/app/utils/transactionId';
 import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
+import { generateEventId } from '@/app/utils/eventId';
 
 interface OrderModalProps {
   isOpen: boolean;

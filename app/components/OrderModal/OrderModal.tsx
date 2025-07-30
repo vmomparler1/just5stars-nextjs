@@ -531,6 +531,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           hashed_customer_email: hashedEmailValue,
           hashed_customer_phone: hashedPhoneValue,
           transaction_id: transactionId,
+          event_id: generateEventId(),
         });
         console.log('✅ GTM - proceedToStripe event pushed to dataLayer');
       }

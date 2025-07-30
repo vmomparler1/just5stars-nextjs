@@ -73,7 +73,8 @@ function ThankYouContent() {
           // Push purchase event to dataLayer
           if (typeof window !== 'undefined' && (window as any).dataLayer) {
             const hashedEmail = await hashEmail(data.order.customer_email);
-            const hashedPhone = await hashPhone(data.order.customer_phone);
+            const hashedPhone = await hashPhone(data.order.customer_phone || '');
+            console.log('Phone data for hashing:', data.order.customer_phone); // Debug log
             const eventId = generateEventId();
             // Use the same transaction ID that was stored during proceedToStripe
             const transactionId = getOrCreateTransactionId();

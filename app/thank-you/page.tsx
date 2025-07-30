@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, Suspense } from 'react';
-import { generateTransactionId } from '@/app/utils/transactionId';
+import { generateTransactionId, getOrCreateTransactionId } from '@/app/utils/transactionId';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
 import { hashEmail, hashPhone } from "../utils/hashUtils";
@@ -75,10 +75,13 @@ function ThankYouContent() {
             const hashedEmail = await hashEmail(data.order.customer_email);
             const hashedPhone = await hashPhone(data.order.customer_phone);
             const eventId = generateEventId();
+            // Use the same transaction ID that was stored during proceedToStripe
+            const transactionId = getOrCreateTransactionId();
+            
             (window as any).dataLayer.push({
               event: 'purchase',
               event_id: eventId,
-              transaction_id: data.order.order_id,
+              transaction_id: transactionId,
               value: data.order.total_price,
               currency: 'EUR',
               product_name: data.order.product_name,
@@ -87,7 +90,7 @@ function ThankYouContent() {
               hashed_customer_email: hashedEmail,
               hashed_customer_phone: hashedPhone
             });
-            console.log('✅ GTM - purchase event pushed to dataLayer with value:', data.order.total_price);
+            console.log('✅ GTM - purchase event pushed to dataLayer with transaction_id:', transactionId, 'value:', data.order.total_price);
           }
 
           // Load Google survey opt-in script after order info is loaded

@@ -14,6 +14,7 @@ import standBlack from '../Products/stand_black.png';
 import { getStoredUTMParameters } from '@/app/utils/utmTracking';
 import { getOrCreateTransactionId, clearTransactionId } from '@/app/utils/transactionId';
 import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
+import { generateEventId } from '@/app/utils/eventId';
 
 interface OrderModalProps {
   isOpen: boolean;
@@ -531,6 +532,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           hashed_customer_email: hashedEmailValue,
           hashed_customer_phone: hashedPhoneValue,
           transaction_id: transactionId,
+          event_id: generateEventId(),
         });
         console.log('✅ GTM - proceedToStripe event pushed to dataLayer');
       }

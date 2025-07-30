@@ -4,7 +4,8 @@ import { useEffect, useState, Suspense } from 'react';
 import { generateTransactionId } from '@/app/utils/transactionId';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
-import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
+import { hashEmail } from '@/app/utils/hashUtils';
+import { generateEventId } from '@/app/utils/eventId';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -72,8 +73,10 @@ function ThankYouContent() {
           // Push purchase event to dataLayer
           if (typeof window !== 'undefined' && (window as any).dataLayer) {
             const hashedEmail = await hashEmail(data.order.customer_email);
+            const eventId = generateEventId();
             (window as any).dataLayer.push({
               event: 'purchase',
+              event_id: eventId,
               transaction_id: data.order.order_id,
               value: data.order.total_price,
               currency: 'EUR',

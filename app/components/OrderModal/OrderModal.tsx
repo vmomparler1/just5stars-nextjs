@@ -28,6 +28,13 @@ interface StandConfig {
   color: string;
 }
 
+interface BusinessData {
+  businessName: string;
+  postcode: string;
+  businessCountry: string;
+  copyFromFirst: boolean;
+}
+
 interface PriceEntry {
   number_of_stands: number;
   local_seo: number;
@@ -53,26 +60,30 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     voucher: '',
     email: '',
     phone: '',
-    businessName: '',
-    postcode: '',
-    businessCountry: 'España',
     acceptPrivacyPolicy: false,
     acceptTermsAndConditions: false
   });
+
+  const [businessData, setBusinessData] = useState<BusinessData[]>([{
+    businessName: '',
+    postcode: '',
+    businessCountry: 'España',
+    copyFromFirst: false
+  }]);
 
   // Voucher states
   const [showVoucherInput, setShowVoucherInput] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<any>(null);
   const [voucherError, setVoucherError] = useState<string | null>(null);
 
-  // Business search states
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<any>(null);
-  const [marker, setMarker] = useState<any>(null);
-  const [selectedPlace, setSelectedPlace] = useState<any>(null);
-  const [isSearching, setIsSearching] = useState(false);
+  // Business search states - now arrays to handle multiple businesses
+  const mapRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [maps, setMaps] = useState<any[]>([]);
+  const [markers, setMarkers] = useState<any[]>([]);
+  const [selectedPlaces, setSelectedPlaces] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState<boolean[]>([]);
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [userFeedback, setUserFeedback] = useState<'none' | 'confirmed' | 'rejected'>('none');
+  const [userFeedbacks, setUserFeedbacks] = useState<('none' | 'confirmed' | 'rejected')[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [monthCode, setMonthCode] = useState('');
   const [isClient, setIsClient] = useState(false);
@@ -84,8 +95,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     setMonthCode(`${months[new Date().getMonth()]}50`);
     setIsClient(true);
   }, []);
-
-
 
   // Product configuration mapping from centralized data
   const productConfig = {
@@ -202,6 +211,24 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
   }, [quantity, stands.length]);
 
+  // Update business data when quantity changes
+  useEffect(() => {
+    if (quantity > businessData.length) {
+      const newBusinessData = [...businessData];
+      while (newBusinessData.length < quantity) {
+        newBusinessData.push({
+          businessName: '',
+          postcode: '',
+          businessCountry: 'España',
+          copyFromFirst: true
+        });
+      }
+      setBusinessData(newBusinessData);
+    } else if (quantity < businessData.length) {
+      setBusinessData(businessData.slice(0, quantity));
+    }
+  }, [quantity, businessData.length]);
+
   useEffect(() => {
     const fetchRateLimit = async () => {
       try {
@@ -229,8 +256,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     }
   }, [isOpen]);
 
-  const searchBusiness = async () => {
-    if (!isOpen || !formData.businessName || !formData.postcode) return;
+  const searchBusiness = async (businessIndex: number = 0) => {
+    if (!isOpen || !businessData[businessIndex]?.businessName || !businessData[businessIndex]?.postcode) return;
 
     // Check rate limit before performing search
     try {
@@ -267,30 +294,49 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       return;
     }
 
-    setIsSearching(true);
+    // Update searching state for specific business
+    setIsSearching(prev => {
+      const newState = [...prev];
+      newState[businessIndex] = true;
+      return newState;
+    });
     setSearchError(null);
-    setUserFeedback('none');
+    setUserFeedbacks(prev => {
+      const newState = [...prev];
+      newState[businessIndex] = 'none';
+      return newState;
+    });
 
     // Add timeout to prevent getting stuck
     const searchTimeout = setTimeout(() => {
-      setIsSearching(false);
-      console.log('Search timeout: Business search timed out after 10 seconds');
+      setIsSearching(prev => {
+        const newState = [...prev];
+        newState[businessIndex] = false;
+        return newState;
+      });
+      console.log(`Search timeout: Business search timed out after 10 seconds for business ${businessIndex + 1}`);
     }, 10000); // 10 second timeout
 
     const performSearch = () => {
       try {
-        if (mapRef.current) {
-          const newMap = new window.google.maps.Map(mapRef.current, {
+        if (mapRefs.current[businessIndex]) {
+          const newMap = new window.google.maps.Map(mapRefs.current[businessIndex], {
             center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
             zoom: 2,
           });
-          setMap(newMap);
+          
+          // Update maps array
+          setMaps(prev => {
+            const newMaps = [...prev];
+            newMaps[businessIndex] = newMap;
+            return newMaps;
+          });
 
           // Create Places service
           const placesService = new window.google.maps.places.PlacesService(newMap);
 
           // Search for the business
-          const searchQuery = `${formData.businessName} ${formData.postcode} ${formData.businessCountry}`;
+          const searchQuery = `${businessData[businessIndex]?.businessName} ${businessData[businessIndex]?.postcode} ${businessData[businessIndex]?.businessCountry}`;
           const request = {
             query: searchQuery,
             fields: ['name', 'geometry', 'place_id', 'formatted_address'],
@@ -298,34 +344,50 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
           placesService.textSearch(request, (results: any[], status: string) => {
             clearTimeout(searchTimeout);
-            setIsSearching(false);
+            setIsSearching(prev => {
+              const newState = [...prev];
+              newState[businessIndex] = false;
+              return newState;
+            });
 
             if (status === window.google.maps.places.PlacesServiceStatus.OK && results.length > 0) {
                 const place = results[0];
-                setSelectedPlace(place);
+                setSelectedPlaces(prev => {
+                  const newPlaces = [...prev];
+                  newPlaces[businessIndex] = place;
+                  return newPlaces;
+                });
 
                 // Center map on the place
                 newMap.setCenter(place.geometry.location);
                 newMap.setZoom(15);
 
                 // Add marker
-                if (marker) {
-                  marker.setMap(null);
+                if (markers[businessIndex]) {
+                  markers[businessIndex].setMap(null);
                 }
                 const newMarker = new window.google.maps.Marker({
                   position: place.geometry.location,
                   map: newMap,
                   title: place.name,
                 });
-                setMarker(newMarker);
+                setMarkers(prev => {
+                  const newMarkers = [...prev];
+                  newMarkers[businessIndex] = newMarker;
+                  return newMarkers;
+                });
               } else {
-                console.log('Business not found: No business found with the provided name and postcode');
+                console.log(`Business not found: No business found with the provided name and postcode for business ${businessIndex + 1}`);
               }
           });
         }
       } catch (error) {
         clearTimeout(searchTimeout);
-        setIsSearching(false);
+        setIsSearching(prev => {
+          const newState = [...prev];
+          newState[businessIndex] = false;
+          return newState;
+        });
         setSearchError('Error al buscar el negocio. Por favor, inténtalo de nuevo.');
         console.error('Search error:', error);
       }
@@ -344,7 +406,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             performSearch();
           } catch (error) {
             clearTimeout(searchTimeout);
-            setIsSearching(false);
+            setIsSearching(prev => {
+              const newState = [...prev];
+              newState[businessIndex] = false;
+              return newState;
+            });
             setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
             console.error('Maps loading error:', error);
           }
@@ -357,7 +423,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         script.defer = true;
         script.onerror = () => {
           clearTimeout(searchTimeout);
-          setIsSearching(false);
+          setIsSearching(prev => {
+            const newState = [...prev];
+            newState[businessIndex] = false;
+            return newState;
+          });
           setSearchError('Error al cargar Google Maps. Verifica tu conexión a internet.');
         };
         document.head.appendChild(script);
@@ -366,7 +436,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             performSearch();
           } catch (error) {
             clearTimeout(searchTimeout);
-            setIsSearching(false);
+            setIsSearching(prev => {
+              const newState = [...prev];
+              newState[businessIndex] = false;
+              return newState;
+            });
             setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
             console.error('Maps loading error:', error);
           }
@@ -383,17 +457,20 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         voucher: '',
         email: '',
         phone: '',
-        businessName: '',
-        postcode: '',
-        businessCountry: 'España',
         acceptPrivacyPolicy: false,
         acceptTermsAndConditions: false
       });
+      setBusinessData([{
+        businessName: '',
+        postcode: '',
+        businessCountry: 'España',
+        copyFromFirst: false
+      }]);
       setAppliedVoucher(null);
       setVoucherError(null);
       setShowVoucherInput(false);
-      setSelectedPlace(null);
-      setUserFeedback('none');
+      setSelectedPlaces([]);
+      setUserFeedbacks([]);
       setSearchError(null);
       clearTransactionId();
       setRateLimitInfo(null);
@@ -406,8 +483,12 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     };
   }, [isOpen]);
 
-  const handleBusinessConfirmation = (confirmed: boolean) => {
-    setUserFeedback(confirmed ? 'confirmed' : 'rejected');
+  const handleBusinessConfirmation = (businessIndex: number, confirmed: boolean) => {
+    setUserFeedbacks(prev => {
+      const newFeedbacks = [...prev];
+      newFeedbacks[businessIndex] = confirmed ? 'confirmed' : 'rejected';
+      return newFeedbacks;
+    });
   };
 
   const handleProductChange = (productId: string) => {
@@ -439,13 +520,45 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleBusinessChange = (index: number, field: keyof BusinessData, value: string | boolean) => {
+    setBusinessData(prevBusinessData => {
+      const newBusinessData = [...prevBusinessData];
+      newBusinessData[index] = { ...newBusinessData[index], [field]: value };
+      return newBusinessData;
+    });
 
     // Reset user feedback when business name or postcode changes
     if (field === 'businessName' || field === 'postcode') {
-      setUserFeedback('none');
-      setSelectedPlace(null);
+      setUserFeedbacks(prev => {
+        const newFeedbacks = [...prev];
+        newFeedbacks[index] = 'none';
+        return newFeedbacks;
+      });
+      setSelectedPlaces(prev => {
+        const newPlaces = [...prev];
+        newPlaces[index] = null;
+        return newPlaces;
+      });
       setSearchError(null);
     }
+  };
+
+  const copyBusinessData = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === toIndex) return;
+    
+    setBusinessData(prevBusinessData => {
+      const newBusinessData = [...prevBusinessData];
+      const sourceData = newBusinessData[fromIndex];
+      newBusinessData[toIndex] = {
+        ...newBusinessData[toIndex],
+        businessName: sourceData.businessName,
+        postcode: sourceData.postcode,
+        businessCountry: sourceData.businessCountry
+      };
+      return newBusinessData;
+    });
   };
 
   const validateVoucher = (voucherCode: string) => {
@@ -559,10 +672,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         voucher_code: appliedVoucher?.code || null,
         customer_email: formData.email,
         customer_phone: formData.phone,
-        business_name: formData.businessName,
-        business_postcode: formData.postcode,
-        business_country: formData.businessCountry,
-        google_business_id: selectedPlace?.place_id || null,
+        business_name: businessData[0]?.businessName || '',
+        business_postcode: businessData[0]?.postcode || '',
+        business_country: businessData[0]?.businessCountry || 'España',
+        google_business_id: selectedPlaces[0]?.place_id || null,
         stand_colors: stands,
         utm_params: utmParams
       };
@@ -591,12 +704,12 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         price: calculateTotal().toFixed(2),
         numberOfStands: quantity,
         colorStands: stands,
-        businessName: formData.businessName,
-        businessPostcode: formData.postcode,
-        businessCountry: formData.businessCountry,
+        businessName: businessData[0]?.businessName || '',
+        businessPostcode: businessData[0]?.postcode || '',
+        businessCountry: businessData[0]?.businessCountry || 'España',
         email: formData.email,
         phoneNumber: formData.phone,
-        googleBusinessId: selectedPlace?.place_id || null
+        googleBusinessId: selectedPlaces[0]?.place_id || null
       };
 
       // Skip email sending during preorder - emails will be sent after payment confirmation
@@ -659,7 +772,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-gray-200 z-20">
           <div className="p-6 flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900">Realizar Pedido</h2>
@@ -954,50 +1067,187 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 placeholder="+34 600 000 000"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Código Postal del Negocio *
-              </label>
-              <input
-                type="text"
-                value={formData.postcode}
-                onChange={(e) => handleInputChange('postcode', e.target.value)}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
-                placeholder="28001"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Nombre del Negocio *
-              </label>
-              <input
-                type="text"
-                value={formData.businessName}
-                onChange={(e) => handleInputChange('businessName', e.target.value)}
-                onBlur={searchBusiness}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
-                placeholder="Nombre de tu negocio"
-              />
-            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              País del Negocio *
-            </label>
-            <input
-              type="text"
-              value={formData.businessCountry}
-              onChange={(e) => handleInputChange('businessCountry', e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent"
-              placeholder="España"
-            />
-          </div>
+          {/* Business Data Sections */}
+          {businessData.map((business, index) => (
+            <div key={index} className="border-2 border-[#7f6d2a] rounded-lg p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-[#7f6d2a]">
+                  Negocio #{index + 1}
+                </h3>
+                {index > 0 && (
+                  <div className="flex items-center space-x-2">
+                                         <label className="flex items-center text-sm text-gray-600">
+                       <input
+                         type="checkbox"
+                         checked={business.copyFromFirst || false}
+                         onChange={(e) => {
+                           const isChecked = e.target.checked;
+                           handleBusinessChange(index, 'copyFromFirst', isChecked);
+                           if (isChecked) {
+                             copyBusinessData(0, index);
+                           }
+                         }}
+                         className="mr-2 w-4 h-4 text-[#7f6d2a] bg-gray-100 border-gray-300 rounded focus:ring-[#7f6d2a] focus:ring-2"
+                       />
+                       Mismos datos que Negocio #1
+                     </label>
+                  </div>
+                )}
+              </div>
+
+                             <div className="space-y-4">
+                 {/* Business Fields */}
+                 <div className="space-y-4">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-1">
+                         Nombre del Negocio *
+                       </label>
+                       <input
+                         type="text"
+                         value={business.businessName}
+                         onChange={(e) => handleBusinessChange(index, 'businessName', e.target.value)}
+                         required={index === 0}
+                         disabled={index > 0 && business.copyFromFirst}
+                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent disabled:bg-gray-100"
+                         placeholder="Nombre de tu negocio"
+                       />
+                     </div>
+
+                     <div>
+                       <label className="block text-sm font-medium text-gray-700 mb-1">
+                         Código Postal del Negocio *
+                       </label>
+                       <input
+                         type="text"
+                         value={business.postcode}
+                         onChange={(e) => handleBusinessChange(index, 'postcode', e.target.value)}
+                         onBlur={() => {
+                           if (!business.copyFromFirst && business.businessName && business.postcode) {
+                             searchBusiness(index);
+                           }
+                         }}
+                         required={index === 0}
+                         disabled={index > 0 && business.copyFromFirst}
+                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent disabled:bg-gray-100"
+                         placeholder="28001"
+                       />
+                     </div>
+                   </div>
+
+                   <div>
+                     <label className="block text-sm font-medium text-gray-700 mb-1">
+                       País del Negocio *
+                     </label>
+                     <input
+                       type="text"
+                       value={business.businessCountry}
+                       onChange={(e) => handleBusinessChange(index, 'businessCountry', e.target.value)}
+                       required={index === 0}
+                       disabled={index > 0 && business.copyFromFirst}
+                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#7f6d2a] focus:border-transparent disabled:bg-gray-100"
+                       placeholder="España"
+                     />
+                   </div>
+                 </div>
+
+                                  {/* Map Section for each business */}
+                 <div>
+                   {/* Business Search Status */}
+                   {businessData[index]?.businessName && businessData[index]?.postcode && isSearching[index] && (
+                     <div className="text-center py-2 mb-4">
+                       <p className="text-gray-600">Buscando tu negocio...</p>
+                     </div>
+                   )}
+
+                   {/* Business Search Map */}
+                   {(isSearching[index] || selectedPlaces[index]) && (
+                     <div className="space-y-4">
+                       {selectedPlaces[index] && <h4 className="font-medium text-gray-700">¿Es este tu negocio?</h4>}
+                       <div ref={el => { mapRefs.current[index] = el; }} className="w-full h-64 rounded-lg border" />
+
+                       {selectedPlaces[index] && userFeedbacks[index] === 'none' && (
+                         <div className="bg-[#7f6d2a]/10 border border-[#7f6d2a]/30 rounded-lg p-4">
+                           <h5 className="font-semibold text-[#7f6d2a] mb-2">{selectedPlaces[index].name}</h5>
+                           <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlaces[index].formatted_address}</p>
+
+                           <div className="flex flex-col space-y-3">
+                             <div className="flex space-x-3">
+                               <button
+                                 type="button"
+                                 onClick={() => handleBusinessConfirmation(index, true)}
+                                 className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-h-[36px]"
+                               >
+                                 Sí, es mi negocio
+                               </button>
+                               <div>
+                                 <button
+                                 type="button"
+                                 onClick={() => handleBusinessConfirmation(index, false)}
+                                 className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+                                 >
+                                 No, no es mi negocio
+                                 </button>
+                                 <div className="text-xs text-[#7f6d2a]/70 italic">
+                                     (No pasa nada. Nosotros nos encargaremos de encontrarlo por ti.)
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
+                         </div>
+                       )}
+
+                       {selectedPlaces[index] && userFeedbacks[index] === 'confirmed' && (
+                         <div className="bg-green-50 border border-green-200 rounded-lg p-4 relative">
+                           <button
+                             type="button"
+                             onClick={() => setUserFeedbacks(prev => {
+                               const newFeedbacks = [...prev];
+                               newFeedbacks[index] = 'none';
+                               return newFeedbacks;
+                             })}
+                             className="absolute top-2 right-2 text-green-600 hover:text-green-800 transition-colors"
+                           >
+                             <XMarkIcon className="w-5 h-5" />
+                           </button>
+                           <div className="flex items-center mb-2">
+                             <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                               </svg>
+                             </div>
+                             <h5 className="font-semibold text-green-800">¡Perfecto!</h5>
+                           </div>
+                           <p className="text-sm text-green-600 mb-2">Hemos confirmado tu negocio:</p>
+                           <p className="font-medium text-green-800">{selectedPlaces[index].name}</p>
+                           <p className="text-sm text-green-600">{selectedPlaces[index].formatted_address}</p>
+                         </div>
+                       )}
+
+                       {userFeedbacks[index] === 'rejected' && (
+                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                           <div className="flex items-center mb-2">
+                             <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center mr-3">
+                               <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                               </svg>
+                             </div>
+                             <h5 className="font-semibold text-yellow-800">No te preocupes</h5>
+                           </div>
+                           <p className="text-sm text-yellow-700">
+                             No te preocupes, nosotros encontraremos tu negocio por ti. 
+                             Continúa con tu pedido y nos pondremos en contacto contigo para confirmar la ubicación exacta.
+                           </p>
+                         </div>
+                       )}
+                     </div>
+                   )}
+                 </div>
+              </div>
+            </div>
+          ))}
 
           {/* Privacy Policy and Terms Checkboxes */}
           <div className="space-y-3">
@@ -1055,94 +1305,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               </div>
             </div>
           </div>
-
-          {/* Business Search Status */}
-          {formData.businessName && formData.postcode && isSearching && (
-            <div className="text-center py-2">
-              <p className="text-gray-600">Buscando tu negocio...</p>
-            </div>
-          )}
-
-          
-
-          {/* Business Search Map */}
-          {(isSearching || selectedPlace) && (
-            <div className="space-y-4">
-              {selectedPlace && <h4 className="font-medium text-gray-700">¿Es este tu negocio?</h4>}
-              <div ref={mapRef} className="w-full h-64 rounded-lg border" />
-
-              {selectedPlace && userFeedback === 'none' && (
-                <div className="bg-[#7f6d2a]/10 border border-[#7f6d2a]/30 rounded-lg p-4">
-                  <h5 className="font-semibold text-[#7f6d2a] mb-2">{selectedPlace.name}</h5>
-                  <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlace.formatted_address}</p>
-
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex space-x-3">
-                      <button
-                        type="button"
-                        onClick={() => handleBusinessConfirmation(true)}
-                        className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-h-[36px]"
-                      >
-                        Sí, es mi negocio
-                      </button>
-                      <div>
-                        <button
-                        type="button"
-                        onClick={() => handleBusinessConfirmation(false)}
-                        className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
-                        >
-                        No, no es mi negocio
-                        </button>
-                        <div className="text-xs text-[#7f6d2a]/70 italic">
-                            (No pasa nada. Nosotros nos encargaremos de encontrarlo por ti.)
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {selectedPlace && userFeedback === 'confirmed' && (
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4 relative">
-                  <button
-                    type="button"
-                    onClick={() => setUserFeedback('none')}
-                    className="absolute top-2 right-2 text-green-600 hover:text-green-800 transition-colors"
-                  >
-                    <XMarkIcon className="w-5 h-5" />
-                  </button>
-                  <div className="flex items-center mb-2">
-                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center mr-3">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <h5 className="font-semibold text-green-800">¡Perfecto!</h5>
-                  </div>
-                  <p className="text-sm text-green-600 mb-2">Hemos confirmado tu negocio:</p>
-                  <p className="font-medium text-green-800">{selectedPlace.name}</p>
-                  <p className="text-sm text-green-600">{selectedPlace.formatted_address}</p>
-                </div>
-              )}
-
-              {userFeedback === 'rejected' && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <div className="flex items-center mb-2">
-                    <div className="w-6 h-6 bg-yellow-600 rounded-full flex items-center justify-center mr-3">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                      </svg>
-                    </div>
-                    <h5 className="font-semibold text-yellow-800">No te preocupes</h5>
-                  </div>
-                  <p className="text-sm text-yellow-700">
-                    No te preocupes, nosotros encontraremos tu negocio por ti. 
-                    Continúa con tu pedido y nos pondremos en contacto contigo para confirmar la ubicación exacta.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
 
           {/* Total and Submit */}
           <div className="border-t pt-6">

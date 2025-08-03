@@ -21,6 +21,7 @@ interface OrderModalProps {
   onClose: () => void;
   selectedProductId: string;
   onProductChange?: (productId: string) => void;
+  onlyStand?: boolean;
 }
 
 interface StandConfig {
@@ -44,7 +45,7 @@ declare global {
   }
 }
 
-export default function OrderModal({ isOpen, onClose, selectedProductId, onProductChange }: OrderModalProps) {
+export default function OrderModal({ isOpen, onClose, selectedProductId, onProductChange, onlyStand = false }: OrderModalProps) {
   const [currentProductId, setCurrentProductId] = useState(selectedProductId);
   const [quantity, setQuantity] = useState(1);
   const [stands, setStands] = useState<StandConfig[]>([{ color: 'blanco' }]);
@@ -113,6 +114,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       secondary_label: productsData.stand_visibility_web.secondary_label
     }
   };
+
+  // Filter product configuration based on onlyStand prop
+  const filteredProductConfig = onlyStand 
+    ? { stand_only: productConfig.stand_only }
+    : productConfig;
 
   const currentProductConfig = productConfig[currentProductId as keyof typeof productConfig];
 
@@ -692,8 +698,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Product Selection */}
           <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-              {Object.entries(productConfig).map(([productId, config]) => {
+            <div className={`grid gap-4 pt-4 ${onlyStand ? 'grid-cols-1 max-w-sm mx-auto' : 'grid-cols-1 md:grid-cols-3'}`}>
+              {Object.entries(filteredProductConfig).map(([productId, config]) => {
                 // Find price for this specific product - use correct number of stands
                 const standsToLookFor = (config.local_seo === 1 || config.full_service === 1) ? 3 : 1;
                 const productPriceEntry = pricesData.find(entry => 

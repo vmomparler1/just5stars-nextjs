@@ -10,9 +10,11 @@ import { OrderModal } from "../OrderModal";
 import pricesData from '@/app/data/prices.json';
 import productsData from '@/app/data/products.json';
 
+interface ProductsProps {
+  onlyStand?: boolean;
+}
 
-
-export default function Products() {
+export default function Products({ onlyStand = false }: ProductsProps) {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
@@ -32,16 +34,21 @@ export default function Products() {
   const localSeoPriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 1 && p.full_service === 0);
   const fullServicePriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 0 && p.full_service === 1);
 
+  // Filter products based on onlyStand prop
+  const filteredProducts = onlyStand 
+    ? { stand_only: productsData.stand_only }
+    : productsData;
+
   return (
     <>
       <section id="products" className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestros Servicios</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Te ayudamos a crecer en Google</h2>
 
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {Object.entries(productsData).map(([productId, productData], index) => {
+          <div className={`grid gap-8 ${onlyStand ? 'md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+            {Object.entries(filteredProducts).map(([productId, productData], index) => {
               // Get appropriate image based on product ID
               const getProductImage = (id: string) => {
                 switch(id) {
@@ -182,6 +189,7 @@ export default function Products() {
         onClose={() => setIsOrderModalOpen(false)}
         selectedProductId={selectedProductId}
         onProductChange={(productId) => setSelectedProductId(productId)}
+        onlyStand={onlyStand}
       />
     </>
   );

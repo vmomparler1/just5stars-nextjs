@@ -51,19 +51,19 @@ function GoogleStandHero() {
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Tecnología NFC de última generación</span>
+                  <span className="text-lg">Tecnología NFC de última generación (chip NTAG216)</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Funcionamiento con QR como respaldo</span>
+                  <span className="text-lg">Funcionamiento con NFC & QR</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Configuración personalizada incluida</span>
+                  <span className="text-lg">Configuración previa para que enlace a tu perfil de reseñas de Google</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Aumenta reseñas hasta un 300%</span>
+                  <span className="text-lg">Sin subscripción de ningún tipo</span>
                 </li>
               </ul>
             </div>
@@ -204,7 +204,7 @@ export default function StandGooglePage() {
         <GoogleStandHero />
         <FeaturedIn />
         <NFCExpositors />
-        <Products />
+        <Products onlyStand={true} />
         <SuccessStories />
         <CTA />
         <Footer />

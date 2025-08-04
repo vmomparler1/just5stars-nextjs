@@ -171,6 +171,13 @@ async function handleCheckoutCompleted(session: any) {
     // Send confirmed order data to Zapier webhook
     if (confirmedOrder && confirmedOrderId) {
       try {
+        // Extract shipping address from Stripe session
+        const shippingDetails = session.shipping_details || session.shipping || {};
+        const customerDetails = session.customer_details || {};
+        
+        // Use shipping address if available, otherwise fallback to customer address
+        const address = shippingDetails.address || customerDetails.address || {};
+        
         const zapierData = {
           order_id: confirmedOrderId,
           product_name: confirmedOrder.product_name,
@@ -194,7 +201,16 @@ async function handleCheckoutCompleted(session: any) {
           status: 'confirmed',
           stripe_payment_intent_id: session.payment_intent,
           stripe_session_id: session.id,
-          confirmed_at: new Date().toISOString()
+          confirmed_at: new Date().toISOString(),
+          // Shipping address information from Stripe
+          shipping_name: shippingDetails.name || customerDetails.name || '',
+          shipping_address_line1: address.line1 || '',
+          shipping_address_line2: address.line2 || '',
+          shipping_city: address.city || '',
+          shipping_state: address.state || '',
+          shipping_postal_code: address.postal_code || '',
+          shipping_country: address.country || '',
+          customer_name: customerDetails.name || ''
         };
 
         const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {

@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
       utm_campaign: utmParams.utm_campaign || null,
       utm_term: utmParams.utm_term || null,
       utm_content: utmParams.utm_content || null,
+      all_businesses: requestData.all_businesses ? JSON.stringify(requestData.all_businesses) : null,
       stripe_payment_intent_id: requestData.stripe_payment_intent_id || null,
       stripe_session_id: requestData.stripe_session_id || null,
       status: OrderStatus.PENDING
@@ -97,7 +98,7 @@ export async function POST(request: NextRequest) {
         status: orderData.status,
         created_at: new Date().toISOString(),
         // Include all business data for multiple stands
-        all_businesses: orderData.all_businesses || []
+        all_businesses: requestData.all_businesses || []
       };
 
       const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {

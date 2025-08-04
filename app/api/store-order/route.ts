@@ -95,7 +95,9 @@ export async function POST(request: NextRequest) {
         utm_term: orderData.utm_term,
         utm_content: orderData.utm_content,
         status: orderData.status,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
+        // Include all business data for multiple stands
+        all_businesses: orderData.all_businesses || []
       };
 
       const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {

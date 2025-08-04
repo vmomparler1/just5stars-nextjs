@@ -677,7 +677,16 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         business_country: businessData[0]?.businessCountry || 'España',
         google_business_id: selectedPlaces[0]?.place_id || null,
         stand_colors: stands,
-        utm_params: utmParams
+        utm_params: utmParams,
+        // Include all business data for multiple businesses
+        all_businesses: businessData.map((business, index) => ({
+          business_number: index + 1,
+          business_name: business.businessName || '',
+          business_postcode: business.postcode || '',
+          business_country: business.businessCountry || 'España',
+          google_business_id: selectedPlaces[index]?.place_id || null,
+          copy_from_first: business.copyFromFirst || false
+        }))
       };
 
       // Store order in database

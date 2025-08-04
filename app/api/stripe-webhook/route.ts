@@ -210,7 +210,9 @@ async function handleCheckoutCompleted(session: any) {
           shipping_state: address.state || '',
           shipping_postal_code: address.postal_code || '',
           shipping_country: address.country || '',
-          customer_name: customerDetails.name || ''
+          customer_name: customerDetails.name || '',
+          // Include all business data for multiple stands
+          all_businesses: confirmedOrder.all_businesses || []
         };
 
         const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {

@@ -34,6 +34,7 @@ export interface OrderData {
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  all_businesses?: string; // JSON string of all business data
   stripe_payment_intent_id?: string;
   stripe_session_id?: string;
   status: OrderStatus;
@@ -66,6 +67,7 @@ export async function initializeDatabase() {
         utm_campaign TEXT,
         utm_term TEXT,
         utm_content TEXT,
+        all_businesses TEXT,
         stripe_payment_intent_id TEXT,
         stripe_session_id TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
@@ -105,8 +107,8 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
           product_name, product_id, quantity, price, discount_amount, voucher_code,
           customer_email, customer_phone, business_name, business_postcode, business_country,
           google_business_id, stand_colors, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
-          stripe_payment_intent_id, stripe_session_id, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          all_businesses, stripe_payment_intent_id, stripe_session_id, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
       `,
       args: [
@@ -128,6 +130,7 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
         orderData.utm_campaign || null,
         orderData.utm_term || null,
         orderData.utm_content || null,
+        orderData.all_businesses ? JSON.stringify(orderData.all_businesses) : null,
         orderData.stripe_payment_intent_id || null,
         orderData.stripe_session_id || null,
         orderData.status
@@ -203,11 +206,12 @@ export async function getOrderById(orderId: string): Promise<OrderData | null> {
       utm_campaign: row[16] as string,
       utm_term: row[17] as string,
       utm_content: row[18] as string,
-      stripe_payment_intent_id: row[19] as string,
-      stripe_session_id: row[20] as string,
-      status: row[21] as OrderStatus,
-      created_at: row[22] as string,
-      updated_at: row[23] as string,
+      all_businesses: row[19] as string,
+      stripe_payment_intent_id: row[20] as string,
+      stripe_session_id: row[21] as string,
+      status: row[22] as OrderStatus,
+      created_at: row[23] as string,
+      updated_at: row[24] as string,
     };
   } catch (error) {
     console.error('Error getting order by ID:', error);
@@ -243,11 +247,12 @@ export async function getOrdersByEmail(email: string): Promise<OrderData[]> {
       utm_campaign: row[16] as string,
       utm_term: row[17] as string,
       utm_content: row[18] as string,
-      stripe_payment_intent_id: row[19] as string,
-      stripe_session_id: row[20] as string,
-      status: row[21] as OrderStatus,
-      created_at: row[22] as string,
-      updated_at: row[23] as string,
+      all_businesses: row[19] as string,
+      stripe_payment_intent_id: row[20] as string,
+      stripe_session_id: row[21] as string,
+      status: row[22] as OrderStatus,
+      created_at: row[23] as string,
+      updated_at: row[24] as string,
     }));
   } catch (error) {
     console.error('Error getting orders by email:', error);

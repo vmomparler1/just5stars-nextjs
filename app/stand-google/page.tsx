@@ -51,7 +51,7 @@ function GoogleStandHero() {
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Tecnología NFC de última generación (chip NTAG216)</span>
+                  <span className="text-lg">Tecnología NFC de última generación (chip NFC)</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />

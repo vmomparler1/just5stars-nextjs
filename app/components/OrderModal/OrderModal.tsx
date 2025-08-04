@@ -88,6 +88,33 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const [monthCode, setMonthCode] = useState('');
   const [isClient, setIsClient] = useState(false);
   const [rateLimitInfo, setRateLimitInfo] = useState<{ limit: number; remaining: number; reset: number; } | null>(null);
+  const pendingSearches = useRef<Set<number>>(new Set());
+  const searchTimeouts = useRef<Map<number, NodeJS.Timeout>>(new Map());
+
+  // Load Google Maps JS API once and share the promise across calls
+  const loadGoogleMaps = (): Promise<void> => {
+    if (typeof window === 'undefined') return Promise.reject('window is undefined');
+    // If already loaded, resolve immediately
+    if (window.google && window.google.maps && window.google.maps.places) {
+      return Promise.resolve();
+    }
+    // Re-use the same promise if a previous call is already loading the script
+    if ((window as any)._googleMapsPromise) {
+      return (window as any)._googleMapsPromise;
+    }
+
+    (window as any)._googleMapsPromise = new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error('Failed to load Google Maps'));
+      document.head.appendChild(script);
+    });
+
+    return (window as any)._googleMapsPromise;
+  };
 
   // Generate month code on client side only
   useEffect(() => {
@@ -307,20 +334,38 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       return newState;
     });
 
-    // Add timeout to prevent getting stuck
-    const searchTimeout = setTimeout(() => {
-      setIsSearching(prev => {
-        const newState = [...prev];
-        newState[businessIndex] = false;
-        return newState;
-      });
-      console.log(`Search timeout: Business search timed out after 10 seconds for business ${businessIndex + 1}`);
-    }, 10000); // 10 second timeout
+    const performSearch = (targetBusinessIndex: number) => {
+      // Wait until the map container div has been rendered and its ref is set
+      if (!mapRefs.current[targetBusinessIndex]) {
+        // Retry shortly – this usually means React hasn't committed the ref yet
+        setTimeout(() => performSearch(targetBusinessIndex), 100);
+        return;
+      }
 
-    const performSearch = () => {
       try {
-        if (mapRefs.current[businessIndex]) {
-          const newMap = new window.google.maps.Map(mapRefs.current[businessIndex], {
+        // Clear any existing timeout for this business
+        if (searchTimeouts.current.has(targetBusinessIndex)) {
+          clearTimeout(searchTimeouts.current.get(targetBusinessIndex)!);
+          searchTimeouts.current.delete(targetBusinessIndex);
+        }
+
+        // Set a new timeout for this business
+        const timeout = setTimeout(() => {
+          // Clear from pending searches on timeout
+          pendingSearches.current.delete(targetBusinessIndex);
+          searchTimeouts.current.delete(targetBusinessIndex);
+          setIsSearching(prev => {
+            const newState = [...prev];
+            newState[targetBusinessIndex] = false;
+            return newState;
+          });
+          console.log(`Search timeout: Business search timed out after 10 seconds for business ${targetBusinessIndex + 1}`);
+        }, 10000); // 10 second timeout
+        
+        searchTimeouts.current.set(targetBusinessIndex, timeout);
+
+        if (mapRefs.current[targetBusinessIndex] && businessData[targetBusinessIndex]) {
+          const newMap = new window.google.maps.Map(mapRefs.current[targetBusinessIndex], {
             center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
             zoom: 2,
           });
@@ -328,7 +373,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           // Update maps array
           setMaps(prev => {
             const newMaps = [...prev];
-            newMaps[businessIndex] = newMap;
+            newMaps[targetBusinessIndex] = newMap;
             return newMaps;
           });
 
@@ -336,17 +381,23 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           const placesService = new window.google.maps.places.PlacesService(newMap);
 
           // Search for the business
-          const searchQuery = `${businessData[businessIndex]?.businessName} ${businessData[businessIndex]?.postcode} ${businessData[businessIndex]?.businessCountry}`;
+          const searchQuery = `${businessData[targetBusinessIndex]?.businessName} ${businessData[targetBusinessIndex]?.postcode} ${businessData[targetBusinessIndex]?.businessCountry}`;
           const request = {
             query: searchQuery,
             fields: ['name', 'geometry', 'place_id', 'formatted_address'],
           };
 
           placesService.textSearch(request, (results: any[], status: string) => {
-            clearTimeout(searchTimeout);
+            // Clear timeout and remove from pending searches
+            if (searchTimeouts.current.has(targetBusinessIndex)) {
+              clearTimeout(searchTimeouts.current.get(targetBusinessIndex)!);
+              searchTimeouts.current.delete(targetBusinessIndex);
+            }
+            pendingSearches.current.delete(targetBusinessIndex);
+            
             setIsSearching(prev => {
               const newState = [...prev];
-              newState[businessIndex] = false;
+              newState[targetBusinessIndex] = false;
               return newState;
             });
 
@@ -354,7 +405,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 const place = results[0];
                 setSelectedPlaces(prev => {
                   const newPlaces = [...prev];
-                  newPlaces[businessIndex] = place;
+                  newPlaces[targetBusinessIndex] = place;
                   return newPlaces;
                 });
 
@@ -363,8 +414,8 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 newMap.setZoom(15);
 
                 // Add marker
-                if (markers[businessIndex]) {
-                  markers[businessIndex].setMap(null);
+                if (markers[targetBusinessIndex]) {
+                  markers[targetBusinessIndex].setMap(null);
                 }
                 const newMarker = new window.google.maps.Marker({
                   position: place.geometry.location,
@@ -373,19 +424,25 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                 });
                 setMarkers(prev => {
                   const newMarkers = [...prev];
-                  newMarkers[businessIndex] = newMarker;
+                  newMarkers[targetBusinessIndex] = newMarker;
                   return newMarkers;
                 });
               } else {
-                console.log(`Business not found: No business found with the provided name and postcode for business ${businessIndex + 1}`);
+                console.log(`Business not found: No business found with the provided name and postcode for business ${targetBusinessIndex + 1}`);
               }
           });
         }
       } catch (error) {
-        clearTimeout(searchTimeout);
+        // Clear timeout and remove from pending searches
+        if (searchTimeouts.current.has(targetBusinessIndex)) {
+          clearTimeout(searchTimeouts.current.get(targetBusinessIndex)!);
+          searchTimeouts.current.delete(targetBusinessIndex);
+        }
+        pendingSearches.current.delete(targetBusinessIndex);
+        
         setIsSearching(prev => {
           const newState = [...prev];
-          newState[businessIndex] = false;
+          newState[targetBusinessIndex] = false;
           return newState;
         });
         setSearchError('Error al buscar el negocio. Por favor, inténtalo de nuevo.');
@@ -393,59 +450,20 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       }
     };
 
-    // Check if Google Maps is already loaded
-    if (window.google && window.google.maps) {
-      performSearch();
-    } else {
-      // Check if script is already being loaded
-      const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-      if (existingScript) {
-        // Script is already loading, wait for it
-        window.initMap = () => {
-          try {
-            performSearch();
-          } catch (error) {
-            clearTimeout(searchTimeout);
-            setIsSearching(prev => {
-              const newState = [...prev];
-              newState[businessIndex] = false;
-              return newState;
-            });
-            setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
-            console.error('Maps loading error:', error);
-          }
-        };
-      } else {
-        // Load Google Maps script for the first time
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}&libraries=places&callback=initMap`;
-        script.async = true;
-        script.defer = true;
-        script.onerror = () => {
-          clearTimeout(searchTimeout);
-          setIsSearching(prev => {
-            const newState = [...prev];
-            newState[businessIndex] = false;
-            return newState;
-          });
-          setSearchError('Error al cargar Google Maps. Verifica tu conexión a internet.');
-        };
-        document.head.appendChild(script);
-        window.initMap = () => {
-          try {
-            performSearch();
-          } catch (error) {
-            clearTimeout(searchTimeout);
-            setIsSearching(prev => {
-              const newState = [...prev];
-              newState[businessIndex] = false;
-              return newState;
-            });
-            setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
-            console.error('Maps loading error:', error);
-          }
-        };
-      }
+    pendingSearches.current.add(businessIndex);
+
+    try {
+      await loadGoogleMaps();
+      performSearch(businessIndex);
+    } catch (error) {
+      pendingSearches.current.delete(businessIndex);
+      setIsSearching(prev => {
+        const newState = [...prev];
+        newState[businessIndex] = false;
+        return newState;
+      });
+      setSearchError('Error al cargar Google Maps. Por favor, inténtalo de nuevo.');
+      console.error('Maps loading error:', error);
     }
   };
 
@@ -474,6 +492,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       setSearchError(null);
       clearTransactionId();
       setRateLimitInfo(null);
+      // Clear pending searches and timeouts
+      pendingSearches.current.clear();
+      searchTimeouts.current.forEach(timeout => clearTimeout(timeout));
+      searchTimeouts.current.clear();
     }
 
     return () => {

@@ -212,7 +212,17 @@ async function handleCheckoutCompleted(session: any) {
           shipping_country: address.country || '',
           customer_name: customerDetails.name || '',
           // Include all business data for multiple stands
-          all_businesses: confirmedOrder.all_businesses || []
+          all_businesses: (() => {
+            if (!confirmedOrder.all_businesses) return [];
+            try {
+              return typeof confirmedOrder.all_businesses === 'string'
+                ? JSON.parse(confirmedOrder.all_businesses)
+                : confirmedOrder.all_businesses;
+            } catch (err) {
+              console.error('Error parsing all_businesses JSON:', err);
+              return confirmedOrder.all_businesses;
+            }
+          })()
         };
 
         const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {

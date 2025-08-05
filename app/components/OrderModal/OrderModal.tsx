@@ -703,7 +703,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           business_name: source.businessName || '',
           business_postcode: source.postcode || '',
           business_country: source.businessCountry || 'España',
-          google_business_id: selectedPlaces[index]?.place_id || null,
+          google_business_id: business.copyFromFirst ? (selectedPlaces[0]?.place_id || null) : (selectedPlaces[index]?.place_id || null),
           copy_from_first: business.copyFromFirst || false
         };
       });

@@ -511,6 +511,15 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       newFeedbacks[businessIndex] = confirmed ? 'confirmed' : 'rejected';
       return newFeedbacks;
     });
+
+    // If the user says the suggested place is NOT their business, clear the selected place
+    if (!confirmed) {
+      setSelectedPlaces(prev => {
+        const newPlaces = [...prev];
+        newPlaces[businessIndex] = null;
+        return newPlaces;
+      });
+    }
   };
 
   const handleProductChange = (productId: string) => {

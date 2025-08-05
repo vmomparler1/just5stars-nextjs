@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
       utm_campaign: utmParams.utm_campaign || null,
       utm_term: utmParams.utm_term || null,
       utm_content: utmParams.utm_content || null,
-      all_businesses: requestData.all_businesses ? JSON.stringify(requestData.all_businesses) : null,
+      all_businesses: requestData.all_businesses ? JSON.stringify(requestData.all_businesses) : undefined,
       stripe_payment_intent_id: requestData.stripe_payment_intent_id || null,
       stripe_session_id: requestData.stripe_session_id || null,
       status: OrderStatus.PENDING

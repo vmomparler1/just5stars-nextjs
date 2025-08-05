@@ -177,7 +177,16 @@ export async function updateOrderStatus(
 export async function getOrderById(orderId: string): Promise<OrderData | null> {
   try {
     const result = await client.execute({
-      sql: 'SELECT * FROM orders WHERE id = ?',
+      sql: `
+        SELECT id, product_name, product_id, quantity, price, discount_amount,
+               voucher_code, customer_email, customer_phone, business_name,
+               business_postcode, business_country, google_business_id,
+               stand_colors, utm_source, utm_medium, utm_campaign, utm_term,
+               utm_content, all_businesses, stripe_payment_intent_id,
+               stripe_session_id, status, created_at, updated_at
+        FROM orders
+        WHERE id = ?
+      `,
       args: [orderId]
     });
 
@@ -223,7 +232,17 @@ export async function getOrderById(orderId: string): Promise<OrderData | null> {
 export async function getOrdersByEmail(email: string): Promise<OrderData[]> {
   try {
     const result = await client.execute({
-      sql: 'SELECT * FROM orders WHERE customer_email = ? ORDER BY created_at DESC',
+      sql: `
+        SELECT id, product_name, product_id, quantity, price, discount_amount,
+               voucher_code, customer_email, customer_phone, business_name,
+               business_postcode, business_country, google_business_id,
+               stand_colors, utm_source, utm_medium, utm_campaign, utm_term,
+               utm_content, all_businesses, stripe_payment_intent_id,
+               stripe_session_id, status, created_at, updated_at
+        FROM orders
+        WHERE customer_email = ?
+        ORDER BY created_at DESC
+      `,
       args: [email]
     });
 

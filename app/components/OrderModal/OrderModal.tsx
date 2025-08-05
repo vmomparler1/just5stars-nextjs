@@ -243,10 +243,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     if (quantity > businessData.length) {
       const newBusinessData = [...businessData];
       while (newBusinessData.length < quantity) {
+        const first = newBusinessData[0] || { businessName: '', postcode: '', businessCountry: 'España' };
         newBusinessData.push({
-          businessName: '',
-          postcode: '',
-          businessCountry: 'España',
+          businessName: first.businessName,
+          postcode: first.postcode,
+          businessCountry: first.businessCountry,
           copyFromFirst: true
         });
       }
@@ -694,6 +695,19 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       const utmParams = getStoredUTMParameters() || {};
 
       // Prepare order data for database storage
+      // Build all businesses array, copying data from first business when requested
+      const allBusinesses = businessData.map((business, index) => {
+        const source = business.copyFromFirst ? businessData[0] : business;
+        return {
+          business_number: index + 1,
+          business_name: source.businessName || '',
+          business_postcode: source.postcode || '',
+          business_country: source.businessCountry || 'España',
+          google_business_id: selectedPlaces[index]?.place_id || null,
+          copy_from_first: business.copyFromFirst || false
+        };
+      });
+
       const orderDataForDB = {
         product_name: currentProductConfig.name,
         product_id: currentProductId,
@@ -710,14 +724,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         stand_colors: stands,
         utm_params: utmParams,
         // Include all business data for multiple businesses
-        all_businesses: businessData.map((business, index) => ({
-          business_number: index + 1,
-          business_name: business.businessName || '',
-          business_postcode: business.postcode || '',
-          business_country: business.businessCountry || 'España',
-          google_business_id: selectedPlaces[index]?.place_id || null,
-          copy_from_first: business.copyFromFirst || false
-        }))
+        all_businesses: allBusinesses
       };
 
       // Store order in database
@@ -1214,11 +1221,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                            <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlaces[index].formatted_address}</p>
 
                            <div className="flex flex-col space-y-3">
-                             <div className="flex space-x-3">
+                             <div className="flex items-start space-x-3">
                                <button
                                  type="button"
                                  onClick={() => handleBusinessConfirmation(index, true)}
-                                 className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium max-h-[36px]"
+                                 className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium"
                                >
                                  Sí, es mi negocio
                                </button>

@@ -6,7 +6,14 @@ import { useState, useEffect } from "react";
 import standsImage from "./stand_02.png";
 import localSeoIcon from "./stand_local_seo.png";
 import allInclusive from "./stand_local_seo_360.png";
-import { OrderModal } from "../OrderModal";
+import dynamic from 'next/dynamic';
+
+// Dynamically import OrderModal so its heavy code (incl. Google-Maps loader) is only downloaded
+// when the user actually opens the modal.
+const OrderModal = dynamic(() => import('../OrderModal').then(m => m.OrderModal), {
+  ssr: false,
+  loading: () => null,
+});
 import pricesData from '@/app/data/prices.json';
 import productsData from '@/app/data/products.json';
 

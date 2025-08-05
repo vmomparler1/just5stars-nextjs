@@ -1220,32 +1220,31 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                            <h5 className="font-semibold text-[#7f6d2a] mb-2">{selectedPlaces[index].name}</h5>
                            <p className="text-sm text-[#7f6d2a]/80 mb-4">{selectedPlaces[index].formatted_address}</p>
 
-                           <div className="flex flex-col space-y-3">
-                             <div className="flex items-start space-x-3">
-                               <button
-                                 type="button"
-                                 onClick={() => handleBusinessConfirmation(index, true)}
-                                 className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium"
-                               >
-                                 Sí, es mi negocio
-                               </button>
-                               <div>
-                                 <button
-                                 type="button"
-                                 onClick={() => handleBusinessConfirmation(index, false)}
-                                 className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
-                                 >
-                                 No, no es mi negocio
-                                 </button>
-                                 <div className="text-xs text-[#7f6d2a]/70 italic">
-                                     (No pasa nada. Nosotros nos encargaremos de encontrarlo por ti.)
-                                 </div>
-                               </div>
+                           <div className="grid grid-cols-2 gap-x-3 gap-y-1 items-start max-w-[500px]">
+                             <button
+                               type="button"
+                               onClick={() => handleBusinessConfirmation(index, true)}
+                               className="px-4 py-2 bg-[#7f6d2a] text-white rounded-lg hover:bg-[#6a5a23] transition-colors text-sm font-medium"
+                             >
+                               Sí, es mi negocio
+                             </button>
+                             <button
+                               type="button"
+                               onClick={() => handleBusinessConfirmation(index, false)}
+                               className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm font-medium"
+                             >
+                               No, no es mi negocio
+                             </button>
+                             {/* empty cell to keep grid alignment */}
+                             <div></div>
+                             <div className="text-xs text-[#7f6d2a]/70 italic">
+                               (No pasa nada. Nosotros nos encargaremos de encontrarlo por ti.)
                              </div>
                            </div>
                          </div>
                        )}
 
+                       {/* eslint-disable-next-line @typescript-eslint/comparison-style */}
                        {selectedPlaces[index] && userFeedbacks[index] === 'confirmed' && (
                          <div className="bg-green-50 border border-green-200 rounded-lg p-4 relative">
                            <button
@@ -1273,6 +1272,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                          </div>
                        )}
 
+                       {/* eslint-disable-next-line @typescript-eslint/comparison-style */}
                        {userFeedbacks[index] === 'rejected' && (
                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                            <div className="flex items-center mb-2">

@@ -97,10 +97,8 @@ export async function POST(request: NextRequest) {
         utm_content: orderData.utm_content,
         status: orderData.status,
         created_at: new Date().toISOString(),
-        // Include all business data for multiple stands (ensure it's an array)
-        all_businesses: Array.isArray(requestData.all_businesses)
-          ? requestData.all_businesses
-          : (requestData.all_businesses ? JSON.parse(requestData.all_businesses) : [])
+        // Include all business data for multiple stands
+        all_businesses: requestData.all_businesses || []
       };
 
       const zapierResponse = await fetch('https://hooks.zapier.com/hooks/catch/12169059/uu9x15w/', {

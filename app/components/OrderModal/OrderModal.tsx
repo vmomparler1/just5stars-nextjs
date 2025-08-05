@@ -583,20 +583,6 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     });
   };
 
-  // Keep businesses that have copyFromFirst=true in sync with Negocio #1 in real-time
-  useEffect(() => {
-    setBusinessData(prev => prev.map((b, i) => {
-      if (i === 0) return b;
-      if (!b.copyFromFirst) return b;
-      return {
-        ...b,
-        businessName: prev[0].businessName,
-        postcode: prev[0].postcode,
-        businessCountry: prev[0].businessCountry,
-      };
-    }));
-  }, [businessData[0]?.businessName, businessData[0]?.postcode, businessData[0]?.businessCountry]);
-
   const validateVoucher = (voucherCode: string) => {
     const voucher = vouchersData.vouchers.find(v => 
       v.code.toUpperCase() === voucherCode.toUpperCase() && v.active

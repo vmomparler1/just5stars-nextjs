@@ -132,6 +132,32 @@ async function handleCheckoutCompleted(session: any) {
         session.payment_intent as string,
         session.id
       );
+
+      // Update shipping information
+      const shippingDetails = session.shipping_details || session.shipping || {};
+      const customerDetails = session.customer_details || {};
+      const address = shippingDetails.address || customerDetails.address || {};
+
+      // Update order with shipping details
+      const { client } = await import('@/app/utils/database');
+      await client.execute({
+        sql: `
+          UPDATE orders 
+          SET stripe_shipping_name = ?,
+              stripe_shipping_address_1 = ?,
+              stripe_shipping_address_2 = ?,
+              stripe_shipping_postal_code = ?
+          WHERE id = ?
+        `,
+        args: [
+          shippingDetails.name || customerDetails.name || null,
+          address.line1 || null,
+          address.line2 || null,
+          address.postal_code || null,
+          clientReferenceId
+        ]
+      });
+
       console.log('Order confirmed via client_reference_id:', clientReferenceId);
 
       confirmedOrderId = clientReferenceId;
@@ -159,6 +185,32 @@ async function handleCheckoutCompleted(session: any) {
           session.payment_intent as string,
           session.id
         );
+
+        // Update shipping information
+        const shippingDetails = session.shipping_details || session.shipping || {};
+        const customerDetails = session.customer_details || {};
+        const address = shippingDetails.address || customerDetails.address || {};
+
+        // Update order with shipping details
+        const { client } = await import('@/app/utils/database');
+        await client.execute({
+          sql: `
+            UPDATE orders 
+            SET stripe_shipping_name = ?,
+                stripe_shipping_address_1 = ?,
+                stripe_shipping_address_2 = ?,
+                stripe_shipping_postal_code = ?
+            WHERE id = ?
+          `,
+          args: [
+            shippingDetails.name || customerDetails.name || null,
+            address.line1 || null,
+            address.line2 || null,
+            address.postal_code || null,
+            pendingOrder.id!
+          ]
+        });
+
         console.log('Order confirmed via customer email fallback:', pendingOrder.id);
 
         confirmedOrderId = pendingOrder.id!;

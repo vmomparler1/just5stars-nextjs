@@ -58,9 +58,13 @@ export async function GET(request: NextRequest) {
       utm_content: row[18] as string,
       stripe_payment_intent_id: row[19] as string,
       stripe_session_id: row[20] as string,
-      status: row[21] as string,
-      created_at: row[22] as string,
-      updated_at: row[23] as string,
+      stripe_shipping_name: row[21] as string,
+      stripe_shipping_address_1: row[22] as string,
+      stripe_shipping_address_2: row[23] as string,
+      stripe_shipping_postal_code: row[24] as string,
+      status: row[25] as string,
+      created_at: row[26] as string,
+      updated_at: row[27] as string,
     };
 
     // Calculate estimated delivery date (3-5 business days)

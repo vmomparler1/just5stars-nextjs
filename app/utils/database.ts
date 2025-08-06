@@ -37,6 +37,10 @@ export interface OrderData {
   all_businesses?: string; // JSON string of all business data
   stripe_payment_intent_id?: string;
   stripe_session_id?: string;
+  stripe_shipping_name?: string;
+  stripe_shipping_address_1?: string;
+  stripe_shipping_address_2?: string;
+  stripe_shipping_postal_code?: string;
   status: OrderStatus;
   created_at?: string;
   updated_at?: string;
@@ -70,6 +74,10 @@ export async function initializeDatabase() {
         all_businesses TEXT,
         stripe_payment_intent_id TEXT,
         stripe_session_id TEXT,
+        stripe_shipping_name TEXT,
+        stripe_shipping_address_1 TEXT,
+        stripe_shipping_address_2 TEXT,
+        stripe_shipping_postal_code TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -107,8 +115,9 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
           product_name, product_id, quantity, price, discount_amount, voucher_code,
           customer_email, customer_phone, business_name, business_postcode, business_country,
           google_business_id, stand_colors, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
-          all_businesses, stripe_payment_intent_id, stripe_session_id, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          all_businesses, stripe_payment_intent_id, stripe_session_id, stripe_shipping_name,
+          stripe_shipping_address_1, stripe_shipping_address_2, stripe_shipping_postal_code, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
       `,
       args: [
@@ -133,6 +142,10 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
         orderData.all_businesses ? JSON.stringify(orderData.all_businesses) : null,
         orderData.stripe_payment_intent_id || null,
         orderData.stripe_session_id || null,
+        orderData.stripe_shipping_name || null,
+        orderData.stripe_shipping_address_1 || null,
+        orderData.stripe_shipping_address_2 || null,
+        orderData.stripe_shipping_postal_code || null,
         orderData.status
       ]
     });
@@ -151,7 +164,11 @@ export async function updateOrderStatus(
   orderId: string,
   status: OrderStatus,
   stripePaymentIntentId?: string,
-  stripeSessionId?: string
+  stripeSessionId?: string,
+  stripeShippingName?: string,
+  stripeShippingAddress1?: string,
+  stripeShippingAddress2?: string,
+  stripeShippingPostalCode?: string
 ): Promise<void> {
   try {
     await client.execute({
@@ -160,10 +177,14 @@ export async function updateOrderStatus(
         SET status = ?, 
             stripe_payment_intent_id = COALESCE(?, stripe_payment_intent_id),
             stripe_session_id = COALESCE(?, stripe_session_id),
+            stripe_shipping_name = COALESCE(?, stripe_shipping_name),
+            stripe_shipping_address_1 = COALESCE(?, stripe_shipping_address_1),
+            stripe_shipping_address_2 = COALESCE(?, stripe_shipping_address_2),
+            stripe_shipping_postal_code = COALESCE(?, stripe_shipping_postal_code),
             updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `,
-      args: [status, stripePaymentIntentId || null, stripeSessionId || null, orderId]
+      args: [status, stripePaymentIntentId || null, stripeSessionId || null, stripeShippingName || null, stripeShippingAddress1 || null, stripeShippingAddress2 || null, stripeShippingPostalCode || null, orderId]
     });
 
     console.log('Order status updated successfully:', { orderId, status });
@@ -183,7 +204,8 @@ export async function getOrderById(orderId: string): Promise<OrderData | null> {
                business_postcode, business_country, google_business_id,
                stand_colors, utm_source, utm_medium, utm_campaign, utm_term,
                utm_content, all_businesses, stripe_payment_intent_id,
-               stripe_session_id, status, created_at, updated_at
+               stripe_session_id, stripe_shipping_name, stripe_shipping_address_1,
+               stripe_shipping_address_2, stripe_shipping_postal_code, status, created_at, updated_at
         FROM orders
         WHERE id = ?
       `,
@@ -218,9 +240,13 @@ export async function getOrderById(orderId: string): Promise<OrderData | null> {
       all_businesses: row[19] as string,
       stripe_payment_intent_id: row[20] as string,
       stripe_session_id: row[21] as string,
-      status: row[22] as OrderStatus,
-      created_at: row[23] as string,
-      updated_at: row[24] as string,
+      stripe_shipping_name: row[22] as string,
+      stripe_shipping_address_1: row[23] as string,
+      stripe_shipping_address_2: row[24] as string,
+      stripe_shipping_postal_code: row[25] as string,
+      status: row[26] as OrderStatus,
+      created_at: row[27] as string,
+      updated_at: row[28] as string,
     };
   } catch (error) {
     console.error('Error getting order by ID:', error);
@@ -238,7 +264,8 @@ export async function getOrdersByEmail(email: string): Promise<OrderData[]> {
                business_postcode, business_country, google_business_id,
                stand_colors, utm_source, utm_medium, utm_campaign, utm_term,
                utm_content, all_businesses, stripe_payment_intent_id,
-               stripe_session_id, status, created_at, updated_at
+               stripe_session_id, stripe_shipping_name, stripe_shipping_address_1,
+               stripe_shipping_address_2, stripe_shipping_postal_code, status, created_at, updated_at
         FROM orders
         WHERE customer_email = ?
         ORDER BY created_at DESC
@@ -269,9 +296,13 @@ export async function getOrdersByEmail(email: string): Promise<OrderData[]> {
       all_businesses: row[19] as string,
       stripe_payment_intent_id: row[20] as string,
       stripe_session_id: row[21] as string,
-      status: row[22] as OrderStatus,
-      created_at: row[23] as string,
-      updated_at: row[24] as string,
+      stripe_shipping_name: row[22] as string,
+      stripe_shipping_address_1: row[23] as string,
+      stripe_shipping_address_2: row[24] as string,
+      stripe_shipping_postal_code: row[25] as string,
+      status: row[26] as OrderStatus,
+      created_at: row[27] as string,
+      updated_at: row[28] as string,
     }));
   } catch (error) {
     console.error('Error getting orders by email:', error);
@@ -313,4 +344,4 @@ export async function getOrderStats(): Promise<{
 }
 
 // Export the client for custom queries if needed
-export { client }; 
+export { client };

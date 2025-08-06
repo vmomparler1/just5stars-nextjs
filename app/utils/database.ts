@@ -117,7 +117,7 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
           google_business_id, stand_colors, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
           all_businesses, stripe_payment_intent_id, stripe_session_id, stripe_shipping_name,
           stripe_shipping_address_1, stripe_shipping_address_2, stripe_shipping_postal_code, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
       `,
       args: [

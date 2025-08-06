@@ -1,0 +1,118 @@
+=== STORE ORDER DEBUG ===
+Received request data: {
+  "product_name": "Expositor NFC con código QR",
+  "product_id": "stand_only",
+  "quantity": 3,
+  "price": 95.76,
+  "discount_amount": 47.88,
+  "voucher_code": "AGOSTO50",
+  "customer_email": "test123@gmail.com",
+  "customer_phone": "654654654",
+  "business_name": "negocio",
+  "business_postcode": "28009",
+  "business_country": "España",
+  "google_business_id": "ChIJlYhO6hsmQg0RWvm-cAKWVk4",
+  "stand_colors": [
+    {
+      "color": "negro"
+    },
+    {
+      "color": "blanco"
+    },
+    {
+      "color": "negro"
+    }
+  ],
+  "utm_params": {},
+  "all_businesses": [
+    {
+      "business_number": 1,
+      "business_name": "negocio",
+      "business_postcode": "28009",
+      "business_country": "España",
+      "google_business_id": "ChIJlYhO6hsmQg0RWvm-cAKWVk4",
+      "copy_from_first": false
+    },
+    {
+      "business_number": 2,
+      "business_name": "negocio",
+      "business_postcode": "28009",
+      "business_country": "España",
+      "google_business_id": "ChIJlYhO6hsmQg0RWvm-cAKWVk4",
+      "copy_from_first": true
+    },
+    {
+      "business_number": 3,
+      "business_name": "hola",
+      "business_postcode": "46022",
+      "business_country": "España",
+      "google_business_id": null,
+      "copy_from_first": false
+    }
+  ]
+}
+Extracted UTM params: {}
+Prepared order data for database: {
+  "product_name": "Expositor NFC con código QR",
+  "product_id": "stand_only",
+  "quantity": 3,
+  "price": 95.76,
+  "discount_amount": 47.88,
+  "voucher_code": "AGOSTO50",
+  "customer_email": "test123@gmail.com",
+  "customer_phone": "654654654",
+  "business_name": "negocio",
+  "business_postcode": "28009",
+  "business_country": "España",
+  "google_business_id": "ChIJlYhO6hsmQg0RWvm-cAKWVk4",
+  "stand_colors": "[{\"color\":\"negro\"},{\"color\":\"blanco\"},{\"color\":\"negro\"}]",
+  "utm_source": null,
+  "utm_medium": null,
+  "utm_campaign": null,
+  "utm_term": null,
+  "utm_content": null,
+  "all_businesses": "[{\"business_number\":1,\"business_name\":\"negocio\",\"business_postcode\":\"28009\",\"business_country\":\"España\",\"google_business_id\":\"ChIJlYhO6hsmQg0RWvm-cAKWVk4\",\"copy_from_first\":false},{\"business_number\":2,\"business_name\":\"negocio\",\"business_postcode\":\"28009\",\"business_country\":\"España\",\"google_business_id\":\"ChIJlYhO6hsmQg0RWvm-cAKWVk4\",\"copy_from_first\":true},{\"business_number\":3,\"business_name\":\"hola\",\"business_postcode\":\"46022\",\"business_country\":\"España\",\"google_business_id\":null,\"copy_from_first\":false}]",
+  "stripe_payment_intent_id": null,
+  "stripe_session_id": null,
+  "status": "pending"
+}
+Error creating order: Error [LibsqlError]: SQLITE_UNKNOWN: SQLite error: 25 values for 26 columns
+    at async createOrder (app/utils/database.ts:112:19)
+    at async POST (app/api/store-order/route.ts:72:20)
+  110 | export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
+  111 |   try {
+> 112 |     const result = await client.execute({
+      |                   ^
+  113 |       sql: `
+  114 |         INSERT INTO orders (
+  115 |           product_name, product_id, quantity, price, discount_amount, voucher_code, {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [Error [ResponseError]: SQLite error: 25 values for 26 columns] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: 25 values for 26 columns',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+Error storing order: Error [LibsqlError]: SQLITE_UNKNOWN: SQLite error: 25 values for 26 columns
+    at async createOrder (app/utils/database.ts:112:19)
+    at async POST (app/api/store-order/route.ts:72:20)
+  110 | export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
+  111 |   try {
+> 112 |     const result = await client.execute({
+      |                   ^
+  113 |       sql: `
+  114 |         INSERT INTO orders (
+  115 |           product_name, product_id, quantity, price, discount_amount, voucher_code, {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [Error [ResponseError]: SQLite error: 25 values for 26 columns] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: 25 values for 26 columns',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}

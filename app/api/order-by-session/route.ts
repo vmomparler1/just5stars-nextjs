@@ -69,6 +69,14 @@ export async function GET(request: NextRequest) {
 
     // Calculate estimated delivery date (3-5 business days)
     const orderDate = new Date(order.created_at);
+    
+    // Check if date is valid
+    if (isNaN(orderDate.getTime())) {
+      console.error('Invalid created_at date:', order.created_at);
+      // Use current date as fallback
+      orderDate.setTime(Date.now());
+    }
+    
     const deliveryDate = new Date(orderDate);
     deliveryDate.setDate(orderDate.getDate() + 4); // 4 days delivery estimate
     

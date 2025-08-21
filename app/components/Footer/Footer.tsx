@@ -47,6 +47,12 @@ export default function Footer() {
               >
                 Política de Devoluciones
               </a>
+              <a 
+                href="/aviso-legal" 
+                className="hover:text-white transition-colors"
+              >
+                Aviso Legal
+              </a>
             </div>
           </div>
         </div>

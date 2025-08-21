@@ -102,7 +102,7 @@ export default function NFCExpositors() {
         <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-8 md:p-12">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-4">Indícanos el nombre de tu negocio y su código postal y nosotros nos encargamos del resto</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-4">Acabados que encajan con tu negocio</h3>
               
               {/* Color Selection */}
               <p className="text-gray-600 mb-3">Tenemos el expositor en blanco y negro. Elije el tuyo:</p>

@@ -3,9 +3,9 @@
 
 export default function VideoSection() {
   return (
-    <section className="w-full">
+    <section className="w-full pt-6">
       <div className="text-center">
-        <h3 className="text-4xl font-bold mb-4">Te mandamos el expositor ya configurado</h3>
+        <h3 className="text-4xl font-bold mb-4 max-w-screen-md mx-auto">Indícanos el nombre de tu negocio y su código postal y nosotros nos encargamos del resto</h3>
       </div>
       <div className="relative w-full h-[60vh] overflow-hidden">
 

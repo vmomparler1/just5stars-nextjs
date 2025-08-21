@@ -10,7 +10,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/es/products/:path*',
-        destination: '/stand-google',
+        destination: '/expositor-resenas-nfc',
+        permanent: true,
+      },
+      {
+        source: '/stand-google',
+        destination: '/expositor-resenas-nfc',
         permanent: true,
       },
     ]

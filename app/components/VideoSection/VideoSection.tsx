@@ -17,6 +17,7 @@ export default function VideoSection() {
           playsInline
           preload="metadata"
         >
+          <source src="/video/example_find_business_mobile.mp4" type="video/mp4" media="(max-width: 768px)" />
           <source src="/video/example_find_business.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>

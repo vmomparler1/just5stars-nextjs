@@ -61,7 +61,7 @@ export default function Navbar() {
             onClick={scrollToProducts}
             className="bg-[#7f6d2a] text-white px-4 py-2 rounded-lg hover:bg-[#6a5a23] transition-colors"
           >
-            Ver Servicios
+            Comprar
           </button>
         </div>
 

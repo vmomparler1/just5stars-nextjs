@@ -91,12 +91,12 @@ function SEOLocalHero() {
         </div>
         
         {/* Stats Section */}
-        <div className="mt-24 grid md:grid-cols-3 gap-8">
+        {/*<div className="mt-24 grid md:grid-cols-3 gap-8">
           <div className="text-center p-6 bg-white rounded-xl shadow-lg">
             <div className="flex justify-center mb-4">
               <MagnifyingGlassIcon className="w-12 h-12 text-blue-600" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">+300%</div>
+            <div className="text-3xl font-bold text-gray-900 mb-2">Visibilidad Local</div>
             <p className="text-gray-600">Aumento promedio en visibilidad local</p>
           </div>
           <div className="text-center p-6 bg-white rounded-xl shadow-lg">
@@ -113,7 +113,7 @@ function SEOLocalHero() {
             <div className="text-3xl font-bold text-gray-900 mb-2">90 días</div>
             <p className="text-gray-600">Para ver resultados significativos</p>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

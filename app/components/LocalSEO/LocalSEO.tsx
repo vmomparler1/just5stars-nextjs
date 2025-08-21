@@ -10,7 +10,7 @@ export default function LocalSEO() {
     <section id="local-seo" className="py-32 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Visibilidad en Google Maps</h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">SEO Local</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Optimizamos tu ficha de Google My Business para que aparezcas en las primeras posiciones cuando tus clientes te busquen en Google Maps. 
             Aumenta tu visibilidad local y atrae más clientes a tu negocio.
@@ -19,7 +19,7 @@ export default function LocalSEO() {
 
         <div className="grid md:grid-cols-2 gap-16 items-center mb-16">
           <div>
-            <h3 className="text-3xl font-bold text-gray-900 mb-6">¿Qué es el Local SEO?</h3>
+            <h3 className="text-3xl font-bold text-gray-900 mb-6">¿Qué es el SEO Local?</h3>
             <p className="text-lg text-gray-600 mb-6">
               El Local SEO es la optimización de tu presencia online para aparecer en los resultados de búsqueda local. 
               Cuando alguien busca tu tipo de negocio cerca de su ubicación, tu empresa aparecerá entre los primeros resultados.
@@ -52,7 +52,7 @@ export default function LocalSEO() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        {/*<div className="grid md:grid-cols-3 gap-8 mb-16">
           {[
             {
               title: "Mejora tu visibilidad en Google Maps",
@@ -82,12 +82,12 @@ export default function LocalSEO() {
               <div className="text-lg font-semibold text-[#7f6d2a]">{feature.stat}</div>
             </div>
           ))}
-        </div>
+        </div>*/}
 
         <div className="bg-white rounded-2xl p-8 md:p-12 shadow-lg">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
-              <h3 className="text-3xl font-bold text-gray-900 mb-6">Local SEO + Expositores NFC = Resultados Garantizados</h3>
+              <h3 className="text-3xl font-bold text-gray-900 mb-6">Local SEO + Expositores NFC = Resultados Increíbles</h3>
               <p className="text-lg text-gray-600 mb-6">
                 Combinamos la visibilidad online con la recopilación física de reseñas. 
                 Mientras mejoramos tu posicionamiento en Google Maps, nuestros expositores NFC 
@@ -120,7 +120,7 @@ export default function LocalSEO() {
           </div>
         </div>
 
-        <div className="mt-16 bg-gradient-to-r from-[#7f6d2a] to-amber-600 rounded-2xl p-8 text-white text-center">
+      {/*<div className="mt-16 bg-gradient-to-r from-[#7f6d2a] to-amber-600 rounded-2xl p-8 text-white text-center">
           <h3 className="text-2xl font-bold mb-4">¿Listo para dominar Google Maps en tu zona?</h3>
           <p className="text-lg opacity-90 mb-6">
             Nuestro equipo de expertos en Local SEO está preparado para hacer que tu negocio sea el primero que vean tus clientes.
@@ -136,7 +136,7 @@ export default function LocalSEO() {
               <span className="text-sm font-semibold">✓ Soporte continuo</span>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

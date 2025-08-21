@@ -44,7 +44,7 @@ export default function Products({ onlyStand = false }: ProductsProps) {
       <section id="products" className="py-32 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Te ayudamos a crecer en Google</h2>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">Ayudamos a tu negocio a crecer</h2>
 
           </div>
           <div className={`grid gap-8 ${onlyStand ? 'md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'}`}>

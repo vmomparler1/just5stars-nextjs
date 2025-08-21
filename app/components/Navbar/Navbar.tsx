@@ -46,7 +46,7 @@ export default function Navbar() {
             href="/stand-google"
             className="text-gray-600 hover:text-[#7f6d2a] transition-colors"
           >
-            Expositor NFC Google
+            Expositor NFC Reseñas
           </Link>
           <Link 
             href="/seo-local"
@@ -89,7 +89,7 @@ export default function Navbar() {
               className="block text-gray-600 hover:text-[#7f6d2a] transition-colors"
               onClick={toggleMenu}
             >
-              Expositor NFC Google
+              Expositor NFC Reseñas
             </Link>
             <Link 
               href="/seo-local" 

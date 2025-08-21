@@ -77,7 +77,7 @@ export default function NFCExpositors() {
             },
             {
               title: "Reseñas Instantáneas",
-              description: "Los clientes pueden dejar reseñas de 5 estrellas con solo acercar su teléfono",
+              description: "Los clientes pueden dejar reseñas con solo acercar su teléfono",
               icon: StarIcon,
               stat: "< 5 segundos"
             },

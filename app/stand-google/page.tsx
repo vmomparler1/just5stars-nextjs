@@ -35,18 +35,18 @@ function GoogleStandHero() {
           <div className="space-y-8">
             <div className="inline-flex items-center px-4 py-2 bg-yellow-100 rounded-full text-[#7f6d2a] text-sm font-medium">
               <StarIcon className="w-4 h-4 mr-2" />
-              Especialistas en Reseñas de Google
+              Especialistas en Reseñas
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
               Expositores
               <br />
-              <span className="bg-gradient-to-r from-[#7f6d2a] to-[#fec700] bg-clip-text text-transparent">Google</span>
+              <span className="bg-gradient-to-r from-[#7f6d2a] to-[#fec700] bg-clip-text text-transparent">Reseñas</span>
               <br />
-              NFC
+              NFC & QR
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Consigue más reseñas de 5 estrellas en Google con nuestros expositores NFC. Simple, efectivo y elegante.
+                Consigue más reseñas en Google con nuestros expositores NFC. Simple, efectivo y elegante.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
@@ -60,10 +60,6 @@ function GoogleStandHero() {
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
                   <span className="text-lg">Configuración previa para que enlace a tu perfil de reseñas de Google</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Sin subscripción de ningún tipo</span>
                 </li>
               </ul>
             </div>
@@ -103,11 +99,11 @@ export default function StandGooglePage() {
       {
         "@type": "Product",
         "@id": "https://just5stars.com/stand-google#product-stand-only",
-        "name": "Expositor NFC con código QR",
+        "name": "Expositor Reseñas NFC & QR ",
         "description": "Consigue más reseñas en Google con nuestros expositores NFC. Tecnología NFC + Código QR preconfigurado a tu perfil de Google Business.",
         "brand": {
           "@type": "Brand",
-          "name": "Just5Stars"
+          "name": "just5stars"
         },
         "category": "Marketing Digital",
         "offers": {
@@ -115,7 +111,7 @@ export default function StandGooglePage() {
           "url": "https://just5stars.com/stand-google",
           "priceCurrency": "EUR",
           "price": "39.80",
-          "priceValidUntil": "2024-12-31",
+          "priceValidUntil": "2025-12-31",
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
@@ -142,7 +138,7 @@ export default function StandGooglePage() {
           "url": "https://just5stars.com/stand-google",
           "priceCurrency": "EUR",
           "price": "59.80",
-          "priceValidUntil": "2024-12-31",
+          "priceValidUntil": "2025-12-31",
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
@@ -172,7 +168,7 @@ export default function StandGooglePage() {
           "url": "https://just5stars.com/stand-google",
           "priceCurrency": "EUR",
           "price": "299.80",
-          "priceValidUntil": "2024-12-31",
+          "priceValidUntil": "2025-12-31",
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",

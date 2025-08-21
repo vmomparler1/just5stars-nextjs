@@ -37,11 +37,10 @@ function SEOLocalHero() {
               Especialistas en Posicionamiento Local
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              SEO
+              Pack de Visibilidad
               <br />
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Local</span>
-              <br />
-              Google Maps
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">SEO Local</span>
+              
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
@@ -80,7 +79,7 @@ function SEOLocalHero() {
             <div className="relative z-10">
               <Image
                 src={localSeoImage}
-                alt="SEO Local Google Maps"
+                alt="SEO Local"
                 width={600}
                 height={600}
                 className="w-full h-auto rounded-2xl shadow-2xl"
@@ -104,7 +103,7 @@ function SEOLocalHero() {
             <div className="flex justify-center mb-4">
               <MapPinIcon className="w-12 h-12 text-blue-600" />
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">Top 3</div>
+            <div className="text-3xl font-bold text-gray-900 mb-2">Mejores posiciones</div>
             <p className="text-gray-600">Posición media en Google Maps</p>
           </div>
           <div className="text-center p-6 bg-white rounded-xl shadow-lg">
@@ -127,11 +126,11 @@ export default function SEOLocalPage() {
       {
         "@type": "Service",
         "@id": "https://just5stars.com/seo-local#service-local-seo",
-        "name": "SEO Local Google Maps",
-        "description": "Servicio completo de posicionamiento local para aparecer en las primeras posiciones de Google Maps. Incluye optimización de Google My Business, estrategia de palabras clave locales y gestión de reputación online.",
+        "name": "SEO Local",
+        "description": "Servicio completo de posicionamiento local para mejorar la visibilidad en Google Maps. Incluye optimización de Google My Business, estrategia de palabras clave locales y gestión de reputación online.",
         "provider": {
           "@type": "Organization",
-          "name": "Just5Stars",
+          "name": "just5stars",
           "url": "https://just5stars.com"
         },
         "serviceType": "SEO Local",
@@ -144,7 +143,7 @@ export default function SEOLocalPage() {
           "url": "https://just5stars.com/seo-local",
           "priceCurrency": "EUR",
           "price": "59.80",
-          "priceValidUntil": "2024-12-31",
+          "priceValidUntil": "2025-12-31",
           "availability": "https://schema.org/InStock"
         },
         "hasOfferCatalog": {
@@ -202,7 +201,7 @@ export default function SEOLocalPage() {
           "url": "https://just5stars.com/seo-local",
           "priceCurrency": "EUR",
           "price": "299.80",
-          "priceValidUntil": "2024-12-31",
+          "priceValidUntil": "2025-12-31",
           "availability": "https://schema.org/InStock"
         },
         "hasOfferCatalog": {

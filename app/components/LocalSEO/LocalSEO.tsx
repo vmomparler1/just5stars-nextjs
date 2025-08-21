@@ -55,10 +55,10 @@ export default function LocalSEO() {
         <div className="grid md:grid-cols-3 gap-8 mb-16">
           {[
             {
-              title: "Aparece en Google Maps",
-              description: "Tu negocio aparecerá en los primeros resultados cuando alguien busque en su zona",
+              title: "Mejora tu visibilidad en Google Maps",
+              description: "Mejores resultados cuando alguien busque en su zona",
               icon: MapPinIcon,
-              stat: "3x más visible"
+              stat: "Más visible"
             },
             {
               title: "Más Búsquedas Locales",

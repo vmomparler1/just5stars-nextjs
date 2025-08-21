@@ -45,7 +45,7 @@ function SEOLocalHero() {
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Aparecer en las primeras posiciones de Google Maps cuando tus clientes te busquen. Aumenta tu visibilidad local y atrae más clientes a tu negocio.
+                Mejora tu posicionamiento de Google Maps cuando tus clientes te busquen. Aumenta tu visibilidad local y atrae más clientes a tu negocio.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">

@@ -5,6 +5,7 @@ import Hero from "../components/Hero";
 import FeaturedIn from "../components/FeaturedIn";
 import Products from "../components/Products";
 import { NFCExpositors } from "../components/NFCExpositors";
+import VideoSection from "../components/VideoSection";
 import SuccessStories from "../components/SuccessStories";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
@@ -201,6 +202,7 @@ export default function StandGooglePage() {
         <FeaturedIn />
         <NFCExpositors />
         <Products onlyStand={true} />
+        <VideoSection />
         <SuccessStories />
         <CTA />
         <Footer />

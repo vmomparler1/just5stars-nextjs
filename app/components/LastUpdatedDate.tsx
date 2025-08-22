@@ -13,7 +13,7 @@ export default function LastUpdatedDate() {
   if (!mounted) {
     return (
       <p className="text-sm text-gray-500">
-        Última actualización: --
+        Última actualización: 22/08/2025
       </p>
     );
   }

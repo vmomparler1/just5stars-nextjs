@@ -21,7 +21,7 @@ export default function AvisoLegalPage() {
               <div className="bg-amber-50 p-6 rounded-lg mb-6">
                 <p className="mb-2"><strong>Titular del sitio web:</strong> Victor Gimeno</p>
                 <p className="mb-2"><strong>DNI:</strong> 22596541F</p>
-                <p className="mb-2"><strong>Domicilio:</strong> C/Travesía s/n, 46024</p>
+                <p className="mb-2"><strong>Domicilio:</strong> C/Travesía s/n, 46024, Valencia</p>
                 <p className="mb-2"><strong>Sitio Web:</strong> just5stars.com</p>
                 <p className="mb-2"><strong>Correo electrónico:</strong> info@just5stars.com</p>
                 <p><strong>Teléfono:</strong> +34 645 061 155</p>

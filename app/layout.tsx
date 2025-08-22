@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "just5stars - SEO local y marketing digital para pequeños negocios",
-  description: "Transforma tu negocio con nuestro sistema probado que ofrece consistentemente resultados de 5 estrellas. Únete a miles de empresas que han revolucionado su historia de éxito.",
+  description: "Transforma tu negocio con nuestro sistema probado que ofrece consistentemente resultados de 5 estrellas.",
 };
 
 export default function RootLayout({

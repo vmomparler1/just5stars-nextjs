@@ -19,7 +19,6 @@ export default function SuccessStories() {
                 content: "Con el servicio de visibilidad en Google Maps he conseguido captar más clientes. ¡Muy Top!",
                 image: testimonial1,
                 rating: 5,
-                growth: "+340% Ingresos",
                 isPhoto: true
               },
               {
@@ -28,7 +27,6 @@ export default function SuccessStories() {
                 content: "El cartelito es increíble. Nuestra valoración en Google nunca ha sido mejor.",
                 image: testimonial2,
                 rating: 5,
-                growth: "+250% Reseñas",
                 isPhoto: true
               }
             ].map((story, index) => (
@@ -61,9 +59,6 @@ export default function SuccessStories() {
                     <div>
                       <h4 className="font-semibold text-gray-900 text-lg">{story.name}</h4>
                       <p className="text-sm text-gray-600">{story.role}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-lg font-bold text-green-600">{story.growth}</div>
                     </div>
                   </div>
                 </div>

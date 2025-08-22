@@ -18,7 +18,7 @@ export default function CTA() {
       <div className="max-w-4xl mx-auto px-6 text-center">
         <h2 className="text-4xl font-bold text-white mb-4">¿Listo para Alcanzar la Excelencia de 5 Estrellas?</h2>
         <p className="text-xl text-amber-100 mb-8">
-          Únete a miles de empresas que han transformado su historia de éxito con just5stars
+          Únete al club de las empresas que han transformado su historia de éxito con just5stars
         </p>
         <button 
           onClick={scrollToProducts}

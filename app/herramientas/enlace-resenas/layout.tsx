@@ -2,14 +2,14 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Generador de Enlaces de Reseñas de Google - Herramienta Gratuita | Just5Stars",
+  title: "Enlaces de Reseñas - Herramienta Gratuita | Just5Stars",
   description: "Genera enlaces directos para que tus clientes dejen reseñas en Google de forma rápida y sencilla. Herramienta gratuita para aumentar tus reseñas online.",
   keywords: "enlace reseñas google, generador enlaces google, reseñas google, google reviews, herramienta gratuita",
   openGraph: {
-    title: "Generador de Enlaces de Reseñas de Google - Herramienta Gratuita",
+    title: "Enlaces de Reseñas - Herramienta Gratuita",
     description: "Genera enlaces directos para que tus clientes dejen reseñas en Google de forma rápida y sencilla.",
-    url: "https://just5stars.com/herramientas/enlace-resenas-google",
-    siteName: "Just5Stars",
+    url: "https://just5stars.com/herramientas/enlace-resenas",
+    siteName: "just5stars",
     type: "website",
   },
   twitter: {

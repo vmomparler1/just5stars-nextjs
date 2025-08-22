@@ -16,7 +16,7 @@ export default function SuccessStories() {
               {
                 name: "Daniel Martínez",
                 role: "Fisioterapeuta",
-                content: "Con el servicio de visibilidad en Google Maps he conseguido captar más clientes. ¡Muy Top!",
+                content: "Con el servicio de SEO Local en Google Maps he conseguido captar más clientes. ¡Muy Top!",
                 image: testimonial1,
                 rating: 5,
                 isPhoto: true

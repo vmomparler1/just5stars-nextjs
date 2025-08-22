@@ -127,8 +127,8 @@ export default function StandGooglePage() {
       {
         "@type": "Product",
         "@id": "https://just5stars.com/stand-google#product-stand-visibility",
-        "name": "3 Expositores + Visibilidad en Google Maps",
-        "description": "Incluye 3 expositores + gestión de tu visibilidad en Google Maps. Auditoría inicial, recomendaciones y seguimiento incluidos.",
+        "name": "3 Expositores + SEO Local en Google Maps",
+        "description": "Incluye 3 expositores + gestión de tu SEO Local en Google Maps. Auditoría inicial, recomendaciones y seguimiento incluidos.",
         "brand": {
           "@type": "Brand",
           "name": "Just5Stars"
@@ -157,11 +157,11 @@ export default function StandGooglePage() {
       {
         "@type": "Product",
         "@id": "https://just5stars.com/stand-google#product-stand-visibility-web",
-        "name": "3 Expositores + Visibilidad en Google Maps + Web",
+        "name": "3 Expositores + SEO Local en Google Maps + Web",
         "description": "Incluye 3 expositores + gestión completa de tu presencia digital. Servicio completo con creación y mantenimiento web más SEO.",
         "brand": {
           "@type": "Brand",
-          "name": "Just5Stars"
+          "name": "just5stars"
         },
         "category": "Marketing Digital",
         "offers": {
@@ -173,7 +173,7 @@ export default function StandGooglePage() {
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
-            "name": "Just5Stars"
+            "name": "just5stars"
           }
         },
         "features": [

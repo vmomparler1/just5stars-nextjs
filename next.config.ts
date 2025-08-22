@@ -18,6 +18,16 @@ const nextConfig: NextConfig = {
         destination: '/expositor-resenas-nfc',
         permanent: true,
       },
+      {
+        source: '/herramientas/enlace-resenas-google',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/herramientas/enlace-resenas',
+        destination: '/',
+        permanent: true,
+      },
     ]
   },
 };

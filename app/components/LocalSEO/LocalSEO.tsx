@@ -26,7 +26,7 @@ export default function LocalSEO() {
             </p>
             <div className="space-y-4">
               {[
-                "Optimización completa de Google My Business",
+                "Optimización completa del GBP",
                 "Gestión de reseñas y respuestas",
                 "Creación de contenido local relevante",
                 "Análisis de competencia local",

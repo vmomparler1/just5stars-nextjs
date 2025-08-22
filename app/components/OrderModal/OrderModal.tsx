@@ -1404,7 +1404,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                     Enviando...
                   </>
                 ) : (
-                  'Proceder al Pago'
+                  'Proceder al Pago y Dirección de Envío'
                 )}
               </button>
 

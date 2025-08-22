@@ -19,8 +19,8 @@
   },
   "stand_visibility": {
     "id": "stand_visibility",
-    "title": "3 Expositores + Visibilidad en Google Maps",
-    "description": "Incluye 3 expositores + gestión de tu visibilidad en Google Maps.",
+    "title": "3 Expositores + SEO Local en Google Maps",
+    "description": "Incluye 3 expositores + gestión de tu SEO Local en Google Maps.",
     "image": "/components/Products/stand_local_seo.png",
     "cta_text": "Comprar Ahora",
     "local_seo": 1,
@@ -43,7 +43,7 @@
   },
   "stand_visibility_web": {
     "id": "stand_visibility_web",
-    "title": "3 Expositores + Visibilidad en Google Maps + Web",
+    "title": "3 Expositores + SEO Local en Google Maps + Web",
     "description": "Incluye 3 expositores + gestión completa de tu presencia digital.",
     "image": "/components/Products/stand_local_seo_360.png",
     "cta_text": "Comprar Ahora",

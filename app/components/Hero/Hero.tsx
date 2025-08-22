@@ -38,11 +38,11 @@ export default function Hero() {
               <ul className="mt-4 space-y-2">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-2" />
-                  SEO local para destacar en Google Maps
+                  SEO local para Google Maps
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-2" />
-                  Soportes NFC para conseguir más reseñas positivas
+                  Soportes NFC para conseguir más reseñas
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-2" />

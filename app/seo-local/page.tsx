@@ -49,7 +49,7 @@ function SEOLocalHero() {
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Optimización completa de Google My Business</span>
+                  <span className="text-lg">Optimización completa del Google Business Profile</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
@@ -127,7 +127,7 @@ export default function SEOLocalPage() {
         "@type": "Service",
         "@id": "https://just5stars.com/seo-local#service-local-seo",
         "name": "SEO Local",
-        "description": "Servicio completo de posicionamiento local para mejorar la visibilidad en Google Maps. Incluye optimización de Google My Business, estrategia de palabras clave locales y gestión de reputación online.",
+        "description": "Servicio completo de posicionamiento local para mejorar el SEO Local en Google Maps. Incluye optimización del GBP, estrategia de palabras clave locales y gestión de reputación online.",
         "provider": {
           "@type": "Organization",
           "name": "just5stars",
@@ -154,7 +154,7 @@ export default function SEOLocalPage() {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "Optimización completa de Google My Business"
+                "name": "Optimización completa del GBP"
               }
             },
             {
@@ -188,7 +188,7 @@ export default function SEOLocalPage() {
         "description": "Servicio 360 que incluye SEO local, creación y mantenimiento web, plus gestión completa de la presencia digital de tu negocio.",
         "provider": {
           "@type": "Organization",
-          "name": "Just5Stars",
+          "name": "just5stars",
           "url": "https://just5stars.com"
         },
         "serviceType": "Marketing Digital Integral",

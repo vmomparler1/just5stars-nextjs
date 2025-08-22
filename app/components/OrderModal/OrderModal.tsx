@@ -16,6 +16,9 @@ import { getOrCreateTransactionId, clearTransactionId } from '@/app/utils/transa
 import { hashEmail, hashPhone } from '@/app/utils/hashUtils';
 import { generateEventId } from '@/app/utils/eventId';
 
+// Import stock data
+import stockData from '@/app/data/stock.json';
+
 interface OrderModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -266,7 +269,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         if (response.ok) {
           const data = await response.json();
           setRateLimitInfo(data);
-          
+
           // Log rate limit info to console
           console.log(`📊 Búsquedas restantes: ${data.remaining} / 20`);
         } else {
@@ -292,19 +295,19 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
       const rateLimitResponse = await fetch('/api/geolocation-rate-limit', {
         method: 'POST'
       });
-      
+
       if (!rateLimitResponse.ok) {
         const errorData = await rateLimitResponse.json();
         setSearchError(errorData.error || 'Has alcanzado el límite de búsquedas. Intenta de nuevo más tarde.');
         return;
       }
-      
+
       const rateLimitData = await rateLimitResponse.json();
       if (!rateLimitData.allowed) {
         setSearchError(rateLimitData.error || 'Has alcanzado el límite de búsquedas. Intenta de nuevo más tarde.');
         return;
       }
-      
+
       // Update rate limit info
       const newRateLimitInfo = {
         limit: 20,
@@ -312,10 +315,10 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
         reset: rateLimitData.resetTime
       };
       setRateLimitInfo(newRateLimitInfo);
-      
+
       // Log rate limit info to console
       console.log(`📊 Búsquedas restantes: ${newRateLimitInfo.remaining} / ${newRateLimitInfo.limit}`);
-      
+
     } catch (error) {
       console.error('Error checking rate limit:', error);
       setSearchError('Error al verificar el límite de búsquedas.');
@@ -362,7 +365,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           });
           console.log(`Search timeout: Business search timed out after 10 seconds for business ${targetBusinessIndex + 1}`);
         }, 10000); // 10 second timeout
-        
+
         searchTimeouts.current.set(targetBusinessIndex, timeout);
 
         if (mapRefs.current[targetBusinessIndex] && businessData[targetBusinessIndex]) {
@@ -370,7 +373,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             center: { lat: 40.4168, lng: -3.7038 }, // Madrid center
             zoom: 2,
           });
-          
+
           // Update maps array
           setMaps(prev => {
             const newMaps = [...prev];
@@ -395,7 +398,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               searchTimeouts.current.delete(targetBusinessIndex);
             }
             pendingSearches.current.delete(targetBusinessIndex);
-            
+
             setIsSearching(prev => {
               const newState = [...prev];
               newState[targetBusinessIndex] = false;
@@ -440,7 +443,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           searchTimeouts.current.delete(targetBusinessIndex);
         }
         pendingSearches.current.delete(targetBusinessIndex);
-        
+
         setIsSearching(prev => {
           const newState = [...prev];
           newState[targetBusinessIndex] = false;
@@ -579,7 +582,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const copyBusinessData = (fromIndex: number, toIndex: number) => {
     if (fromIndex === toIndex) return;
-    
+
     setBusinessData(prevBusinessData => {
       const newBusinessData = [...prevBusinessData];
       const sourceData = newBusinessData[fromIndex];
@@ -648,6 +651,24 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if all selected colors are in stock
+    const hasOutOfStockItems = stands.some(stand => {
+      const stockInfo = stockData.stands[stand.color as keyof typeof stockData.stands];
+      return !stockInfo?.inStock;
+    });
+
+    if (hasOutOfStockItems) {
+      alert('Algunos de los colores seleccionados están sin stock. Por favor, selecciona otros colores disponibles.');
+      return;
+    }
+
+    // Check if all required fields are filled
+    const isFormValid = 
+      formData.email &&
+      formData.phone &&
+      formData.acceptPrivacyPolicy &&
+      formData.acceptTermsAndConditions;
 
     if (!currentPriceEntry || !currentProductConfig) {
       alert('Error: No product selected');
@@ -1064,20 +1085,32 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                     </div>
 
                     <div className="flex space-x-2">
-                      {['blanco', 'negro'].map((color) => (
-                        <button
-                          key={color}
-                          type="button"
-                          onClick={() => handleStandColorChange(index, color)}
-                          className={`px-3 py-1 rounded-lg border transition-colors text-sm ${
-                            stand.color === color
-                              ? 'bg-[#7f6d2a] text-white border-[#7f6d2a]'
-                              : 'bg-white text-gray-700 border-gray-300 hover:border-[#7f6d2a]'
-                          }`}
-                        >
-                          {color.charAt(0).toUpperCase() + color.slice(1)}
-                        </button>
-                      ))}
+                      {['blanco', 'negro'].map((color) => {
+                        const isOutOfStock = !stockData.stands[color as keyof typeof stockData.stands]?.inStock;
+                        const isDisabled = isOutOfStock;
+                        const buttonClass = `px-3 py-1 rounded-lg border transition-colors text-sm ${
+                          stand.color === color
+                            ? 'bg-[#7f6d2a] text-white border-[#7f6d2a]'
+                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#7f6d2a]'
+                        } ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`;
+
+                        return (
+                          <button
+                            key={color}
+                            type="button"
+                            onClick={() => {
+                              if (!isDisabled) {
+                                handleStandColorChange(index, color);
+                              }
+                            }}
+                            className={buttonClass}
+                            disabled={isDisabled}
+                          >
+                            {color.charAt(0).toUpperCase() + color.slice(1)}
+                            {isOutOfStock && <span className="ml-1">(Agotado)</span>}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}

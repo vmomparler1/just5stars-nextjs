@@ -1,0 +1,105 @@
+ POST /api/store-order 500 in 2763ms
+ GET / 200 in 267ms
+ GET /favicon.ico?favicon.68f1ac58.ico 200 in 249ms
+ GET /api/geolocation-rate-limit 200 in 72ms
+ GET /favicon.ico?favicon.68f1ac58.ico 200 in 246ms
+Geolocation rate limit check for IP: 90.160.58.142
+Geolocation request allowed for IP: 90.160.58.142 (2/20)
+ POST /api/geolocation-rate-limit 200 in 64ms
+=== STORE ORDER DEBUG ===
+Received request data: {
+  "product_name": "Expositor NFC con código QR",
+  "product_id": "stand_only",
+  "quantity": 1,
+  "price": 39.8,
+  "discount_amount": 19.9,
+  "voucher_code": "AGOSTO50",
+  "customer_email": "test@gmail.com",
+  "customer_phone": "654654654",
+  "business_name": "asdfas",
+  "business_postcode": "28009",
+  "business_country": "España",
+  "google_business_id": null,
+  "stand_colors": [
+    {
+      "color": "blanco"
+    }
+  ],
+  "utm_params": {},
+  "all_businesses": [
+    {
+      "business_number": 1,
+      "business_name": "asdfas",
+      "business_postcode": "28009",
+      "business_country": "España",
+      "google_business_id": null,
+      "copy_from_first": false
+    }
+  ]
+}
+Extracted UTM params: {}
+Prepared order data for database: {
+  "product_name": "Expositor NFC con código QR",
+  "product_id": "stand_only",
+  "quantity": 1,
+  "price": 39.8,
+  "discount_amount": 19.9,
+  "voucher_code": "AGOSTO50",
+  "customer_email": "test@gmail.com",
+  "customer_phone": "654654654",
+  "business_name": "asdfas",
+  "business_postcode": "28009",
+  "business_country": "España",
+  "google_business_id": null,
+  "stand_colors": "[{\"color\":\"blanco\"}]",
+  "utm_source": null,
+  "utm_medium": null,
+  "utm_campaign": null,
+  "utm_term": null,
+  "utm_content": null,
+  "all_businesses": "[{\"business_number\":1,\"business_name\":\"asdfas\",\"business_postcode\":\"28009\",\"business_country\":\"España\",\"google_business_id\":null,\"copy_from_first\":false}]",
+  "stripe_payment_intent_id": null,
+  "stripe_session_id": null,
+  "status": "pending"
+}
+Error creating order: Error [LibsqlError]: SQLITE_UNKNOWN: SQLite error: 27 values for 28 columns
+    at async createOrder (app/utils/database.ts:116:19)
+    at async POST (app/api/store-order/route.ts:72:20)
+  114 | export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
+  115 |   try {
+> 116 |     const result = await client.execute({
+      |                   ^
+  117 |       sql: `
+  118 |         INSERT INTO orders (
+  119 |           product_name, product_id, quantity, price, discount_amount, voucher_code, {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [Error [ResponseError]: SQLite error: 27 values for 28 columns] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: 27 values for 28 columns',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+Error storing order: Error [LibsqlError]: SQLITE_UNKNOWN: SQLite error: 27 values for 28 columns
+    at async createOrder (app/utils/database.ts:116:19)
+    at async POST (app/api/store-order/route.ts:72:20)
+  114 | export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at' | 'updated_at'>): Promise<string> {
+  115 |   try {
+> 116 |     const result = await client.execute({
+      |                   ^
+  117 |       sql: `
+  118 |         INSERT INTO orders (
+  119 |           product_name, product_id, quantity, price, discount_amount, voucher_code, {
+  code: 'SQLITE_UNKNOWN',
+  rawCode: undefined,
+  [cause]: [Error [ResponseError]: SQLite error: 27 values for 28 columns] {
+    code: 'SQLITE_UNKNOWN',
+    proto: {
+      message: 'SQLite error: 27 values for 28 columns',
+      code: 'SQLITE_UNKNOWN'
+    }
+  }
+}
+ POST /api/store-order 500 in 988ms

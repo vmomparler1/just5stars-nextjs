@@ -99,7 +99,7 @@ export default function StandGooglePage() {
     "@graph": [
       {
         "@type": "Product",
-        "@id": "https://just5stars.com/stand-google#product-stand-only",
+        "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-only",
         "name": "Expositor Reseñas NFC & QR ",
         "description": "Consigue más reseñas en Google con nuestros expositores NFC. Tecnología NFC + Código QR preconfigurado a tu perfil de Google Business.",
         "brand": {
@@ -109,7 +109,7 @@ export default function StandGooglePage() {
         "category": "Marketing Digital",
         "offers": {
           "@type": "Offer",
-          "url": "https://just5stars.com/stand-google",
+          "url": "https://just5stars.com/expositor-resenas-nfc",
           "priceCurrency": "EUR",
           "price": "39.80",
           "priceValidUntil": "2025-12-31",
@@ -126,7 +126,7 @@ export default function StandGooglePage() {
       },
       {
         "@type": "Product",
-        "@id": "https://just5stars.com/stand-google#product-stand-visibility",
+        "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-visibility",
         "name": "3 Expositores + SEO Local en Google Maps",
         "description": "Incluye 3 expositores + gestión de tu SEO Local en Google Maps. Auditoría inicial, recomendaciones y seguimiento incluidos.",
         "brand": {
@@ -136,7 +136,7 @@ export default function StandGooglePage() {
         "category": "Marketing Digital",
         "offers": {
           "@type": "Offer",
-          "url": "https://just5stars.com/stand-google",
+          "url": "https://just5stars.com/expositor-resenas-nfc",
           "priceCurrency": "EUR",
           "price": "59.80",
           "priceValidUntil": "2025-12-31",
@@ -156,7 +156,7 @@ export default function StandGooglePage() {
       },
       {
         "@type": "Product",
-        "@id": "https://just5stars.com/stand-google#product-stand-visibility-web",
+        "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-visibility-web",
         "name": "3 Expositores + SEO Local en Google Maps + Web",
         "description": "Incluye 3 expositores + gestión completa de tu presencia digital. Servicio completo con creación y mantenimiento web más SEO.",
         "brand": {
@@ -166,7 +166,7 @@ export default function StandGooglePage() {
         "category": "Marketing Digital",
         "offers": {
           "@type": "Offer",
-          "url": "https://just5stars.com/stand-google",
+          "url": "https://just5stars.com/expositor-resenas-nfc",
           "priceCurrency": "EUR",
           "price": "299.80",
           "priceValidUntil": "2025-12-31",

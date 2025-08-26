@@ -43,7 +43,7 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-8">
           <Link 
-            href="/stand-google"
+            href="/expositor-resenas-nfc"
             className="text-gray-600 hover:text-[#7f6d2a] transition-colors"
           >
             Expositor NFC Reseñas

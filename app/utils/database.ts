@@ -40,7 +40,9 @@ export interface OrderData {
   stripe_shipping_name?: string;
   stripe_shipping_address_1?: string;
   stripe_shipping_address_2?: string;
+  stripe_shipping_city?: string;
   stripe_shipping_postal_code?: string;
+  stripe_shipping_country?: string;
   status: OrderStatus;
   created_at?: string;
   updated_at?: string;
@@ -77,7 +79,9 @@ export async function initializeDatabase() {
         stripe_shipping_name TEXT,
         stripe_shipping_address_1 TEXT,
         stripe_shipping_address_2 TEXT,
+        stripe_shipping_city TEXT,
         stripe_shipping_postal_code TEXT,
+        stripe_shipping_country TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -116,8 +120,8 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
           customer_email, customer_phone, business_name, business_postcode, business_country,
           google_business_id, stand_colors, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
           all_businesses, stripe_payment_intent_id, stripe_session_id, stripe_shipping_name,
-          stripe_shipping_address_1, stripe_shipping_address_2, stripe_shipping_postal_code, status
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          stripe_shipping_address_1, stripe_shipping_address_2, stripe_shipping_city, stripe_shipping_postal_code, stripe_shipping_country, status
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         RETURNING id
       `,
       args: [
@@ -145,7 +149,9 @@ export async function createOrder(orderData: Omit<OrderData, 'id' | 'created_at'
         orderData.stripe_shipping_name || null,
         orderData.stripe_shipping_address_1 || null,
         orderData.stripe_shipping_address_2 || null,
+        orderData.stripe_shipping_city || null,
         orderData.stripe_shipping_postal_code || null,
+        orderData.stripe_shipping_country || null,
         orderData.status
       ]
     });
@@ -168,7 +174,9 @@ export async function updateOrderStatus(
   stripeShippingName?: string,
   stripeShippingAddress1?: string,
   stripeShippingAddress2?: string,
-  stripeShippingPostalCode?: string
+  stripeShippingCity?: string,
+  stripeShippingPostalCode?: string,
+  stripeShippingCountry?: string
 ): Promise<void> {
   try {
     await client.execute({
@@ -180,11 +188,13 @@ export async function updateOrderStatus(
             stripe_shipping_name = COALESCE(?, stripe_shipping_name),
             stripe_shipping_address_1 = COALESCE(?, stripe_shipping_address_1),
             stripe_shipping_address_2 = COALESCE(?, stripe_shipping_address_2),
+            stripe_shipping_city = COALESCE(?, stripe_shipping_city),
             stripe_shipping_postal_code = COALESCE(?, stripe_shipping_postal_code),
+            stripe_shipping_country = COALESCE(?, stripe_shipping_country),
             updated_at = CURRENT_TIMESTAMP
         WHERE id = ?
       `,
-      args: [status, stripePaymentIntentId || null, stripeSessionId || null, stripeShippingName || null, stripeShippingAddress1 || null, stripeShippingAddress2 || null, stripeShippingPostalCode || null, orderId]
+      args: [status, stripePaymentIntentId || null, stripeSessionId || null, stripeShippingName || null, stripeShippingAddress1 || null, stripeShippingAddress2 || null, stripeShippingCity || null, stripeShippingPostalCode || null, stripeShippingCountry || null, orderId]
     });
 
     console.log('Order status updated successfully:', { orderId, status });
@@ -205,7 +215,7 @@ export async function getOrderById(orderId: string): Promise<OrderData | null> {
                stand_colors, utm_source, utm_medium, utm_campaign, utm_term,
                utm_content, all_businesses, stripe_payment_intent_id,
                stripe_session_id, stripe_shipping_name, stripe_shipping_address_1,
-               stripe_shipping_address_2, stripe_shipping_postal_code, status, created_at, updated_at
+               stripe_shipping_address_2, stripe_shipping_city, stripe_shipping_postal_code, stripe_shipping_country, status, created_at, updated_at
         FROM orders
         WHERE id = ?
       `,
@@ -243,10 +253,12 @@ export async function getOrderById(orderId: string): Promise<OrderData | null> {
       stripe_shipping_name: row[22] as string,
       stripe_shipping_address_1: row[23] as string,
       stripe_shipping_address_2: row[24] as string,
-      stripe_shipping_postal_code: row[25] as string,
-      status: row[26] as OrderStatus,
-      created_at: row[27] as string,
-      updated_at: row[28] as string,
+      stripe_shipping_city: row[25] as string,
+      stripe_shipping_postal_code: row[26] as string,
+      stripe_shipping_country: row[27] as string,
+      status: row[28] as OrderStatus,
+      created_at: row[29] as string,
+      updated_at: row[30] as string,
     };
   } catch (error) {
     console.error('Error getting order by ID:', error);
@@ -265,7 +277,7 @@ export async function getOrdersByEmail(email: string): Promise<OrderData[]> {
                stand_colors, utm_source, utm_medium, utm_campaign, utm_term,
                utm_content, all_businesses, stripe_payment_intent_id,
                stripe_session_id, stripe_shipping_name, stripe_shipping_address_1,
-               stripe_shipping_address_2, stripe_shipping_postal_code, status, created_at, updated_at
+               stripe_shipping_address_2, stripe_shipping_city, stripe_shipping_postal_code, stripe_shipping_country, status, created_at, updated_at
         FROM orders
         WHERE customer_email = ?
         ORDER BY created_at DESC
@@ -299,10 +311,12 @@ export async function getOrdersByEmail(email: string): Promise<OrderData[]> {
       stripe_shipping_name: row[22] as string,
       stripe_shipping_address_1: row[23] as string,
       stripe_shipping_address_2: row[24] as string,
-      stripe_shipping_postal_code: row[25] as string,
-      status: row[26] as OrderStatus,
-      created_at: row[27] as string,
-      updated_at: row[28] as string,
+      stripe_shipping_city: row[25] as string,
+      stripe_shipping_postal_code: row[26] as string,
+      stripe_shipping_country: row[27] as string,
+      status: row[28] as OrderStatus,
+      created_at: row[29] as string,
+      updated_at: row[30] as string,
     }));
   } catch (error) {
     console.error('Error getting orders by email:', error);

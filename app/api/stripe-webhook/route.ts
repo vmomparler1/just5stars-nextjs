@@ -133,12 +133,14 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
 
-      // Update shipping information
+      // Update shipping information - prioritize shipping address over billing
       const shippingDetails = session.shipping_details || session.shipping || {};
       const customerDetails = session.customer_details || {};
+      
+      // Use shipping address if available, otherwise fallback to customer address
       const address = shippingDetails.address || customerDetails.address || {};
 
-      // Update order with shipping details
+      // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
       await client.execute({
         sql: `
@@ -146,14 +148,18 @@ async function handleCheckoutCompleted(session: any) {
           SET stripe_shipping_name = ?,
               stripe_shipping_address_1 = ?,
               stripe_shipping_address_2 = ?,
-              stripe_shipping_postal_code = ?
+              stripe_shipping_city = ?,
+              stripe_shipping_postal_code = ?,
+              stripe_shipping_country = ?
           WHERE id = ?
         `,
         args: [
           shippingDetails.name || customerDetails.name || null,
           address.line1 || null,
           address.line2 || null,
+          address.city || null,
           address.postal_code || null,
+          address.country || null,
           clientReferenceId
         ]
       });
@@ -186,12 +192,14 @@ async function handleCheckoutCompleted(session: any) {
           session.id
         );
 
-        // Update shipping information
+        // Update shipping information - prioritize shipping address over billing
         const shippingDetails = session.shipping_details || session.shipping || {};
         const customerDetails = session.customer_details || {};
+        
+        // Use shipping address if available, otherwise fallback to customer address
         const address = shippingDetails.address || customerDetails.address || {};
 
-        // Update order with shipping details
+        // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
         await client.execute({
           sql: `
@@ -199,14 +207,18 @@ async function handleCheckoutCompleted(session: any) {
             SET stripe_shipping_name = ?,
                 stripe_shipping_address_1 = ?,
                 stripe_shipping_address_2 = ?,
-                stripe_shipping_postal_code = ?
+                stripe_shipping_city = ?,
+                stripe_shipping_postal_code = ?,
+                stripe_shipping_country = ?
             WHERE id = ?
           `,
           args: [
             shippingDetails.name || customerDetails.name || null,
             address.line1 || null,
             address.line2 || null,
+            address.city || null,
             address.postal_code || null,
+            address.country || null,
             pendingOrder.id!
           ]
         });

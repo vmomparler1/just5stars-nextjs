@@ -328,6 +328,8 @@ async function handleCheckoutCompleted(session: any) {
           },
           body: JSON.stringify({
             ...confirmedOrder,
+            orderId: confirmedOrderId,
+            order_id: confirmedOrderId,
             stripe_session_id: session.id
           }),
         });

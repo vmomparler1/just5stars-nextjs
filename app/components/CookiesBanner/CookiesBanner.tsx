@@ -18,17 +18,22 @@ export default function CookiesBanner() {
   const handleAcceptAll = () => {
     localStorage.setItem('cookieConsent', 'accepted');
     setIsVisible(false);
-    // Here you can also enable analytics/tracking scripts
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('cookieChoice', { detail: 'accepted' }));
   };
 
   const handleAcceptNecessary = () => {
     localStorage.setItem('cookieConsent', 'necessary');
     setIsVisible(false);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('cookieChoice', { detail: 'necessary' }));
   };
 
   const handleDecline = () => {
     localStorage.setItem('cookieConsent', 'declined');
     setIsVisible(false);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('cookieChoice', { detail: 'declined' }));
   };
 
   if (!isVisible) return null;

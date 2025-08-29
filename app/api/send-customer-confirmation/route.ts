@@ -11,17 +11,24 @@ export async function POST(request: NextRequest) {
   try {
     const orderData = await request.json();
     
-    console.log('Sending customer confirmation email for order:', orderData.order_id);
+    // Use the correct property name for order ID
+    const orderId = orderData.orderId || orderData.order_id;
+    console.log('Sending customer confirmation email for order:', orderId);
+    
+    if (!orderId) {
+      console.error('Order ID is missing from request');
+      return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
+    }
     
     // Check if confirmation email was already sent for this order
     const { client } = await import('@/app/utils/database');
     const existingConfirmation = await client.execute({
       sql: 'SELECT confirmation_email_sent FROM orders WHERE id = ?',
-      args: [orderData.order_id]
+      args: [orderId]
     });
     
     if (existingConfirmation.rows.length > 0 && existingConfirmation.rows[0][0]) {
-      console.log('Confirmation email already sent for order:', orderData.order_id);
+      console.log('Confirmation email already sent for order:', orderId);
       return NextResponse.json({ success: true, message: 'Email already sent' }, { status: 200 });
     }
     
@@ -41,7 +48,7 @@ export async function POST(request: NextRequest) {
             if (response.ok) {
               const pdfBuffer = await response.arrayBuffer();
               invoiceAttachment = {
-                filename: `factura-${orderData.order_id}.pdf`,
+                filename: `factura-${orderId}.pdf`,
                 content: Buffer.from(pdfBuffer),
                 contentType: 'application/pdf'
               };
@@ -74,7 +81,7 @@ export async function POST(request: NextRequest) {
       // Mark email as sent in database
       await client.execute({
         sql: 'UPDATE orders SET confirmation_email_sent = 1 WHERE id = ?',
-        args: [orderData.order_id]
+        args: [orderId]
       });
       
       return NextResponse.json({ success: true }, { status: 200 });
@@ -96,7 +103,8 @@ export async function POST(request: NextRequest) {
 
 function createCustomerConfirmationEmail(orderData: any) {
   const {
-    order_id,
+    orderId,
+    order_id = orderId, // fallback for backwards compatibility
     product_name,
     quantity,
     price,

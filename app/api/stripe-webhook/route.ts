@@ -116,6 +116,18 @@ async function handleCheckoutCompleted(session: any) {
   try {
     console.log('Checkout session completed:', session.id);
 
+    // Check if we've already processed this session to prevent duplicates
+    const { client } = await import('@/app/utils/database');
+    const existingProcessed = await client.execute({
+      sql: 'SELECT id FROM orders WHERE stripe_session_id = ? AND status != ?',
+      args: [session.id, OrderStatus.PENDING]
+    });
+
+    if (existingProcessed.rows.length > 0) {
+      console.log('Session already processed, skipping:', session.id);
+      return;
+    }
+
     let confirmedOrderId: string | null = null;
     let confirmedOrder: any = null;
 
@@ -339,8 +351,19 @@ async function handlePaymentIntentSucceeded(paymentIntent: any) {
   try {
     console.log('Payment intent succeeded:', paymentIntent.id);
 
-    // Try to find order by payment intent ID
+    // Check if this payment intent was already processed
     const { client } = await import('@/app/utils/database');
+    const existingResult = await client.execute({
+      sql: 'SELECT id FROM orders WHERE stripe_payment_intent_id = ? AND status = ?',
+      args: [paymentIntent.id, OrderStatus.CONFIRMED]
+    });
+
+    if (existingResult.rows.length > 0) {
+      console.log('Payment intent already processed, skipping:', paymentIntent.id);
+      return;
+    }
+
+    // Try to find order by payment intent ID
     const result = await client.execute({
       sql: 'SELECT id FROM orders WHERE stripe_payment_intent_id = ? AND status = ?',
       args: [paymentIntent.id, OrderStatus.PENDING]

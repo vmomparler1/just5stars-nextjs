@@ -44,6 +44,7 @@ export interface OrderData {
   stripe_shipping_postal_code?: string;
   stripe_shipping_country?: string;
   status: OrderStatus;
+  confirmation_email_sent?: boolean;
   created_at?: string;
   updated_at?: string;
 }
@@ -83,6 +84,7 @@ export async function initializeDatabase() {
         stripe_shipping_postal_code TEXT,
         stripe_shipping_country TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
+        confirmation_email_sent BOOLEAN DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )

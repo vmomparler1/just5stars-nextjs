@@ -13,6 +13,18 @@ export async function POST(request: NextRequest) {
     
     console.log('Sending customer confirmation email for order:', orderData.order_id);
     
+    // Check if confirmation email was already sent for this order
+    const { client } = await import('@/app/utils/database');
+    const existingConfirmation = await client.execute({
+      sql: 'SELECT confirmation_email_sent FROM orders WHERE id = ?',
+      args: [orderData.order_id]
+    });
+    
+    if (existingConfirmation.rows.length > 0 && existingConfirmation.rows[0][0]) {
+      console.log('Confirmation email already sent for order:', orderData.order_id);
+      return NextResponse.json({ success: true, message: 'Email already sent' }, { status: 200 });
+    }
+    
     // Create customer confirmation email content
     const customerEmailContent = createCustomerConfirmationEmail(orderData);
     
@@ -58,6 +70,13 @@ export async function POST(request: NextRequest) {
 
     if (result.success) {
       console.log('✅ Customer confirmation email sent successfully');
+      
+      // Mark email as sent in database
+      await client.execute({
+        sql: 'UPDATE orders SET confirmation_email_sent = 1 WHERE id = ?',
+        args: [orderData.order_id]
+      });
+      
       return NextResponse.json({ success: true }, { status: 200 });
     } else {
       console.error('❌ Failed to send customer confirmation email:', result.error);

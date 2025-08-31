@@ -11,12 +11,12 @@ const getTimeLeftInMonth = () => {
   const now = new Date();
   const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
   const timeLeft = endOfMonth.getTime() - now.getTime();
-  
+
   const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
   const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-  
+
   return { days, hours, minutes, seconds };
 };
 
@@ -39,8 +39,11 @@ export default function DiscountRibbon() {
     return () => clearInterval(timer);
   }, []);
 
+  // Temporarily disabled discount ribbon
+  return null;
+
   /*
-  return ( 
+  return (
     <div className="z-40 w-full bg-[#7f6d2a] text-white py-3 shadow-lg mt-[72px]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-center items-center gap-4 md:gap-8">
@@ -70,4 +73,4 @@ export default function DiscountRibbon() {
     </div>
   );
   */
-} 
+}

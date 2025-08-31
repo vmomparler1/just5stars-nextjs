@@ -25,11 +25,9 @@ export default function Hero() {
               La mejor forma de crecer tu negocio
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Alcanza la
+              Haz Crecer
               <br />
-              <span className="bg-gradient-to-r from-[#7f6d2a] to-[#fec700] bg-clip-text text-transparent">Excelencia</span>
-              <br />
-              de 5 Estrellas
+              <span className="bg-gradient-to-r from-[#7f6d2a] to-[#fec700] bg-clip-text text-transparent">Tu Negocio</span>        
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">

@@ -39,7 +39,8 @@ export default function DiscountRibbon() {
     return () => clearInterval(timer);
   }, []);
 
-  return (
+  /*
+  return ( 
     <div className="z-40 w-full bg-[#7f6d2a] text-white py-3 shadow-lg mt-[72px]">
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex justify-center items-center gap-4 md:gap-8">
@@ -68,4 +69,5 @@ export default function DiscountRibbon() {
       </div>
     </div>
   );
+  */
 } 

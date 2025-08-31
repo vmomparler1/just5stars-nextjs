@@ -25,7 +25,10 @@ export default function FeaturedIn() {
       url: "https://www.merca2.es/2025/03/11/just5stars-supera-los-10-000-negocios-ayudados-a-mejorar-su-reputacion-online-2160456/"
     }
   ];
-/*
+// Temporarily disabled featured in section
+  return null;
+
+  /*
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -50,5 +53,6 @@ export default function FeaturedIn() {
         </div>
       </div>
     </section>
-  ); */
+  );
+  */
 }

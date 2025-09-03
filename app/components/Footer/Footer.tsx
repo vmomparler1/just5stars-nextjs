@@ -55,6 +55,18 @@ export default function Footer() {
               </a>
             </div>
           </div>
+          
+          {/* Disclaimers */}
+          <div className="mt-6 pt-4 border-t border-gray-800">
+            <div className="text-center space-y-2 text-xs text-gray-500">
+              <p>
+                just5stars no está afiliado, asociado, autorizado, respaldado por, ni de ninguna manera oficialmente conectado con Google LLC.
+              </p>
+              <p>
+                Nuestros expositores promueven únicamente reseñas auténticas y veraces. No incentivamos ni compensamos reseñas falsas o engañosas.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

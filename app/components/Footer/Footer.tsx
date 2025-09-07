@@ -53,6 +53,12 @@ export default function Footer() {
               >
                 Aviso Legal
               </a>
+              <a 
+                href="/etica-resenas" 
+                className="hover:text-white transition-colors"
+              >
+                Ética de Reseñas
+              </a>
             </div>
           </div>
           

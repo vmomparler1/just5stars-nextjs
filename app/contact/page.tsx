@@ -106,7 +106,12 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">Oficina</h3>
-                    <p className="text-gray-600">España</p>
+                    <div className="text-gray-600">
+                      <p>Terminal Hub</p>
+                      <p>C/De la Travesía S/N</p>
+                      <p>46024 Valencia</p>
+                      <p>España</p>
+                    </div>  
                   </div>
                 </div>
               </div>
@@ -115,7 +120,7 @@ export default function ContactPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Horario de Atención</h3>
                 <div className="space-y-2 text-gray-600">
                   <p>Lunes - Viernes: 9:00 - 18:00</p>
-                  <p>Sábado: 10:00 - 14:00</p>
+                  <p>Sábado: Cerrado</p>
                   <p>Domingo: Cerrado</p>
                 </div>
               </div>

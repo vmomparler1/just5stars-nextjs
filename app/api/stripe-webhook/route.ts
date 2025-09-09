@@ -147,7 +147,7 @@ async function handleCheckoutCompleted(session: any) {
 
       // Update shipping information - only use shipping address, no fallback
       const shippingDetails = session.shipping_details || session.shipping || {};
-      const shippingAddress = shippingDetails?.address || {};
+      const address = shippingDetails.address || {};
 
       // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
@@ -164,11 +164,11 @@ async function handleCheckoutCompleted(session: any) {
         `,
         args: [
           shippingDetails.name || null,
-          shippingAddress.line1 || null,
-          shippingAddress.line2 || null,
-          shippingAddress.city || null,
-          shippingAddress.postal_code || null,
-          shippingAddress.country || null,
+          address.line1 || null,
+          address.line2 || null,
+          address.city || null,
+          address.postal_code || null,
+          address.country || null,
           clientReferenceId
         ]
       });
@@ -203,7 +203,7 @@ async function handleCheckoutCompleted(session: any) {
 
         // Update shipping information - only use shipping address, no fallback
         const shippingDetails = session.shipping_details || session.shipping || {};
-        const shippingAddress = shippingDetails?.address || {};
+        const address = shippingDetails.address || {};
 
         // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
@@ -220,11 +220,11 @@ async function handleCheckoutCompleted(session: any) {
           `,
           args: [
             shippingDetails.name || null,
-            shippingAddress.line1 || null,
-            shippingAddress.line2 || null,
-            shippingAddress.city || null,
-            shippingAddress.postal_code || null,
-            shippingAddress.country || null,
+            address.line1 || null,
+            address.line2 || null,
+            address.city || null,
+            address.postal_code || null,
+            address.country || null,
             pendingOrder.id!
           ]
         });
@@ -244,7 +244,7 @@ async function handleCheckoutCompleted(session: any) {
         // Extract shipping address from Stripe session
         const shippingDetails = session.shipping_details || session.shipping || {};
         const customerDetails = session.customer_details || {};
-        const shippingAddress = shippingDetails?.address || {};
+        const address = shippingDetails.address || {};
         
         const zapierData = {
           order_id: confirmedOrderId,
@@ -272,12 +272,12 @@ async function handleCheckoutCompleted(session: any) {
           confirmed_at: new Date().toISOString(),
           // Shipping address information from Stripe
           shipping_name: shippingDetails.name || '',
-          shipping_address_line1: shippingAddress.line1 || '',
-          shipping_address_line2: shippingAddress.line2 || '',
-          shipping_city: shippingAddress.city || '',
-          shipping_state: shippingAddress.state || '',
-          shipping_postal_code: shippingAddress.postal_code || '',
-          shipping_country: shippingAddress.country || '',
+          shipping_address_line1: address.line1 || '',
+          shipping_address_line2: address.line2 || '',
+          shipping_city: address.city || '',
+          shipping_state: address.state || '',
+          shipping_postal_code: address.postal_code || '',
+          shipping_country: address.country || '',
           customer_name: customerDetails.name || '',
           // Include all business data for multiple stands
           all_businesses: (() => {

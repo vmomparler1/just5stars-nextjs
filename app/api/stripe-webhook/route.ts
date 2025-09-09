@@ -146,11 +146,10 @@ async function handleCheckoutCompleted(session: any) {
       );
 
       // Update shipping information - prioritize shipping address over billing
-      const shippingDetails = session.shipping_details || session.shipping || {};
-      const customerDetails = session.customer_details || {};
+      const shippingDetails = session.shipping_details || {};
       
-      // Use shipping address if available, otherwise fallback to customer address
-      const address = shippingDetails.address || customerDetails.address || {};
+      // Use shipping address only; if absent, leave as nulls
+      const address = shippingDetails.address || {};
 
       // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
@@ -166,7 +165,7 @@ async function handleCheckoutCompleted(session: any) {
           WHERE id = ?
         `,
         args: [
-          shippingDetails.name || customerDetails.name || null,
+          shippingDetails.name || null,
           address.line1 || null,
           address.line2 || null,
           address.city || null,
@@ -205,11 +204,10 @@ async function handleCheckoutCompleted(session: any) {
         );
 
         // Update shipping information - prioritize shipping address over billing
-        const shippingDetails = session.shipping_details || session.shipping || {};
-        const customerDetails = session.customer_details || {};
+        const shippingDetails = session.shipping_details || {};
         
-        // Use shipping address if available, otherwise fallback to customer address
-        const address = shippingDetails.address || customerDetails.address || {};
+        // Use shipping address only; if absent, leave as nulls
+        const address = shippingDetails.address || {};
 
         // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
@@ -225,7 +223,7 @@ async function handleCheckoutCompleted(session: any) {
             WHERE id = ?
           `,
           args: [
-            shippingDetails.name || customerDetails.name || null,
+            shippingDetails.name || null,
             address.line1 || null,
             address.line2 || null,
             address.city || null,
@@ -248,11 +246,10 @@ async function handleCheckoutCompleted(session: any) {
     if (confirmedOrder && confirmedOrderId) {
       try {
         // Extract shipping address from Stripe session
-        const shippingDetails = session.shipping_details || session.shipping || {};
-        const customerDetails = session.customer_details || {};
+        const shippingDetails = session.shipping_details || {};
         
-        // Use shipping address if available, otherwise fallback to customer address
-        const address = shippingDetails.address || customerDetails.address || {};
+        // Use shipping address only; if absent, use nulls
+        const address = shippingDetails.address || {};
         
         const zapierData = {
           order_id: confirmedOrderId,
@@ -279,14 +276,14 @@ async function handleCheckoutCompleted(session: any) {
           stripe_session_id: session.id,
           confirmed_at: new Date().toISOString(),
           // Shipping address information from Stripe
-          shipping_name: shippingDetails.name || customerDetails.name || '',
-          shipping_address_line1: address.line1 || '',
-          shipping_address_line2: address.line2 || '',
-          shipping_city: address.city || '',
-          shipping_state: address.state || '',
-          shipping_postal_code: address.postal_code || '',
-          shipping_country: address.country || '',
-          customer_name: customerDetails.name || '',
+          shipping_name: shippingDetails.name || null,
+          shipping_address_line1: address.line1 || null,
+          shipping_address_line2: address.line2 || null,
+          shipping_city: address.city || null,
+          shipping_state: address.state || null,
+          shipping_postal_code: address.postal_code || null,
+          shipping_country: address.country || null,
+          customer_name: null,
           // Include all business data for multiple stands
           all_businesses: (() => {
             if (!confirmedOrder.all_businesses) return [];

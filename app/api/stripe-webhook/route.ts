@@ -145,12 +145,21 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
 
-      // Update shipping information - only use actual shipping address, not billing fallback
+      // Update shipping information - only use actual shipping address, no fallback to billing
       const shippingDetails = session.shipping_details || session.shipping || {};
       const customerDetails = session.customer_details || {};
       
-      // Only use shipping address if it exists, don't fallback to billing address
-      const address = shippingDetails.address || {};
+      // Log shipping data for debugging
+      console.log('=== SHIPPING ADDRESS DEBUG ===');
+      console.log('session.shipping_details:', JSON.stringify(session.shipping_details, null, 2));
+      console.log('session.shipping:', JSON.stringify(session.shipping, null, 2));
+      console.log('session.customer_details:', JSON.stringify(session.customer_details, null, 2));
+      console.log('shippingDetails:', JSON.stringify(shippingDetails, null, 2));
+      
+      // Only use shipping address if explicitly provided, otherwise use null
+      const address = shippingDetails.address || null;
+      console.log('Final address used:', JSON.stringify(address, null, 2));
+      console.log('=== END SHIPPING ADDRESS DEBUG ===');
 
       // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
@@ -167,11 +176,11 @@ async function handleCheckoutCompleted(session: any) {
         `,
         args: [
           shippingDetails.name || null,
-          address.line1 || null,
-          address.line2 || null,
-          address.city || null,
-          address.postal_code || null,
-          address.country || null,
+          address?.line1 || null,
+          address?.line2 || null,
+          address?.city || null,
+          address?.postal_code || null,
+          address?.country || null,
           clientReferenceId
         ]
       });
@@ -204,12 +213,12 @@ async function handleCheckoutCompleted(session: any) {
           session.id
         );
 
-        // Update shipping information - only use actual shipping address, not billing fallback
+        // Update shipping information - only use actual shipping address, no fallback to billing
         const shippingDetails = session.shipping_details || session.shipping || {};
         const customerDetails = session.customer_details || {};
         
-        // Only use shipping address if it exists, don't fallback to billing address
-        const address = shippingDetails.address || {};
+        // Only use shipping address if explicitly provided, otherwise use null
+        const address = shippingDetails.address || null;
 
         // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
@@ -226,11 +235,11 @@ async function handleCheckoutCompleted(session: any) {
           `,
           args: [
             shippingDetails.name || null,
-            address.line1 || null,
-            address.line2 || null,
-            address.city || null,
-            address.postal_code || null,
-            address.country || null,
+            address?.line1 || null,
+            address?.line2 || null,
+            address?.city || null,
+            address?.postal_code || null,
+            address?.country || null,
             pendingOrder.id!
           ]
         });
@@ -251,7 +260,7 @@ async function handleCheckoutCompleted(session: any) {
         const shippingDetails = session.shipping_details || session.shipping || {};
         const customerDetails = session.customer_details || {};
         
-        // Only use shipping address if it exists, don't fallback to billing address
+        // Only use shipping address if explicitly provided, otherwise use empty values
         const address = shippingDetails.address || {};
         
         const zapierData = {
@@ -278,15 +287,15 @@ async function handleCheckoutCompleted(session: any) {
           stripe_payment_intent_id: session.payment_intent,
           stripe_session_id: session.id,
           confirmed_at: new Date().toISOString(),
-          // Shipping address information from Stripe (null if not collected)
-          shipping_name: shippingDetails.name || null,
-          shipping_address_line1: address.line1 || null,
-          shipping_address_line2: address.line2 || null,
-          shipping_city: address.city || null,
-          shipping_state: address.state || null,
-          shipping_postal_code: address.postal_code || null,
-          shipping_country: address.country || null,
-          customer_name: customerDetails.name || null,
+          // Shipping address information from Stripe (only actual shipping, no billing fallback)
+          shipping_name: shippingDetails.name || '',
+          shipping_address_line1: address.line1 || '',
+          shipping_address_line2: address.line2 || '',
+          shipping_city: address.city || '',
+          shipping_state: address.state || '',
+          shipping_postal_code: address.postal_code || '',
+          shipping_country: address.country || '',
+          customer_name: customerDetails.name || '',
           // Include all business data for multiple stands
           all_businesses: (() => {
             if (!confirmedOrder.all_businesses) return [];

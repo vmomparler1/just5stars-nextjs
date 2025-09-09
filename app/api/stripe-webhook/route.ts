@@ -145,12 +145,9 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
 
-      // Update shipping information - prioritize shipping address over billing
+      // Update shipping information - only use shipping address, no fallback
       const shippingDetails = session.shipping_details || session.shipping || {};
-      const customerDetails = session.customer_details || {};
-      
-      // Use shipping address if available, otherwise fallback to customer address
-      const address = shippingDetails.address || customerDetails.address || {};
+      const address = shippingDetails.address || {};
 
       // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
@@ -166,7 +163,7 @@ async function handleCheckoutCompleted(session: any) {
           WHERE id = ?
         `,
         args: [
-          shippingDetails.name || customerDetails.name || null,
+          shippingDetails.name || null,
           address.line1 || null,
           address.line2 || null,
           address.city || null,
@@ -204,12 +201,9 @@ async function handleCheckoutCompleted(session: any) {
           session.id
         );
 
-        // Update shipping information - prioritize shipping address over billing
+        // Update shipping information - only use shipping address, no fallback
         const shippingDetails = session.shipping_details || session.shipping || {};
-        const customerDetails = session.customer_details || {};
-        
-        // Use shipping address if available, otherwise fallback to customer address
-        const address = shippingDetails.address || customerDetails.address || {};
+        const address = shippingDetails.address || {};
 
         // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
@@ -225,7 +219,7 @@ async function handleCheckoutCompleted(session: any) {
             WHERE id = ?
           `,
           args: [
-            shippingDetails.name || customerDetails.name || null,
+            shippingDetails.name || null,
             address.line1 || null,
             address.line2 || null,
             address.city || null,
@@ -250,9 +244,7 @@ async function handleCheckoutCompleted(session: any) {
         // Extract shipping address from Stripe session
         const shippingDetails = session.shipping_details || session.shipping || {};
         const customerDetails = session.customer_details || {};
-        
-        // Use shipping address if available, otherwise fallback to customer address
-        const address = shippingDetails.address || customerDetails.address || {};
+        const address = shippingDetails.address || {};
         
         const zapierData = {
           order_id: confirmedOrderId,
@@ -279,7 +271,7 @@ async function handleCheckoutCompleted(session: any) {
           stripe_session_id: session.id,
           confirmed_at: new Date().toISOString(),
           // Shipping address information from Stripe
-          shipping_name: shippingDetails.name || customerDetails.name || '',
+          shipping_name: shippingDetails.name || '',
           shipping_address_line1: address.line1 || '',
           shipping_address_line2: address.line2 || '',
           shipping_city: address.city || '',

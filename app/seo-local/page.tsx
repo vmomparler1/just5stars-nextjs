@@ -44,7 +44,7 @@ function SEOLocalHero() {
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Mejora tu posicionamiento de Google Maps cuando tus clientes te busquen. Aumenta tu visibilidad local y atrae más clientes a tu negocio.
+                Mejora tu posicionamiento cuando tus clientes te busquen. Aumenta tu visibilidad local y atrae más clientes a tu negocio.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
@@ -212,14 +212,14 @@ export default function SEOLocalPage() {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "Auditoría inicial de tu perfil de Google Business"
+                "name": "Auditoría inicial de tu perfil"
               }
             },
             {
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
-                "name": "Recomendaciones para mejorar el posicionamiento en Google Maps"
+                "name": "Recomendaciones para mejorar el posicionamiento en Maps"
               }
             },
             {

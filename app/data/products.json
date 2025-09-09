@@ -2,7 +2,7 @@
   "stand_only": {
     "id": "stand_only",
     "title": "Expositor NFC con código QR",
-    "description": "Consigue más reseñas en Google con nuestros expositores NFC.",
+    "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas.",
     "image": "/components/Products/stand_02.png",
     "cta_text": "Comprar Ahora",
     "local_seo": 0,
@@ -14,13 +14,13 @@
     "secondary_label": null,
     "features": [
       "Tecnología NFC + Código QR",
-      "Programado previamente para enlazar a tu página de reseñas en Google"
+      "Programado previamente para enlazar a tu página de reseñas"
     ]
   },
   "stand_visibility": {
     "id": "stand_visibility",
     "title": "3 Expositores + SEO Local en Google Maps",
-    "description": "Incluye 3 expositores + gestión de tu SEO Local en Google Maps.",
+    "description": "Incluye 3 expositores + gestión de tu SEO Local",
     "image": "/components/Products/stand_local_seo.png",
     "cta_text": "Comprar Ahora",
     "local_seo": 1,
@@ -35,15 +35,15 @@
     },
     "features": [
       "3 Expositores con Tecnología NFC + Código QR",
-      "Programado previamente para enlazar a tu página de reseñas en Google",
-      "Auditoría inicial de tu perfil de Google Business",
-      "Recomendaciones para mejorar el posicionamiento en Google Maps",
+      "Programado previamente para enlazar a tu página de reseñas",
+      "Auditoría inicial de tu GBP",
+      "Recomendaciones para mejorar el posicionamiento en Maps",
       "Seguimiento de la evolución en el ranking"
     ]
   },
   "stand_visibility_web": {
     "id": "stand_visibility_web",
-    "title": "3 Expositores + SEO Local en Google Maps + Web",
+    "title": "3 Expositores + SEO Local + Web",
     "description": "Incluye 3 expositores + gestión completa de tu presencia digital.",
     "image": "/components/Products/stand_local_seo_360.png",
     "cta_text": "Comprar Ahora",
@@ -56,9 +56,9 @@
     },
     "features": [
       "3 Expositores con Tecnología NFC + Código QR",
-      "Programado previamente para enlazar a tu página de reseñas en Google",
-      "Auditoría inicial de tu perfil de Google Business",
-      "Recomendaciones para mejorar el posicionamiento en Google Maps",
+      "Programado previamente para enlazar a tu página de reseñas",
+      "Auditoría inicial de tu perfil GBP",
+      "Recomendaciones para mejorar el posicionamiento en Maps",
       "Seguimiento de la evolución en el ranking",
       "Creación y mantenimiento de la web",
       "SEO web"

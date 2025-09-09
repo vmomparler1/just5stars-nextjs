@@ -48,7 +48,7 @@ function GoogleStandHero() {
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Consigue más reseñas en Google con nuestros expositores NFC. Simple, efectivo y elegante.
+                Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Simple, efectivo y elegante.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
@@ -61,7 +61,7 @@ function GoogleStandHero() {
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
-                  <span className="text-lg">Configuración previa para que enlace a tu perfil de reseñas de Google</span>
+                  <span className="text-lg">Configuración previa para que enlace a tu perfil de reseñas</span>
                 </li>
               </ul>
             </div>
@@ -79,7 +79,7 @@ function GoogleStandHero() {
             <div className="relative z-10">
               <Image
                 src={heroImage}
-                alt="Expositores NFC para Google"
+                alt="Expositores NFC para reseñas"
                 width={600}
                 height={600}
                 className="w-full h-auto rounded-2xl shadow-2xl"
@@ -102,7 +102,7 @@ export default function ExpositorResenasNFCPage() {
         "@type": "Product",
         "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-only",
         "name": "Expositor Reseñas NFC & QR ",
-        "description": "Consigue más reseñas en Google con nuestros expositores NFC. Tecnología NFC + Código QR preconfigurado a tu perfil de Google Business.",
+        "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Tecnología NFC + Código QR preconfigurado a tu perfil.",
         "brand": {
           "@type": "Brand",
           "name": "just5stars"
@@ -122,14 +122,14 @@ export default function ExpositorResenasNFCPage() {
         },
         "features": [
           "Tecnología NFC + Código QR",
-          "Programado previamente para enlazar a tu página de reseñas en Google"
+          "Programado previamente para enlazar a tu página de reseñas"
         ]
       },
       {
         "@type": "Product",
         "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-visibility",
-        "name": "3 Expositores + SEO Local en Google Maps",
-        "description": "Incluye 3 expositores + gestión de tu SEO Local en Google Maps. Auditoría inicial, recomendaciones y seguimiento incluidos.",
+        "name": "3 Expositores + SEO Local",
+        "description": "Incluye 3 expositores + gestión de tu SEO Local. Auditoría inicial, recomendaciones y seguimiento incluidos.",
         "brand": {
           "@type": "Brand",
           "name": "just5stars"
@@ -149,16 +149,16 @@ export default function ExpositorResenasNFCPage() {
         },
         "features": [
           "3 Expositores con Tecnología NFC + Código QR",
-          "Programado previamente para enlazar a tu página de reseñas en Google",
-          "Auditoría inicial de tu perfil de Google Business",
-          "Recomendaciones para mejorar el posicionamiento en Google Maps",
+          "Programado previamente para enlazar a tu página de reseñas",
+          "Auditoría inicial de tu GBP",
+          "Recomendaciones para mejorar el posicionamiento en Maps",
           "Seguimiento de la evolución en el ranking"
         ]
       },
       {
         "@type": "Product",
         "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-visibility-web",
-        "name": "3 Expositores + SEO Local en Google Maps + Web",
+        "name": "3 Expositores + SEO Local + Web",
         "description": "Incluye 3 expositores + gestión completa de tu presencia digital. Servicio completo con creación y mantenimiento web más SEO.",
         "brand": {
           "@type": "Brand",
@@ -179,9 +179,9 @@ export default function ExpositorResenasNFCPage() {
         },
         "features": [
           "3 Expositores con Tecnología NFC + Código QR",
-          "Programado previamente para enlazar a tu página de reseñas en Google",
-          "Auditoría inicial de tu perfil de Google Business",
-          "Recomendaciones para mejorar el posicionamiento en Google Maps",
+          "Programado previamente para enlazar a tu página de reseñas",
+          "Auditoría inicial de tu perfil del GBP",
+          "Recomendaciones para mejorar el posicionamiento Maps",
           "Seguimiento de la evolución en el ranking",
           "Creación y mantenimiento de la web",
           "SEO web"

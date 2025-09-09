@@ -63,7 +63,7 @@ export default function Hero() {
             <div className="relative flex justify-center">
               <Image
                 src={standHeroImage}
-                alt="Stand de Reseñas de Google Just5Stars"
+                alt="Stand de Reseñas"
                 width={900}
                 height={1000}
                 className="w-full h-auto max-w-xl object-contain drop-shadow-2xl"

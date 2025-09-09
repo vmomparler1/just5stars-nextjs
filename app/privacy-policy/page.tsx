@@ -66,7 +66,6 @@ export default function PrivacyPolicyPage() {
                 <li><strong>Proveedores de servicios:</strong> Para procesar pagos, envío de productos y servicios técnicos</li>
                 <li><strong>Autoridades legales:</strong> Cuando sea requerido por ley</li>
                 <li><strong>Socios comerciales:</strong> Solo con tu consentimiento explícito</li>
-                <li><strong>Google:</strong> Para servicios de Google Maps y Google Business cuando sea necesario</li>
               </ul>
 
               <h2 className="text-2xl font-bold text-gray-900 mb-4 mt-8">5. COOKIES Y TECNOLOGÍAS SIMILARES</h2>

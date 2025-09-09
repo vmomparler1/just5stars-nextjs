@@ -56,7 +56,7 @@ export default function NFCExpositors() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Nuestros Expositores NFC para Reseñas</h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Revoluciona la forma en que recopilas reseñas de Google con nuestros expositores NFC de última generación. 
+            Revoluciona la forma en que recopilas reseñas con nuestros expositores NFC de última generación. 
           </p>
         </div>
 

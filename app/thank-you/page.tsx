@@ -116,13 +116,28 @@ function ThankYouContent() {
     // Set up global renderOptIn function
     (window as any).renderOptIn = function() {
       (window as any).gapi.load('surveyoptin', function() {
+        // Ensure date is in YYYY-MM-DD format
+        let formattedDate = order.estimated_delivery_date;
+        try {
+          const date = new Date(order.estimated_delivery_date);
+          if (!isNaN(date.getTime())) {
+            formattedDate = date.toISOString().split('T')[0];
+          }
+        } catch (err) {
+          console.error('Error formatting delivery date:', err);
+          // Fallback to current date + 4 days
+          const fallbackDate = new Date();
+          fallbackDate.setDate(fallbackDate.getDate() + 4);
+          formattedDate = fallbackDate.toISOString().split('T')[0];
+        }
+
         (window as any).gapi.surveyoptin.render({
           // REQUIRED FIELDS
           "merchant_id": 5558346653,
           "order_id": order.order_id,
           "email": order.customer_email,
           "delivery_country": order.delivery_country,
-          "estimated_delivery_date": order.estimated_delivery_date,
+          "estimated_delivery_date": formattedDate,
 
           // OPTIONAL FIELDS - GTIN removed as it was causing validation errors
         });

@@ -145,11 +145,11 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
 
-      // Update shipping information - prioritize shipping address over billing
-      const shippingDetails = session.shipping_details || {};
+      // Update shipping information - only use shipping address if available, don't fallback to billing
+      const shippingDetails = session.shipping_details || null;
       
-      // Use shipping address only; if absent, leave as nulls
-      const address = shippingDetails.address || {};
+      // Only use shipping address if it exists, return null if not available (don't fallback to billing)
+      const address = shippingDetails?.address || null;
 
       // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
@@ -165,12 +165,12 @@ async function handleCheckoutCompleted(session: any) {
           WHERE id = ?
         `,
         args: [
-          shippingDetails.name || null,
-          address.line1 || null,
-          address.line2 || null,
-          address.city || null,
-          address.postal_code || null,
-          address.country || null,
+          shippingDetails?.name || null,
+          address?.line1 || null,
+          address?.line2 || null,
+          address?.city || null,
+          address?.postal_code || null,
+          address?.country || null,
           clientReferenceId
         ]
       });
@@ -203,11 +203,11 @@ async function handleCheckoutCompleted(session: any) {
           session.id
         );
 
-        // Update shipping information - prioritize shipping address over billing
-        const shippingDetails = session.shipping_details || {};
+        // Update shipping information - only use shipping address if available, don't fallback to billing
+        const shippingDetails = session.shipping_details || null;
         
-        // Use shipping address only; if absent, leave as nulls
-        const address = shippingDetails.address || {};
+        // Only use shipping address if it exists, return null if not available (don't fallback to billing)
+        const address = shippingDetails?.address || null;
 
         // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
@@ -223,12 +223,12 @@ async function handleCheckoutCompleted(session: any) {
             WHERE id = ?
           `,
           args: [
-            shippingDetails.name || null,
-            address.line1 || null,
-            address.line2 || null,
-            address.city || null,
-            address.postal_code || null,
-            address.country || null,
+            shippingDetails?.name || null,
+            address?.line1 || null,
+            address?.line2 || null,
+            address?.city || null,
+            address?.postal_code || null,
+            address?.country || null,
             pendingOrder.id!
           ]
         });
@@ -245,11 +245,11 @@ async function handleCheckoutCompleted(session: any) {
     // Send confirmed order data to Zapier webhook
     if (confirmedOrder && confirmedOrderId) {
       try {
-        // Extract shipping address from Stripe session
-        const shippingDetails = session.shipping_details || {};
+        // Extract shipping address from Stripe session - only use if available, don't fallback to billing
+        const shippingDetails = session.shipping_details || null;
         
-        // Use shipping address only; if absent, use nulls
-        const address = shippingDetails.address || {};
+        // Only use shipping address if it exists, don't fallback to billing address
+        const address = shippingDetails?.address || null;
         
         const zapierData = {
           order_id: confirmedOrderId,
@@ -275,15 +275,15 @@ async function handleCheckoutCompleted(session: any) {
           stripe_payment_intent_id: session.payment_intent,
           stripe_session_id: session.id,
           confirmed_at: new Date().toISOString(),
-          // Shipping address information from Stripe
-          shipping_name: shippingDetails.name || null,
-          shipping_address_line1: address.line1 || null,
-          shipping_address_line2: address.line2 || null,
-          shipping_city: address.city || null,
-          shipping_state: address.state || null,
-          shipping_postal_code: address.postal_code || null,
-          shipping_country: address.country || null,
-          customer_name: null,
+          // Shipping address information from Stripe (null if not provided)
+          shipping_name: shippingDetails?.name || null,
+          shipping_address_line1: address?.line1 || null,
+          shipping_address_line2: address?.line2 || null,
+          shipping_city: address?.city || null,
+          shipping_state: address?.state || null,
+          shipping_postal_code: address?.postal_code || null,
+          shipping_country: address?.country || null,
+          customer_name: session.customer_details?.name || null,
           // Include all business data for multiple stands
           all_businesses: (() => {
             if (!confirmedOrder.all_businesses) return [];

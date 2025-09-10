@@ -2,12 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { updateOrderStatus, OrderStatus, initializeDatabase, getOrderById, getOrdersByEmail } from "@/app/utils/database";
 import { headers } from "next/headers";
 import crypto from "crypto";
-import Stripe from 'stripe';
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-06-30.basil',
-});
 
 if (!endpointSecret) {
   console.error('STRIPE_WEBHOOK_SECRET environment variable is not set');
@@ -15,37 +11,6 @@ if (!endpointSecret) {
 
 // Initialize database on first request
 let isDbInitialized = false;
-
-// Helper: extract shipping strictly from shipping fields (session or PaymentIntent)
-async function extractShipping(session: any): Promise<{ name: string | null, address: any | null }> {
-  const sessionShipping = session?.shipping_details || session?.shipping || null;
-  if (sessionShipping?.address) {
-    return {
-      name: sessionShipping?.name || null,
-      address: sessionShipping.address || null,
-    };
-  }
-
-  // Try PaymentIntent shipping (common for Payment Links)
-  const piId = typeof session?.payment_intent === 'string' ? session.payment_intent : session?.payment_intent?.id;
-  if (piId) {
-    try {
-      const pi = await stripe.paymentIntents.retrieve(piId, { expand: ['latest_charge'] });
-      // Prefer PI.shipping, then latest_charge.shipping_details
-      const piShipping: any = (pi as any).shipping || (pi as any)?.latest_charge?.shipping_details || null;
-      if (piShipping?.address) {
-        return {
-          name: piShipping.name || null,
-          address: piShipping.address || null,
-        };
-      }
-    } catch (err) {
-      console.error('Error retrieving PaymentIntent for shipping:', err);
-    }
-  }
-
-  return { name: null, address: null };
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -180,10 +145,16 @@ async function handleCheckoutCompleted(session: any) {
         session.id
       );
 
-      // Extract shipping strictly from Stripe (session or PaymentIntent)
-      const { name: shippingName, address: shippingAddress } = await extractShipping(session);
+      // Update shipping information - only use shipping from session, never billing
+      const shippingDetails = session.collected_information?.shipping_details 
+        ?? session.shipping_details 
+        ?? session.shipping 
+        ?? null;
 
-      // Update order with shipping details (nullable)
+      const shippingName = shippingDetails?.name ?? null;
+      const address = shippingDetails?.address ?? null;
+
+      // Update order with shipping details including city
       const { client } = await import('@/app/utils/database');
       await client.execute({
         sql: `
@@ -197,12 +168,12 @@ async function handleCheckoutCompleted(session: any) {
           WHERE id = ?
         `,
         args: [
-          shippingName || null,
-          shippingAddress?.line1 || null,
-          shippingAddress?.line2 || null,
-          shippingAddress?.city || null,
-          shippingAddress?.postal_code || null,
-          shippingAddress?.country || null,
+          shippingName,
+          address?.line1 ?? null,
+          address?.line2 ?? null,
+          address?.city ?? null,
+          address?.postal_code ?? null,
+          address?.country ?? null,
           clientReferenceId
         ]
       });
@@ -235,10 +206,16 @@ async function handleCheckoutCompleted(session: any) {
           session.id
         );
 
-        // Extract shipping strictly from Stripe (session or PaymentIntent)
-        const { name: shippingName, address: shippingAddress } = await extractShipping(session);
+        // Update shipping information - only use shipping from session, never billing
+        const shippingDetails = session.collected_information?.shipping_details 
+          ?? session.shipping_details 
+          ?? session.shipping 
+          ?? null;
 
-        // Update order with shipping details (nullable)
+        const shippingName = shippingDetails?.name ?? null;
+        const address = shippingDetails?.address ?? null;
+
+        // Update order with shipping details including city
         const { client } = await import('@/app/utils/database');
         await client.execute({
           sql: `
@@ -252,12 +229,12 @@ async function handleCheckoutCompleted(session: any) {
             WHERE id = ?
           `,
           args: [
-            shippingName || null,
-            shippingAddress?.line1 || null,
-            shippingAddress?.line2 || null,
-            shippingAddress?.city || null,
-            shippingAddress?.postal_code || null,
-            shippingAddress?.country || null,
+            shippingName,
+            address?.line1 ?? null,
+            address?.line2 ?? null,
+            address?.city ?? null,
+            address?.postal_code ?? null,
+            address?.country ?? null,
             pendingOrder.id!
           ]
         });
@@ -274,8 +251,16 @@ async function handleCheckoutCompleted(session: any) {
     // Send confirmed order data to Zapier webhook
     if (confirmedOrder && confirmedOrderId) {
       try {
-        // Extract shipping strictly from Stripe (session or PaymentIntent)
-        const { name: shippingName, address: shippingAddress } = await extractShipping(session);
+        // Extract shipping address from Stripe session
+        const shippingDetails = session.collected_information?.shipping_details 
+          ?? session.shipping_details 
+          ?? session.shipping 
+          ?? null;
+
+        const customerDetails = session.customer_details || {};
+        
+        // Only use shipping address if present, do not fallback to billing
+        const address = shippingDetails?.address ?? null;
         
         const zapierData = {
           order_id: confirmedOrderId,
@@ -301,14 +286,15 @@ async function handleCheckoutCompleted(session: any) {
           stripe_payment_intent_id: session.payment_intent,
           stripe_session_id: session.id,
           confirmed_at: new Date().toISOString(),
-          // Shipping address information from Stripe (nulls when absent)
-          shipping_name: shippingName || null,
-          shipping_address_line1: shippingAddress?.line1 || null,
-          shipping_address_line2: shippingAddress?.line2 || null,
-          shipping_city: shippingAddress?.city || null,
-          shipping_state: shippingAddress?.state || null,
-          shipping_postal_code: shippingAddress?.postal_code || null,
-          shipping_country: shippingAddress?.country || null,
+          // Shipping address information from Stripe
+          shipping_name: shippingDetails?.name ?? null,
+          shipping_address_line1: address?.line1 ?? null,
+          shipping_address_line2: address?.line2 ?? null,
+          shipping_city: address?.city ?? null,
+          shipping_state: address?.state ?? null,
+          shipping_postal_code: address?.postal_code ?? null,
+          shipping_country: address?.country ?? null,
+          customer_name: customerDetails.name || '',
           // Include all business data for multiple stands
           all_businesses: (() => {
             if (!confirmedOrder.all_businesses) return [];

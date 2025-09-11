@@ -1,34 +1,23 @@
 "use client";
 
-import { Metadata } from "next";
-import { Hero } from "@/app/components/Hero";
-import { Products } from "@/app/components/Products";
-import { WhyJust5Stars } from "@/app/components/WhyJust5Stars";
-import { SuccessStories } from "@/app/components/SuccessStories";
-import { CTA } from "@/app/components/CTA";
+import Hero from "@/app/components/Hero";
+import Products from "@/app/components/Products";
+import WhyJust5Stars from "@/app/components/WhyJust5Stars";
+import SuccessStories from "@/app/components/SuccessStories";
+import CTA from "@/app/components/CTA";
 import { DiscountRibbon } from "../components/DiscountRibbon";
 import { WhatsAppButton } from "../components/WhatsAppButton";
 import CookiesBanner from "../components/CookiesBanner";
 import Navbar from "../components/Navbar";
 import FeaturedIn from "../components/FeaturedIn";
 import LocalSEO from "../components/LocalSEO";
+import Footer from "../components/Footer";
 import Image from "next/image";
 import { MapPinIcon, CheckIcon, ChevronRightIcon, MagnifyingGlassIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import localSeoImage from "../components/LocalSEO/seo_local.png";
 import localSeoIcon from "../components/Products/stand_local_seo.png";
 import { OrderModal } from "../components/OrderModal";
 import { useState, useEffect } from "react";
-
-export const metadata: Metadata = {
-  title: "SEO Local en Google Maps - Oferta Especial | Just5Stars",
-  description: "Potencia tu negocio local con nuestro servicio SEO especializado en Google Maps. Prueba 30 días gratis, sin compromiso. Mejora tu visibilidad y atrae más clientes.",
-  keywords: "seo local, google maps, posicionamiento local, negocio local, visibilidad online",
-  openGraph: {
-    title: "SEO Local en Google Maps - Oferta Especial | Just5Stars",
-    description: "Potencia tu negocio local con nuestro servicio SEO especializado en Google Maps. Prueba 30 días gratis, sin compromiso.",
-    images: ["/components/Products/stand_local_seo.png"],
-  },
-};
 
 // Custom Hero component specifically for SEO Local Promo
 function SEOLocalPromoHero() {

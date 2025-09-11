@@ -13,7 +13,7 @@ import Image from "next/image";
 import { MapPinIcon, CheckIcon, ChevronRightIcon, MagnifyingGlassIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import localSeoImage from "../components/LocalSEO/seo_local.png";
 import localSeoIcon from "../components/Products/stand_local_seo.png";
-import mapsIcon from "../components/Products/stand_local_seo.png";
+import mapsIcon from "../components/Products/icon_local_seo _2.png";
 import { OrderModal } from "../components/OrderModal";
 import { useState, useEffect } from "react";
 
@@ -39,9 +39,9 @@ function SEOLocalPromoHero() {
               Especialistas en Posicionamiento Local
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Pack de Visibilidad
+              Oferta Exclusiva para Clientes:
               <br />
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">SEO Local</span>
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">1 mes Gratis de SEO Local</span>
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
@@ -124,9 +124,9 @@ function SEOLocalPromoProducts() {
     image: mapsIcon,
     cta_text: "Comprar Ahora",
     originalPrice: 59.80,
-    discountedPrice: 29.90,
+    discountedPrice: 0,
     hasDiscount: true,
-    monthlyText: "/mes",
+    monthlyText: "/primer mes",
     label: {
       text: "Oferta especial",
       color: "#7f6d2a"
@@ -172,24 +172,28 @@ function SEOLocalPromoProducts() {
                     className="w-64 h-64 object-contain"
                   />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">{product.title}</h3>
-
+                <h3 className="text-2xl font-bold text-gray-900 mb-3 text-center">{product.title}</h3>
                 <div className="mb-6">
                   {isClient && product.hasDiscount ? (
                     <div className="text-center space-y-2">
                       <div className="font-bold text-[#7f6d2a] py-2 px-4">
-                        <span className="text-5xl">{product.discountedPrice.toFixed(2)}</span>
-                        <span className="text-2xl">€{product.monthlyText}</span>
+                        <span className="text-5xl">0</span>
+                        <span className="text-2xl">€ primer mes</span>
+                      </div>
+                      <div className="text-gray-500">
+                        <span className="text-xl">29,90</span>
+                        <span className="text-base">€ siguientes meses</span>
                       </div>
                       <div className="text-gray-500 line-through">
-                        <span className="text-xl">{product.originalPrice.toFixed(2)}</span>
-                        <span className="text-base">€{product.monthlyText}</span>
+                        <span className="text-xl">59,80</span>
+                        <span className="text-base">€ siguientes meses</span>
                       </div>
                       {/* Discount and Permanencia in same row */}
                       <div className="flex justify-center items-center gap-3 flex-wrap">
                         <div className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
-                          -50% dto.
+                          -50% dto. este mes
                         </div>
+
                         {product.secondary_label && (
                           <span 
                             className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"

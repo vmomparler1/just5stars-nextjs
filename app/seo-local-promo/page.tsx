@@ -139,7 +139,6 @@ function SEOLocalPromoProducts() {
       "Auditoría inicial de tu Google Business Profile",
       "Recomendaciones para mejorar el posicionamiento en Maps",
       "Seguimiento de la evolución en el ranking",
-      "Prueba 30 días gratis, sin compromiso"
     ],
     paymentUrl: "https://buy.stripe.com/9B6fZi7wX4umbktaTFc"
   };

@@ -124,10 +124,14 @@ function SEOLocalPromoProducts() {
     // Find the voucher for the current month
     const today = new Date();
     const month = today.getMonth(); // 0-indexed
-    // The error indicates vouchersData is not an array, but an object with default property.
-    // Assuming vouchersData.default is the array of vouchers.
-    const voucherArray = vouchersData.default || vouchersData; // Handle cases where it might be directly an array
-    const currentMonthVoucher = Array.isArray(voucherArray) ? voucherArray.find(v => v.month === month) : null;
+    const monthNames = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 
+                       'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
+    const currentMonthName = monthNames[month];
+    
+    // Access vouchers from the correct structure
+    const currentMonthVoucher = vouchersData.vouchers.find(v => 
+      v.code.startsWith(currentMonthName) && v.active
+    );
     setCurrentVoucher(currentMonthVoucher || null);
   }, []);
 
@@ -239,9 +243,10 @@ function SEOLocalPromoProducts() {
                 {/* Move button here, right after price */}
                 <button
                   onClick={() => {
+                    const baseUrl = "https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05";
                     const paymentUrl = currentVoucher 
-                      ? `https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05?voucher=${currentVoucher.code}`
-                      : "https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05";
+                      ? `${baseUrl}?prefilled_promo_code=${currentVoucher.code}`
+                      : baseUrl;
                     window.location.href = paymentUrl;
                   }}
                   className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mb-6"

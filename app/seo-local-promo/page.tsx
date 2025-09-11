@@ -152,7 +152,7 @@ function SEOLocalPromoProducts() {
                   {product.promotion.text}
                 </div>
               )}
-              <div className="flex-1"></div>
+              <div className="flex-1">
                 <div className="flex justify-center mb-6">
                   <Image
                     src={product.image}
@@ -160,7 +160,7 @@ function SEOLocalPromoProducts() {
                     width={300}
                     className="w-64 h-64 object-contain"
                   />
-                </div>
+                </div></div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{product.title}</h3>
 
                 <div className="mb-6">

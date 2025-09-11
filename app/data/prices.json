@@ -51,5 +51,15 @@
       "payment_link": "https://buy.stripe.com/8x2cN67wX5yq0FPbXJcEw02",
       "voucher": true,
       "voucher_percent": 0.5
+    },
+    {
+      "number_of_stands": 0,
+      "local_seo": 1,
+      "full_service": 0,
+      "price": 39.80,
+      "shipping": 0,
+      "payment_link": "https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05",
+      "voucher": true,
+      "voucher_percent": 0.5
     }
   ]

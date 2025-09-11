@@ -1,4 +1,3 @@
-
 "use client";
 
 import Navbar from "../components/Navbar";
@@ -123,15 +122,25 @@ function SEOLocalPromoProducts() {
     description: "Gestión completa de tu SEO Local para mejorar tu posicionamiento en Google Maps",
     image: localSeoIcon,
     cta_text: "Comprar Ahora",
-    price: 59.80,
+    originalPrice: 119.60,
+    discountedPrice: 59.80,
+    hasDiscount: true,
     monthlyText: "/mes",
+    label: {
+      text: "Oferta especial",
+      color: "#7f6d2a"
+    },
+    secondary_label: {
+      text: "Sin permanencia",
+      color: "#7f6d2a"
+    },
     features: [
       "Auditoría inicial de tu GBP",
       "Recomendaciones para mejorar el posicionamiento en Maps",
       "Seguimiento de la evolución en el ranking",
       "Prueba 30 días gratis, sin compromiso"
     ],
-    paymentUrl: "https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05"
+    paymentUrl: "https://buy.stripe.com/9B6fZi7wX4umbktaTFc"
   };
 
   return (
@@ -143,6 +152,16 @@ function SEOLocalPromoProducts() {
           </div>
           <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow relative flex flex-col h-full">
+              {product.label && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <span 
+                    className="text-white px-4 py-2 rounded-full text-sm font-bold"
+                    style={{ backgroundColor: product.label.color }}
+                  >
+                    {product.label.text}
+                  </span>
+                </div>
+              )}
               <div className="flex-1">
                 <div className="flex justify-center mb-6">
                   <Image
@@ -153,24 +172,58 @@ function SEOLocalPromoProducts() {
                   />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{product.title}</h3>
-                
+
                 <div className="mb-6">
-                  <div className="text-center">
-                    <div className="font-bold text-[#7f6d2a] py-2 px-4">
-                      <span className="text-5xl">{product.price.toFixed(2)}</span>
-                      <span className="text-2xl">€{product.monthlyText}</span>
+                  {isClient && product.hasDiscount ? (
+                    <div className="text-center space-y-2">
+                      <div className="font-bold text-[#7f6d2a] py-2 px-4">
+                        <span className="text-5xl">{product.discountedPrice.toFixed(2)}</span>
+                        <span className="text-2xl">€{product.monthlyText}</span>
+                      </div>
+                      <div className="text-gray-500 line-through">
+                        <span className="text-xl">{product.originalPrice.toFixed(2)}</span>
+                        <span className="text-base">€{product.monthlyText}</span>
+                      </div>
+                      {/* Discount and Permanencia in same row */}
+                      <div className="flex justify-center items-center gap-3 flex-wrap">
+                        <div className="inline-block bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">
+                          -50% dto.
+                        </div>
+                        {product.secondary_label && (
+                          <span 
+                            className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
+                          >
+                            {product.secondary_label.text}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="text-center">
+                      <div className="font-bold text-[#7f6d2a] py-2 px-4">
+                        <span className="text-5xl">{product.originalPrice.toFixed(2)}</span>
+                        <span className="text-2xl">€{product.monthlyText}</span>
+                      </div>
+                      {product.secondary_label && (
+                        <div className="mt-2">
+                          <span 
+                            className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
+                          >
+                            {product.secondary_label.text}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
-                <a 
-                  href={product.paymentUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mb-6 block text-center"
+                {/* Move button here, right after price */}
+                <button 
+                  onClick={() => handleOrderClick(product.id)}
+                  className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mb-6"
                 >
                   {product.cta_text}
-                </a>
+                </button>
 
                 <ul className="space-y-3 mb-8">
                   {product.features.map((feature, i) => (
@@ -185,6 +238,14 @@ function SEOLocalPromoProducts() {
           </div>
         </div>
       </section>
+
+      <OrderModal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        selectedProductId={selectedProductId}
+        onProductChange={(productId) => setSelectedProductId(productId)}
+        onlyStand={false}
+      />
     </>
   );
 }

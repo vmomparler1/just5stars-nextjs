@@ -13,6 +13,7 @@ import Image from "next/image";
 import { MapPinIcon, CheckIcon, ChevronRightIcon, MagnifyingGlassIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import localSeoImage from "../components/LocalSEO/seo_local.png";
 import localSeoIcon from "../components/Products/stand_local_seo.png";
+import mapsIcon from "../components/Products/icon_local_seo (2).png";
 import { OrderModal } from "../components/OrderModal";
 import { useState, useEffect } from "react";
 
@@ -120,10 +121,10 @@ function SEOLocalPromoProducts() {
     id: "stand_visibility_promo",
     title: "SEO Local en Google Maps",
     description: "Gestión completa de tu SEO Local para mejorar tu posicionamiento en Google Maps",
-    image: localSeoIcon,
+    image: mapsIcon,
     cta_text: "Comprar Ahora",
-    originalPrice: 119.60,
-    discountedPrice: 59.80,
+    originalPrice: 59.80,
+    discountedPrice: 29.90,
     hasDiscount: true,
     monthlyText: "/mes",
     label: {
@@ -135,7 +136,7 @@ function SEOLocalPromoProducts() {
       color: "#7f6d2a"
     },
     features: [
-      "Auditoría inicial de tu GBP",
+      "Auditoría inicial de tu Google Business Profile",
       "Recomendaciones para mejorar el posicionamiento en Maps",
       "Seguimiento de la evolución en el ranking",
       "Prueba 30 días gratis, sin compromiso"

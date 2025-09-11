@@ -13,7 +13,7 @@ import Image from "next/image";
 import { MapPinIcon, CheckIcon, ChevronRightIcon, MagnifyingGlassIcon, TrophyIcon } from "@heroicons/react/24/outline";
 import localSeoImage from "../components/LocalSEO/seo_local.png";
 import localSeoIcon from "../components/Products/stand_local_seo.png";
-import mapsIcon from "../components/Products/icon_local_seo (2).png";
+import mapsIcon from "../components/Products/stand_local_seo.png";
 import { OrderModal } from "../components/OrderModal";
 import { useState, useEffect } from "react";
 

@@ -16,13 +16,14 @@ import localSeoIcon from "../components/Products/stand_local_seo.png";
 import mapsIcon from "../components/Products/icon_local_seo _2.png";
 import { OrderModal } from "../components/OrderModal";
 import { useState, useEffect } from "react";
+import vouchersData from "../data/vouchers.json";
 
 // Custom Hero component specifically for SEO Local Promo
 function SEOLocalPromoHero() {
   const scrollToProducts = () => {
     const productsSection = document.getElementById('products');
     if (productsSection) {
-      productsSection.scrollIntoView({ 
+      productsSection.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
@@ -74,7 +75,7 @@ function SEOLocalPromoHero() {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button 
+              <button
                 onClick={scrollToProducts}
                 className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center group"
               >
@@ -107,14 +108,24 @@ function SEOLocalPromoProducts() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
+  const [currentVoucher, setCurrentVoucher] = useState(null);
 
-  const handleOrderClick = (productId: string) => {
+  const handleOrderClick = (productId: string, voucherCode: string | null = null) => {
     setSelectedProductId(productId);
     setIsOrderModalOpen(true);
+    if (voucherCode) {
+      // Logic to apply voucher, e.g., pass it to the modal or redirect with it
+      console.log(`Voucher ${voucherCode} applied`);
+    }
   };
 
   useEffect(() => {
     setIsClient(true);
+    // Find the voucher for the current month
+    const today = new Date();
+    const month = today.getMonth(); // 0-indexed
+    const currentMonthVoucher = vouchersData.find(v => v.month === month);
+    setCurrentVoucher(currentMonthVoucher || null);
   }, []);
 
   const product = {
@@ -140,7 +151,8 @@ function SEOLocalPromoProducts() {
       "Recomendaciones para mejorar el posicionamiento en Maps",
       "Seguimiento de la evolución en el ranking",
     ],
-    paymentUrl: "https://buy.stripe.com/9B6fZi7wX4umbktaTFc"
+    // Dynamically set the payment URL with the voucher code if available
+    paymentUrl: currentVoucher ? `https://buy.stripe.com/cN21479wX0qBblt3CD?voucher=${currentVoucher.code}` : "https://buy.stripe.com/9B6fZi7wX4umbktaTFc"
   };
 
   return (
@@ -154,7 +166,7 @@ function SEOLocalPromoProducts() {
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow relative flex flex-col h-full">
               {product.label && (
                 <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span 
+                  <span
                     className="text-white px-4 py-2 rounded-full text-sm font-bold"
                     style={{ backgroundColor: product.label.color }}
                   >
@@ -194,7 +206,7 @@ function SEOLocalPromoProducts() {
                         </div>
 
                         {product.secondary_label && (
-                          <span 
+                          <span
                             className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
                           >
                             {product.secondary_label.text}
@@ -210,7 +222,7 @@ function SEOLocalPromoProducts() {
                       </div>
                       {product.secondary_label && (
                         <div className="mt-2">
-                          <span 
+                          <span
                             className="text-[#7f6d2a] text-sm font-semibold px-3 py-1 rounded-full border border-[#7f6d2a]"
                           >
                             {product.secondary_label.text}
@@ -222,8 +234,8 @@ function SEOLocalPromoProducts() {
                 </div>
 
                 {/* Move button here, right after price */}
-                <button 
-                  onClick={() => handleOrderClick(product.id)}
+                <button
+                  onClick={() => handleOrderClick(product.id, currentVoucher ? currentVoucher.code : null)}
                   className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mb-6"
                 >
                   {product.cta_text}

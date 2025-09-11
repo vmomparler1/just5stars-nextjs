@@ -12,10 +12,9 @@ import productsData from '@/app/data/products.json';
 
 interface ProductsProps {
   onlyStand?: boolean;
-  onlyProduct?: string;
 }
 
-export default function Products({ onlyStand = false, onlyProduct }: ProductsProps) {
+export default function Products({ onlyStand = false }: ProductsProps) {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
@@ -35,11 +34,9 @@ export default function Products({ onlyStand = false, onlyProduct }: ProductsPro
   const localSeoPriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 1 && p.full_service === 0);
   const fullServicePriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 0 && p.full_service === 1);
 
-  // Filter products based on props
+  // Filter products based on onlyStand prop
   const filteredProducts = onlyStand 
     ? { stand_only: productsData.stand_only }
-    : onlyProduct
-    ? { [onlyProduct]: productsData[onlyProduct as keyof typeof productsData] }
     : productsData;
 
   return (
@@ -50,7 +47,7 @@ export default function Products({ onlyStand = false, onlyProduct }: ProductsPro
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Ayudamos a tu negocio a crecer</h2>
 
           </div>
-          <div className={`grid gap-8 ${(onlyStand || onlyProduct) ? 'md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
+          <div className={`grid gap-8 ${onlyStand ? 'md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'}`}>
             {Object.entries(filteredProducts).map(([productId, productData], index) => {
               // Get appropriate image based on product ID
               const getProductImage = (id: string) => {
@@ -58,7 +55,6 @@ export default function Products({ onlyStand = false, onlyProduct }: ProductsPro
                   case 'stand_only': return standsImage;
                   case 'stand_visibility': return localSeoIcon;
                   case 'stand_visibility_web': return allInclusive;
-                  case 'seo_local_only': return localSeoIcon;
                   default: return standsImage;
                 }
               };
@@ -69,13 +65,12 @@ export default function Products({ onlyStand = false, onlyProduct }: ProductsPro
                   case 'stand_only': return standOnlyPriceEntry;
                   case 'stand_visibility': return localSeoPriceEntry;
                   case 'stand_visibility_web': return fullServicePriceEntry;
-                  case 'seo_local_only': return pricesData.find(p => p.number_of_stands === 0 && p.local_seo === 1 && p.full_service === 0);
                   default: return null;
                 }
               };
 
               const priceEntry = getPriceEntry(productId);
-              const monthlyText = (productId === 'stand_visibility' || productId === 'stand_visibility_web' || productId === 'seo_local_only') ? '/mes' : '';
+              const monthlyText = (productId === 'stand_visibility' || productId === 'stand_visibility_web') ? '/mes' : '';
               const originalPrice = priceEntry?.price || 0;
               
               // Only calculate discount-related values client-side to prevent hydration issues
@@ -108,11 +103,6 @@ export default function Products({ onlyStand = false, onlyProduct }: ProductsPro
                     >
                       {product.label.text}
                     </span>
-                  </div>
-                )}
-                {productData.promotion && (
-                  <div className="absolute -top-3 -right-3 bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transform rotate-12 shadow-lg">
-                    {productData.promotion.text}
                   </div>
                 )}
                 <div className="flex-1">

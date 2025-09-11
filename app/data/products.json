@@ -63,30 +63,5 @@
       "Creación y mantenimiento de la web",
       "SEO web"
     ]
-  },
-  "seo_local_only": {
-    "id": "seo_local_only",
-    "title": "SEO Local",
-    "description": "Potencia tu negocio con SEO Local profesional. Mejora tu visibilidad en Google Maps y atrae más clientes locales.",
-    "image": "/components/Products/stand_local_seo.png",
-    "cta_text": "Comprar Ahora",
-    "local_seo": 1,
-    "full_service": 0,
-    "label": null,
-    "secondary_label": {
-      "text": "Sin permanencia",
-      "color": "#7f6d2a"
-    },
-    "promotion": {
-      "text": "Oferta Especial",
-      "color": "#f00"
-    },
-    "features": [
-      "Auditoría inicial de tu GBP",
-      "Optimización completa del perfil",
-      "Recomendaciones para mejorar el posicionamiento en Maps",
-      "Seguimiento de la evolución en el ranking",
-      "Prueba 30 días gratis, sin compromiso"
-    ]
   }
 } 

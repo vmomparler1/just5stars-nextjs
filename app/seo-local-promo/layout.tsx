@@ -4,6 +4,10 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "SEO Local Google Maps - Prueba 30 días gratis | just5stars",
   description: "Mejora tu posicionamiento en Google Maps con nuestro servicio SEO Local. Prueba 30 días gratis, sin compromiso.",
+  robots: {
+    index: false,
+    follow: true,
+  },
   openGraph: {
     title: "SEO Local Google Maps - Prueba 30 días gratis",
     description: "Mejora tu posicionamiento en Google Maps con nuestro servicio SEO Local. Prueba 30 días gratis, sin compromiso.",

@@ -1,0 +1,8 @@
+
+User-agent: *
+Allow: /
+
+# Exclude promotional pages from sitemap
+Disallow: /seo-local-promo
+
+Sitemap: https://just5stars.com/sitemap.xml

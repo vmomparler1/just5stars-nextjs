@@ -124,7 +124,10 @@ function SEOLocalPromoProducts() {
     // Find the voucher for the current month
     const today = new Date();
     const month = today.getMonth(); // 0-indexed
-    const currentMonthVoucher = vouchersData.find(v => v.month === month);
+    // The error indicates vouchersData is not an array, but an object with default property.
+    // Assuming vouchersData.default is the array of vouchers.
+    const voucherArray = vouchersData.default || vouchersData; // Handle cases where it might be directly an array
+    const currentMonthVoucher = Array.isArray(voucherArray) ? voucherArray.find(v => v.month === month) : null;
     setCurrentVoucher(currentMonthVoucher || null);
   }, []);
 

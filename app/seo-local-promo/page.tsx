@@ -146,7 +146,13 @@ function SEOLocalPromoProducts() {
           </div>
           <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow relative flex flex-col h-full">
-              <div className="flex-1">
+              {/* Promotion Ribbon */}
+              {product.promotion && (
+                <div className="absolute -top-3 -right-3 bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transform rotate-12 shadow-lg">
+                  {product.promotion.text}
+                </div>
+              )}
+              <div className="flex-1"></div>
                 <div className="flex justify-center mb-6">
                   <Image
                     src={product.image}

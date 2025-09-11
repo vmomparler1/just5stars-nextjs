@@ -1,3 +1,4 @@
+
 "use client";
 
 import Navbar from "../components/Navbar";
@@ -21,7 +22,7 @@ function SEOLocalPromoHero() {
   const scrollToProducts = () => {
     const productsSection = document.getElementById('products');
     if (productsSection) {
-      productsSection.scrollIntoView({
+      productsSection.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
@@ -73,7 +74,7 @@ function SEOLocalPromoHero() {
               </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button
+              <button 
                 onClick={scrollToProducts}
                 className="bg-blue-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-blue-700 transition-colors flex items-center justify-center group"
               >
@@ -130,10 +131,6 @@ function SEOLocalPromoProducts() {
       "Seguimiento de la evolución en el ranking",
       "Prueba 30 días gratis, sin compromiso"
     ],
-    promotion: {
-      text: "Oferta Especial",
-      color: "#f00" // Example color, you can change this
-    },
     paymentUrl: "https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05"
   };
 
@@ -146,12 +143,6 @@ function SEOLocalPromoProducts() {
           </div>
           <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-1 max-w-md mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow relative flex flex-col h-full">
-              {/* Promotion Ribbon */}
-              {product.promotion && (
-                <div className="absolute -top-3 -right-3 bg-red-500 text-white px-4 py-2 rounded-lg font-bold text-sm transform rotate-12 shadow-lg">
-                  {product.promotion.text}
-                </div>
-              )}
               <div className="flex-1">
                 <div className="flex justify-center mb-6">
                   <Image
@@ -160,9 +151,9 @@ function SEOLocalPromoProducts() {
                     width={300}
                     className="w-64 h-64 object-contain"
                   />
-                </div></div>
+                </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{product.title}</h3>
-
+                
                 <div className="mb-6">
                   <div className="text-center">
                     <div className="font-bold text-[#7f6d2a] py-2 px-4">
@@ -172,7 +163,7 @@ function SEOLocalPromoProducts() {
                   </div>
                 </div>
 
-                <a
+                <a 
                   href={product.paymentUrl}
                   target="_blank"
                   rel="noopener noreferrer"

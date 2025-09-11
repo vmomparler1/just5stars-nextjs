@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Configure server for Replit environment
+  serverExternalPackages: [],
   async redirects() {
     return [
       {

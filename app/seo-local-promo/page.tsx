@@ -18,6 +18,14 @@ import { OrderModal } from "../components/OrderModal";
 import { useState, useEffect } from "react";
 import vouchersData from "../data/vouchers.json";
 
+// TypeScript interface for voucher object
+interface Voucher {
+  code: string;
+  discount_percentage: number;
+  description: string;
+  active: boolean;
+}
+
 // Custom Hero component specifically for SEO Local Promo
 function SEOLocalPromoHero() {
   const scrollToProducts = () => {
@@ -108,7 +116,7 @@ function SEOLocalPromoProducts() {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
-  const [currentVoucher, setCurrentVoucher] = useState(null);
+  const [currentVoucher, setCurrentVoucher] = useState<Voucher | null>(null);
 
   const handleOrderClick = (productId: string, voucherCode: string | null = null) => {
     setSelectedProductId(productId);

@@ -238,7 +238,12 @@ function SEOLocalPromoProducts() {
 
                 {/* Move button here, right after price */}
                 <button
-                  onClick={() => handleOrderClick(product.id, currentVoucher ? currentVoucher.code : null)}
+                  onClick={() => {
+                    const paymentUrl = currentVoucher 
+                      ? `https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05?voucher=${currentVoucher.code}`
+                      : "https://buy.stripe.com/9B6fZi7wX4umbktaTFcEw05";
+                    window.location.href = paymentUrl;
+                  }}
                   className="w-full bg-[#7f6d2a] text-white py-3 rounded-lg font-semibold hover:bg-[#6a5a23] transition-colors mb-6"
                 >
                   {product.cta_text}

@@ -1,8 +1,23 @@
 // Price parameter tracking utilities
+import pricesData from '../data/prices.json';
 
 // Cookie settings
 const PR_COOKIE_NAME = 'just5stars_pr';
 const COOKIE_DURATION = 30; // days
+
+// Type definition for price entry
+interface PriceEntry {
+  pr_id?: string;
+  number_of_stands: number;
+  local_seo: number;
+  full_service: number;
+  price: number;
+  stands_units_discount: number;
+  shipping: number;
+  payment_link: string;
+  voucher: boolean;
+  voucher_percent: number;
+}
 
 /**
  * Captures the 'pr' parameter from the current URL and stores it in cookies
@@ -59,6 +74,30 @@ export const clearPriceParameter = (): void => {
 
   document.cookie = `${PR_COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
   console.log('Price parameter cleared');
+};
+
+/**
+ * Gets pricing configuration based on the stored price parameter
+ * Returns the appropriate pricing data for pr=1419 or pr=2324
+ */
+export const getPriceByParam = (): PriceEntry | null => {
+  const prValue = getStoredPriceParameter();
+  
+  if (!prValue) {
+    console.log('No price parameter stored');
+    return null;
+  }
+
+  // Find the price entry with the matching pr_id
+  const priceEntry = pricesData.find((entry: any) => entry.pr_id === prValue);
+  
+  if (priceEntry) {
+    console.log(`Price configuration found for pr=${prValue}:`, priceEntry);
+    return priceEntry as PriceEntry;
+  }
+
+  console.log(`No price configuration found for pr=${prValue}`);
+  return null;
 };
 
 /**

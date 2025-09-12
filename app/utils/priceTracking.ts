@@ -21,6 +21,7 @@ interface PriceEntry {
 
 /**
  * Captures the 'pr' parameter from the current URL and stores it in cookies
+ * Always overrides existing stored parameter when a new one is present
  */
 export const capturePriceParameter = (): void => {
   if (typeof window === 'undefined') return;
@@ -29,14 +30,14 @@ export const capturePriceParameter = (): void => {
     const urlParams = new URLSearchParams(window.location.search);
     const prValue = urlParams.get('pr');
 
-    // If we found a pr parameter, store it in cookies
+    // If we found a pr parameter, always store it (override existing)
     if (prValue) {
       const expirationDate = new Date();
       expirationDate.setDate(expirationDate.getDate() + COOKIE_DURATION);
       
       document.cookie = `${PR_COOKIE_NAME}=${encodeURIComponent(prValue)}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict`;
       
-      console.log('Price parameter captured and stored:', prValue);
+      console.log('Price parameter captured and stored (overriding any existing):', prValue);
     }
   } catch (error) {
     console.error('Error capturing price parameter:', error);

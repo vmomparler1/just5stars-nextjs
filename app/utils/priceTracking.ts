@@ -80,24 +80,36 @@ export const clearPriceParameter = (): void => {
 /**
  * Gets pricing configuration based on the stored price parameter
  * Returns the appropriate pricing data for pr=1419 or pr=2324
+ * Defaults to pr=2324 configuration if no valid pr parameter or unrecognized value
  */
 export const getPriceByParam = (): PriceEntry | null => {
   const prValue = getStoredPriceParameter();
   
-  if (!prValue) {
-    console.log('No price parameter stored');
-    return null;
+  // Define valid pr values
+  const validPrValues = ['1419', '2324'];
+  const defaultPrValue = '2324';
+  
+  // Determine which pr value to use
+  let targetPrValue = defaultPrValue;
+  
+  if (prValue && validPrValues.includes(prValue)) {
+    targetPrValue = prValue;
+    console.log(`Using stored price parameter: pr=${prValue}`);
+  } else if (prValue) {
+    console.log(`Invalid price parameter pr=${prValue}, defaulting to pr=${defaultPrValue}`);
+  } else {
+    console.log(`No price parameter stored, defaulting to pr=${defaultPrValue}`);
   }
 
-  // Find the price entry with the matching pr_id
-  const priceEntry = pricesData.find((entry: any) => entry.pr_id === prValue);
+  // Find the price entry with the target pr_id
+  const priceEntry = pricesData.find((entry: any) => entry.pr_id === targetPrValue);
   
   if (priceEntry) {
-    console.log(`Price configuration found for pr=${prValue}:`, priceEntry);
+    console.log(`Price configuration found for pr=${targetPrValue}:`, priceEntry);
     return priceEntry as PriceEntry;
   }
 
-  console.log(`No price configuration found for pr=${prValue}`);
+  console.log(`Error: No price configuration found for pr=${targetPrValue}`);
   return null;
 };
 

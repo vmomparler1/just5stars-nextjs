@@ -1,5 +1,18 @@
 [
     {
+      "pr_id": "1419",
+      "number_of_stands": 1,
+      "local_seo": 0,
+      "full_service": 0,
+      "price": 39.8,
+      "stands_units_discount": 0,
+      "shipping": 0,
+      "payment_link": "https://buy.stripe.com/4gMfZibNdd0SfAJf9VcEw06",
+      "voucher": true,
+      "voucher_percent": 0.5
+    },
+    {
+      "pr_id": "2324",
       "number_of_stands": 1,
       "local_seo": 0,
       "full_service": 0,

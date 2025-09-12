@@ -1,6 +1,7 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import FeaturedIn from "../components/FeaturedIn";
@@ -16,6 +17,7 @@ import CookiesBanner from "../components/CookiesBanner";
 import Image from "next/image";
 import { StarIcon, CheckIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import heroImage from "../components/Hero/hero_just5.png";
+import { capturePriceParameter } from "../utils/priceTracking";
 
 
 // Custom Hero component specifically for Google stands
@@ -95,6 +97,21 @@ function GoogleStandHero() {
 }
 
 export default function ExpositorResenasNFCPage() {
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure we're on the client side before running any client-specific logic
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Capture price parameter from URL when component mounts
+  useEffect(() => {
+    if (!mounted) return; // Only run on client side after mount
+    
+    // Capture price parameter when page loads
+    capturePriceParameter();
+  }, [mounted]);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [

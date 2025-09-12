@@ -7,9 +7,8 @@ import standsImage from "./stand_02.png";
 import localSeoIcon from "./stand_local_seo.png";
 import allInclusive from "./stand_local_seo_360.png";
 import { OrderModal } from "../OrderModal";
-import pricesData from '@/app/data/prices.json';
 import productsData from '@/app/data/products.json';
-import { getPriceByParam } from '../../utils/priceTracking';
+import { getPricesData } from '../../utils/priceTracking';
 
 interface ProductsProps {
   onlyStand?: boolean;
@@ -19,34 +18,26 @@ export default function Products({ onlyStand = false }: ProductsProps) {
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string>('');
   const [isClient, setIsClient] = useState(false);
-  const [standOnlyPriceEntry, setStandOnlyPriceEntry] = useState(() => 
-    pricesData.find(p => p.number_of_stands === 1 && p.local_seo === 0 && p.full_service === 0)
-  );
+  const [currentPricesData, setCurrentPricesData] = useState<any[]>([]);
 
   const handleOrderClick = (productId: string) => {
     setSelectedProductId(productId);
     setIsOrderModalOpen(true);
   };
 
-  // Set client-side flag and update pricing based on stored parameter
+  // Set client-side flag and load appropriate prices data
   useEffect(() => {
     setIsClient(true);
     
-    // Try to get price from parameter
-    const paramPrice = getPriceByParam();
-    
-    if (paramPrice && paramPrice.number_of_stands === 1 && paramPrice.local_seo === 0 && paramPrice.full_service === 0) {
-      setStandOnlyPriceEntry(paramPrice);
-    } else {
-      // Ensure we have the default fallback
-      const defaultEntry = pricesData.find(p => p.number_of_stands === 1 && p.local_seo === 0 && p.full_service === 0);
-      setStandOnlyPriceEntry(defaultEntry);
-    }
+    // Get the right prices data based on cookie
+    const pricesData = getPricesData();
+    setCurrentPricesData(pricesData);
   }, []);
 
-  // Other price entries remain static for now
-  const localSeoPriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 1 && p.full_service === 0);
-  const fullServicePriceEntry = pricesData.find(p => p.number_of_stands === 3 && p.local_seo === 0 && p.full_service === 1);
+  // Get price entries from current prices data
+  const standOnlyPriceEntry = currentPricesData.find(p => p.number_of_stands === 1 && p.local_seo === 0 && p.full_service === 0);
+  const localSeoPriceEntry = currentPricesData.find(p => p.number_of_stands === 3 && p.local_seo === 1 && p.full_service === 0);
+  const fullServicePriceEntry = currentPricesData.find(p => p.number_of_stands === 3 && p.local_seo === 0 && p.full_service === 1);
 
   // Filter products based on onlyStand prop
   const filteredProducts = onlyStand 

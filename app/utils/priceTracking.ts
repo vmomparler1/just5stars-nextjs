@@ -76,14 +76,37 @@ export const clearPriceParameter = (): void => {
 };
 
 /**
- * Gets the appropriate prices data based on stored parameter
- * If cookie pr=1419, use prices_b.json, else use prices.json
+ * Gets the appropriate prices data based on URL parameter or stored parameter
+ * If pr=1419 (from URL or cookie), use prices_b.json, else use prices.json
  */
 export const getPricesData = (): PriceEntry[] => {
-  const storedParam = getStoredPriceParameter();
+  // First check URL parameter directly (for immediate response on first visit)
+  let prValue: string | null = null;
   
-  // If stored parameter is 1419, use prices_b.json, otherwise use prices.json
-  if (storedParam === '1419') {
+  if (typeof window !== 'undefined') {
+    const urlParams = new URLSearchParams(window.location.search);
+    prValue = urlParams.get('pr');
+    
+    // If we found a pr parameter in URL, capture it in cookie immediately
+    if (prValue) {
+      const expirationDate = new Date();
+      expirationDate.setDate(expirationDate.getDate() + COOKIE_DURATION);
+      
+      try {
+        document.cookie = `${PR_COOKIE_NAME}=${encodeURIComponent(prValue)}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Strict`;
+      } catch (error) {
+        console.error('Error storing price parameter:', error);
+      }
+    }
+  }
+  
+  // If no URL parameter, check stored cookie
+  if (!prValue) {
+    prValue = getStoredPriceParameter();
+  }
+  
+  // If parameter is 1419, use prices_b.json, otherwise use prices.json
+  if (prValue === '1419') {
     return pricesBData as PriceEntry[];
   }
   

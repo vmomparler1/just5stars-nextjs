@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { XMarkIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
-import pricesData from '@/app/data/prices.json';
 import vouchersData from '@/app/data/vouchers.json';
 import productsData from '@/app/data/products.json';
+import { getPricesData } from '@/app/utils/priceTracking';
 import standsImage from '../Products/stand_02.png';
 import localSeoIcon from '../Products/stand_local_seo.png';
 import allInclusive from '../Products/stand_local_seo_360.png';
@@ -94,6 +94,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const pendingSearches = useRef<Set<number>>(new Set());
   const searchTimeouts = useRef<Map<number, NodeJS.Timeout>>(new Map());
 
+  // Dynamic prices data based on cookie
+  const [currentPricesData, setCurrentPricesData] = useState<PriceEntry[]>([]);
+
   // Load Google Maps JS API once and share the promise across calls
   const loadGoogleMaps = (): Promise<void> => {
     if (typeof window === 'undefined') return Promise.reject('window is undefined');
@@ -119,11 +122,15 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
     return (window as any)._googleMapsPromise;
   };
 
-  // Generate month code on client side only
+  // Generate month code on client side only and load prices data
   useEffect(() => {
     const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
     setMonthCode(`${months[new Date().getMonth()]}50`);
     setIsClient(true);
+    
+    // Load the appropriate prices data based on cookie
+    const pricesData = getPricesData();
+    setCurrentPricesData(pricesData);
   }, []);
 
   // Product configuration mapping from centralized data
@@ -163,12 +170,12 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   // Find price entry based on quantity and product type
   const findPriceEntry = (numberOfStands: number): PriceEntry | null => {
-    if (!currentProductConfig) return null;
+    if (!currentProductConfig || currentPricesData.length === 0) return null;
 
     // For local_seo and full_service, always use 3 stands
     const standsToFind = (currentProductConfig.local_seo === 1 || currentProductConfig.full_service === 1) ? 3 : numberOfStands;
 
-    return pricesData.find(entry => 
+    return currentPricesData.find(entry => 
       entry.number_of_stands === standsToFind &&
       entry.local_seo === currentProductConfig.local_seo &&
       entry.full_service === currentProductConfig.full_service
@@ -883,7 +890,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
               {Object.entries(filteredProductConfig).map(([productId, config]) => {
                 // Find price for this specific product - use correct number of stands
                 const standsToLookFor = (config.local_seo === 1 || config.full_service === 1) ? 3 : 1;
-                const productPriceEntry = pricesData.find(entry => 
+                const productPriceEntry = currentPricesData.find((entry: PriceEntry) => 
                   entry.number_of_stands === standsToLookFor &&
                   entry.local_seo === config.local_seo &&
                   entry.full_service === config.full_service

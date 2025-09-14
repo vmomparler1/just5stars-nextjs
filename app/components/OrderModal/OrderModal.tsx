@@ -211,14 +211,11 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
           const transactionId = getOrCreateTransactionId();
 
           (window as any).dataLayer.push({
-            event: 'openModalProceedPayment',
+            event: 'add_to_cart',
             product_name: currentProductConfig.name,
             product_id: currentProductId,
-            value: currentPriceEntry?.price || 0,
-            currency: 'EUR',
-            transaction_id: transactionId,
           });
-          console.log('✅ GTM - openModalProceedPayment event pushed to dataLayer');
+          console.log('✅ GTM - add_to_cart event pushed to dataLayer');
         }
       };
 

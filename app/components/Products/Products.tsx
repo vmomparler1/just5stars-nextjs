@@ -76,7 +76,18 @@ export default function Products({ onlyStand = false }: ProductsProps) {
 
               const priceEntry = getPriceEntry(productId);
               const monthlyText = (productId === 'stand_visibility' || productId === 'stand_visibility_web') ? '/mes' : '';
-              const originalPrice = priceEntry?.price || 0;
+              
+              // Set fallback price for when JavaScript is disabled - show proper default price instead of 0.00€
+              const getFallbackPrice = (id: string) => {
+                switch(id) {
+                  case 'stand_only': return 24.90;
+                  case 'stand_visibility': return 59.80;
+                  case 'stand_visibility_web': return 299.80;
+                  default: return 24.90;
+                }
+              };
+              
+              const originalPrice = priceEntry?.price || getFallbackPrice(productId);
               
               // Only calculate discount-related values client-side to prevent hydration issues
               const hasDiscount = isClient ? (priceEntry?.voucher && priceEntry?.voucher_percent) : false;

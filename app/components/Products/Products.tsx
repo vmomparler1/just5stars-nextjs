@@ -76,7 +76,7 @@ export default function Products({ onlyStand = false }: ProductsProps) {
 
               const priceEntry = getPriceEntry(productId);
               const monthlyText = (productId === 'stand_visibility' || productId === 'stand_visibility_web') ? '/mes' : '';
-              const originalPrice = priceEntry?.price || 0;
+              const originalPrice = priceEntry?.price || 24.90;
               
               // Only calculate discount-related values client-side to prevent hydration issues
               const hasDiscount = isClient ? (priceEntry?.voucher && priceEntry?.voucher_percent) : false;

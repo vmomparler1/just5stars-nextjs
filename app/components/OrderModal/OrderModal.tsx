@@ -214,7 +214,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
             event: 'openModalProceedPayment',
             product_name: currentProductConfig.name,
             product_id: currentProductId,
-            value: currentPriceEntry?.price || 0,
+            value: currentPriceEntry?.price || 24.90,
             currency: 'EUR',
             transaction_id: transactionId,
           });
@@ -634,7 +634,7 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   };
 
   const calculateSubtotal = () => {
-    return currentPriceEntry ? currentPriceEntry.price : 0;
+    return currentPriceEntry ? currentPriceEntry.price : 24.90;
   };
 
   const calculateDiscount = () => {

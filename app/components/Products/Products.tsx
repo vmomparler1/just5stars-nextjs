@@ -176,6 +176,15 @@ export default function Products({ onlyStand = false }: ProductsProps) {
                     )}
                   </div>
 
+                  {/* Disclaimer for NFC expositor */}
+                  {productId === 'stand_only' && (
+                    <div className="text-center mb-4">
+                      <span className="text-green-600 text-sm font-medium bg-green-50 px-3 py-2 rounded-full border border-green-200">
+                        ✓ Sin pagos recurrentes
+                      </span>
+                    </div>
+                  )}
+
                   {/* Move button here, right after price */}
                   <button 
                     onClick={() => handleOrderClick(product.id)}

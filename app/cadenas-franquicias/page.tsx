@@ -103,15 +103,15 @@ function PortalFeatures() {
   const portalImages = [
     {
       src: portalExample1,
-      alt: "Portal just5stars - Vista principal del dashboard de analíticas",
+      alt: "Portal just5stars - Vista principal del dashboard con los expositores",
       title: "Dashboard Principal",
-      description: "Visualiza todas las métricas de tus expositores desde una interfaz centralizada"
+      description: "Visualiza todas tus expositores desde una interfaz centralizada"
     },
     {
       src: portalExample2,
       alt: "Portal just5stars - Gestión de ubicaciones y expositores",
       title: "Gestión de Ubicaciones",
-      description: "Administra y configura expositores por ubicación de forma sencilla"
+      description: "Apunta los expositores a la tienda que quieras. También podrás ver las veces que ha sido escaneado cada uno."
     }
   ];
 
@@ -133,17 +133,7 @@ function PortalFeatures() {
           <Gallery images={portalImages} className="max-w-4xl mx-auto" />
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="text-center p-8 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl mb-6">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
-          ))}
-        </div>
+
       </div>
     </section>
   );

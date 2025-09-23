@@ -217,11 +217,12 @@ export default function ExpositorResenasNFCPage() {
         <Navbar />
         <DiscountRibbon />
         <GoogleStandHero />
-        <FeaturedIn />
+
         <NFCExpositors />
         <Products onlyStand={true} />
         <VideoSection />
         <SuccessStories />
+        <FeaturedIn />
         <CTA />
         <Footer />
         <WhatsAppButton />

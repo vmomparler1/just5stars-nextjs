@@ -13,7 +13,7 @@ import CookiesBanner from "../components/CookiesBanner";
 import Image from "next/image";
 import { StarIcon, CheckIcon, ChevronRightIcon, BuildingStorefrontIcon, ChartBarIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { PhoneIcon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import heroImage from "../components/Hero/hero_just5.png";
+import heroImage from "./stands.webp";
 
 // Custom Hero component for Cadenas y Franquicias
 function ChainsFranchisesHero() {
@@ -37,11 +37,9 @@ function ChainsFranchisesHero() {
               Para Cadenas y Franquicias (+5 tiendas)
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Portal
+              Más Reseñas para tus
               <br />
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">just5stars</span>
-              <br />
-              para Cadenas
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Cadenas o Franquicias</span>
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
@@ -50,19 +48,19 @@ function ChainsFranchisesHero() {
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Portal centralizado para gestionar todos los expositores</span>
+                  <span className="text-lg">Expositores NFC de alta calidad NTAG-216</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Analíticas detalladas por ubicación y dispositivo</span>
+                  <span className="text-lg">Plataforma web para gestionar los expositores incluída</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Seguimiento de escaneos en tiempo real</span>
+                  <span className="text-lg">Seguimiento de escaneos por tienda</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Gestión de múltiples franquicias desde una cuenta</span>
+                  <span className="text-lg">Reprograma los expositores para que apunten a otra tienda las veces que quieras</span>
                 </li>
               </ul>
             </div>
@@ -81,8 +79,8 @@ function ChainsFranchisesHero() {
               <Image
                 src={heroImage}
                 alt="Portal just5stars para Cadenas y Franquicias"
-                width={600}
-                height={600}
+                width={500}
+                height={500}
                 className="w-full h-auto rounded-2xl shadow-2xl"
                 priority
               />
@@ -210,63 +208,10 @@ function ContactSection() {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Solicita Información Personalizada
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Cuéntanos sobre tu cadena o franquicia y te mostraremos cómo el Portal just5stars 
-            puede ayudarte a gestionar todos tus expositores de forma eficiente.
-          </p>
+
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Information */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">¿Por qué elegir nuestro Portal?</h3>
-            
-            <div className="space-y-6">
-              <div className="flex items-start space-x-4">
-                <div className="bg-blue-600 text-white p-3 rounded-lg">
-                  <ChartBarIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900">Control Total</h4>
-                  <p className="text-gray-600">Gestiona todos tus expositores desde una única plataforma</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-blue-600 text-white p-3 rounded-lg">
-                  <MapPinIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900">Seguimiento por Ubicación</h4>
-                  <p className="text-gray-600">Ve qué tiendas generan más escaneos y reseñas</p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-4">
-                <div className="bg-blue-600 text-white p-3 rounded-lg">
-                  <BuildingStorefrontIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-lg font-semibold text-gray-900">Escalabilidad</h4>
-                  <p className="text-gray-600">Crece sin límites, perfecto para franquicias en expansión</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-8 pt-8 border-t border-gray-200">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Contacto Directo</h4>
-              <div className="space-y-3">
-                <div className="flex items-center text-gray-600">
-                  <EnvelopeIcon className="w-5 h-5 mr-3" />
-                  <span>info@just5stars.com</span>
-                </div>
-                <div className="flex items-center text-gray-600">
-                  <PhoneIcon className="w-5 h-5 mr-3" />
-                  <span>+34 645 061 155</span>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="grid lg:grid-cols-1 gap-12">
 
           {/* Contact Form */}
           <div className="bg-white rounded-2xl p-8 shadow-lg">
@@ -460,12 +405,11 @@ export default function CadenasFranquiciasPage() {
         <Navbar />
         <DiscountRibbon />
         <ChainsFranchisesHero />
-        <FeaturedIn />
+
         <PortalFeatures />
         <NFCExpositors />
         <ContactSection />
-        <VideoSection />
-        <SuccessStories />
+        <FeaturedIn />
         <Footer />
         <WhatsAppButton />
         <CookiesBanner />

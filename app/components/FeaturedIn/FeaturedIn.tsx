@@ -1,8 +1,8 @@
 
 import Image from "next/image";
-import bolsaManiaLogo from "./bolsa_mania_logo (1).png";
-import europaPressLogo from "./europa_press_logo (1).png";
-import merca2Logo from "./merca2_logo (1).png";
+import bolsaManiaLogo from "./bolsa_mania_logo.png";
+import europaPressLogo from "./europa_press_logo.png";
+import merca2Logo from "./merca2_logo.png";
 
 export default function FeaturedIn() {
   const logos = [
@@ -25,10 +25,9 @@ export default function FeaturedIn() {
       url: "https://www.merca2.es/2025/03/11/just5stars-supera-los-10-000-negocios-ayudados-a-mejorar-su-reputacion-online-2160456/"
     }
   ];
-// Temporarily disabled featured in section
-  return null;
 
-  /*
+
+  
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -54,5 +53,5 @@ export default function FeaturedIn() {
       </div>
     </section>
   );
-  */
+  
 }

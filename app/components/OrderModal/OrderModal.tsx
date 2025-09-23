@@ -1082,15 +1082,15 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                         <PlusIcon className="w-5 h-5" />
                       </button>
                       {showMaxQuantityTooltip && (
-                        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm whitespace-nowrap z-50">
+                        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-[#7f6d2a] text-white px-4 py-2 rounded-lg shadow-lg text-sm whitespace-nowrap z-50">
                           <div className="text-center">
-                            <div className="font-medium">¿Necesitas más de 3 expositores?</div>
+                            <div className="font-medium">¿Necesitas más de 3 expositores? ↓</div>
                             <a 
                               href="/cadenas-franquicias" 
                               className="underline hover:text-blue-200 transition-colors"
                               onClick={() => setShowMaxQuantityTooltip(false)}
                             >
-                              Revisa nuestras soluciones para Cadenas & Franquicias
+                              Soluciones para Cadenas
                             </a>
                           </div>
                           {/* Arrow pointing up */}

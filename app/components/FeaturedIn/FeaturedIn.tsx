@@ -26,9 +26,9 @@ export default function FeaturedIn() {
     }
   ];
 // Temporarily disabled featured in section
+  return null;
 
-
-  
+  /*
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -54,5 +54,5 @@ export default function FeaturedIn() {
       </div>
     </section>
   );
-  
+  */
 }

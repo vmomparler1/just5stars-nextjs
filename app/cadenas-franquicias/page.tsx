@@ -98,23 +98,7 @@ function ChainsFranchisesHero() {
 
 // Portal Features Section
 function PortalFeatures() {
-  const features = [
-    {
-      icon: <ChartBarIcon className="w-8 h-8" />,
-      title: "Analíticas Centralizadas",
-      description: "Ve el rendimiento de todos tus expositores desde un único dashboard. Estadísticas de escaneos, ubicaciones más activas y tendencias."
-    },
-    {
-      icon: <MapPinIcon className="w-8 h-8" />,
-      title: "Gestión por Ubicación",
-      description: "Organiza y gestiona tus expositores por tienda, ciudad o región. Control total sobre tu red de puntos de venta."
-    },
-    {
-      icon: <BuildingStorefrontIcon className="w-8 h-8" />,
-      title: "Multi-Franquicia",
-      description: "Perfecto para franquicias con múltiples ubicaciones. Cada franquiciado puede gestionar sus propios expositores."
-    }
-  ];
+
 
   const portalImages = [
     {

@@ -13,7 +13,9 @@ import CookiesBanner from "../components/CookiesBanner";
 import Image from "next/image";
 import { StarIcon, CheckIcon, ChevronRightIcon, BuildingStorefrontIcon, ChartBarIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { PhoneIcon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import heroImage from "../components/Hero/hero_just5.png";
+import heroImage from "./stands.webp";
+import exampleImagePortal1 from "./example_portal_1.png";
+import exampleImagePortal2 from "./example_portal_2.png";
 
 // Custom Hero component for Cadenas y Franquicias
 function ChainsFranchisesHero() {
@@ -37,32 +39,27 @@ function ChainsFranchisesHero() {
               Para Cadenas y Franquicias (+5 tiendas)
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Portal
+              Más reseñas para tu
               <br />
-              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">just5stars</span>
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Franquicia o Cadena</span>
               <br />
-              para Cadenas
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Gestiona todos tus expositores NFC desde un portal centralizado. Controla múltiples ubicaciones y analiza el rendimiento de cada punto de venta.
+                Con nuestros expositores NFC, cada tienda puede captar reseñas de sus propios clientes.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Portal centralizado para gestionar todos los expositores</span>
+                  <span className="text-lg">Expositores NFC alta calidad</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Analíticas detalladas por ubicación y dispositivo</span>
+                  <span className="text-lg">Descubre qué tiendas consiguen más reseñas</span>
                 </li>
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Seguimiento de escaneos en tiempo real</span>
-                </li>
-                <li className="flex items-center">
-                  <CheckIcon className="w-5 h-5 text-blue-600 mr-3" />
-                  <span className="text-lg">Gestión de múltiples franquicias desde una cuenta</span>
+                  <span className="text-lg">Reconfigura a dónde apuntan los expositores las veces que quieras</span>
                 </li>
               </ul>
             </div>
@@ -81,8 +78,8 @@ function ChainsFranchisesHero() {
               <Image
                 src={heroImage}
                 alt="Portal just5stars para Cadenas y Franquicias"
-                width={600}
-                height={600}
+                width={300}
+                height={300}
                 className="w-full h-auto rounded-2xl shadow-2xl"
                 priority
               />
@@ -97,47 +94,37 @@ function ChainsFranchisesHero() {
 
 // Portal Features Section
 function PortalFeatures() {
-  const features = [
-    {
-      icon: <ChartBarIcon className="w-8 h-8" />,
-      title: "Analíticas Centralizadas",
-      description: "Ve el rendimiento de todos tus expositores desde un único dashboard. Estadísticas de escaneos, ubicaciones más activas y tendencias."
-    },
-    {
-      icon: <MapPinIcon className="w-8 h-8" />,
-      title: "Gestión por Ubicación",
-      description: "Organiza y gestiona tus expositores por tienda, ciudad o región. Control total sobre tu red de puntos de venta."
-    },
-    {
-      icon: <BuildingStorefrontIcon className="w-8 h-8" />,
-      title: "Multi-Franquicia",
-      description: "Perfecto para franquicias con múltiples ubicaciones. Cada franquiciado puede gestionar sus propios expositores."
-    }
-  ];
-
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            El Portal que Necesita tu Cadena
+            Portal just5stars para Cadenas y Franquicias
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Diseñado específicamente para empresas con múltiples ubicaciones que necesitan 
-            gestionar y analizar el rendimiento de sus expositores NFC de forma centralizada.
+            Tanto si buscas una gestión centralizada o que cada tienda gestione sus expositores, tenemos una solución para ti.
           </p>
         </div>
         
-        <div className="grid md:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <div key={index} className="text-center p-8 rounded-2xl bg-gray-50 hover:bg-blue-50 transition-colors">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl mb-6">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
+          <div className="flex justify-center">
+            <Image
+              src={exampleImagePortal1}
+              alt="Ejemplo del Portal just5stars - Vista 1"
+              width={800}
+              height={300}
+              className="rounded-lg shadow-lg"
+            />
+          </div>
+          <div className="flex justify-center">
+            <Image
+              src={exampleImagePortal2}
+              alt="Ejemplo del Portal just5stars - Vista 2"
+              width={800}
+              height={300}
+              className="rounded-lg shadow-lg"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -460,12 +447,11 @@ export default function CadenasFranquiciasPage() {
         <Navbar />
         <DiscountRibbon />
         <ChainsFranchisesHero />
-        <FeaturedIn />
+
         <PortalFeatures />
         <NFCExpositors />
         <ContactSection />
-        <VideoSection />
-        <SuccessStories />
+        <FeaturedIn />
         <Footer />
         <WhatsAppButton />
         <CookiesBanner />

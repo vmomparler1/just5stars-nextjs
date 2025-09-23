@@ -96,6 +96,9 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
 
   // Dynamic prices data based on cookie
   const [currentPricesData, setCurrentPricesData] = useState<PriceEntry[]>([]);
+  
+  // Tooltip state for max quantity message
+  const [showMaxQuantityTooltip, setShowMaxQuantityTooltip] = useState(false);
 
   // Load Google Maps JS API once and share the promise across calls
   const loadGoogleMaps = (): Promise<void> => {
@@ -549,6 +552,16 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
   const handleQuantityChange = (delta: number) => {
     const newQuantity = Math.max(1, Math.min(3, quantity + delta)); // Limit to 3 based on pricing data
     setQuantity(newQuantity);
+  };
+
+  const handlePlusClick = () => {
+    if (quantity >= 3) {
+      // Show tooltip when trying to add more than 3
+      setShowMaxQuantityTooltip(true);
+      setTimeout(() => setShowMaxQuantityTooltip(false), 3000); // Hide after 3 seconds
+    } else {
+      handleQuantityChange(1);
+    }
   };
 
   const handleStandColorChange = (index: number, color: string) => {
@@ -1056,14 +1069,35 @@ export default function OrderModal({ isOpen, onClose, selectedProductId, onProdu
                       <MinusIcon className="w-5 h-5" />
                     </button>
                     <span className="text-xl font-semibold">{quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleQuantityChange(1)}
-                      disabled={quantity >= 3}
-                      className="w-10 h-10 rounded-full border-2 border-[#7f6d2a] text-[#7f6d2a] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#7f6d2a] hover:text-white transition-colors"
-                    >
-                      <PlusIcon className="w-5 h-5" />
-                    </button>
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={handlePlusClick}
+                        className={`w-10 h-10 rounded-full border-2 border-[#7f6d2a] text-[#7f6d2a] flex items-center justify-center transition-colors ${
+                          quantity >= 3 
+                            ? 'opacity-50 cursor-pointer hover:opacity-70' 
+                            : 'hover:bg-[#7f6d2a] hover:text-white'
+                        }`}
+                      >
+                        <PlusIcon className="w-5 h-5" />
+                      </button>
+                      {showMaxQuantityTooltip && (
+                        <div className="absolute top-12 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-lg text-sm whitespace-nowrap z-50">
+                          <div className="text-center">
+                            <div className="font-medium">¿Necesitas más de 3 expositores?</div>
+                            <a 
+                              href="/cadenas-franquicias" 
+                              className="underline hover:text-blue-200 transition-colors"
+                              onClick={() => setShowMaxQuantityTooltip(false)}
+                            >
+                              Revisa nuestras soluciones para Cadenas & Franquicias
+                            </a>
+                          </div>
+                          {/* Arrow pointing up */}
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-blue-600"></div>
+                        </div>
+                      )}
+                    </div>
                     {getDiscountInfo() && (
                       <span className="text-sm text-green-600 font-medium ml-4">{getDiscountInfo()}</span>
                     )}

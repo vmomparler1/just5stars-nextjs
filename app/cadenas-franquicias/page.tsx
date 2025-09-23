@@ -10,10 +10,13 @@ import Footer from "../components/Footer";
 import { DiscountRibbon } from "../components/DiscountRibbon";
 import { WhatsAppButton } from "../components/WhatsAppButton";
 import CookiesBanner from "../components/CookiesBanner";
+import Gallery from "../components/Gallery";
 import Image from "next/image";
 import { StarIcon, CheckIcon, ChevronRightIcon, BuildingStorefrontIcon, ChartBarIcon, MapPinIcon } from "@heroicons/react/24/outline";
 import { PhoneIcon, EnvelopeIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import heroImage from "./stands.webp";
+import portalExample1 from "./example_portal_1.png";
+import portalExample2 from "./example_portal_2.png";
 
 // Custom Hero component for Cadenas y Franquicias
 function ChainsFranchisesHero() {
@@ -113,6 +116,21 @@ function PortalFeatures() {
     }
   ];
 
+  const portalImages = [
+    {
+      src: portalExample1,
+      alt: "Portal just5stars - Vista principal del dashboard de analíticas",
+      title: "Dashboard Principal",
+      description: "Visualiza todas las métricas de tus expositores desde una interfaz centralizada"
+    },
+    {
+      src: portalExample2,
+      alt: "Portal just5stars - Gestión de ubicaciones y expositores",
+      title: "Gestión de Ubicaciones",
+      description: "Administra y configura expositores por ubicación de forma sencilla"
+    }
+  ];
+
   return (
     <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-6">
@@ -124,6 +142,11 @@ function PortalFeatures() {
             Diseñado específicamente para empresas con múltiples ubicaciones que necesitan 
             gestionar y analizar el rendimiento de sus expositores NFC de forma centralizada.
           </p>
+        </div>
+        
+        {/* Portal Examples Gallery */}
+        <div className="mb-16">
+          <Gallery images={portalImages} className="max-w-4xl mx-auto" />
         </div>
         
         <div className="grid md:grid-cols-3 gap-8">

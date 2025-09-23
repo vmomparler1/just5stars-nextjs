@@ -59,6 +59,12 @@ export default function Footer() {
               >
                 Ética de Reseñas
               </a>
+              <a 
+                href="/cadenas-franquicias" 
+                className="hover:text-white transition-colors"
+              >
+                Cadenas & Franquicias
+              </a>
             </div>
           </div>
           

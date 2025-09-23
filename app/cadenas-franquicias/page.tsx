@@ -37,10 +37,10 @@ function ChainsFranchisesHero() {
           <div className="space-y-8">
             <div className="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-blue-700 text-sm font-medium">
               <BuildingStorefrontIcon className="w-4 h-4 mr-2" />
-              Para Cadenas y Franquicias (+5 tiendas)
+              Para Cadenas y Franquicias (+ tiendas)
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Más Reseñas para tus
+              Más eseñas para ts
               <br />
               <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Cadenas o Franquicias</span>
             </h1>
@@ -88,30 +88,7 @@ function ChainsFranchisesHero() {
                 priority
               />
             </div>
-            <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent rounded-2xl"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// Portal Features Section
-function PortalFeatures() {
-  const features = [
-    {
-      icon: <ChartBarIcon className="w-8 h-8" />,
-      title: "Analíticas Centralizadas",
-      description: "Ve el rendimiento de todos tus expositores desde un único dashboard. Estadísticas de escaneos, ubicaciones más activas y tendencias."
-    },
-    {
-      icon: <MapPinIcon className="w-8 h-8" />,
-      title: "Gestión por Ubicación",
-      description: "Organiza y gestiona tus expositores por tienda, ciudad o región. Control total sobre tu red de puntos de venta."
-    },
-    {
-      icon: <BuildingStorefrontIcon className="w-8 h-8" />,
-      title: "Multi-Franquicia",
+            <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transuicia",
       description: "Perfecto para franquicias con múltiples ubicaciones. Cada franquiciado puede gestionar sus propios expositores."
     }
   ];
@@ -126,21 +103,7 @@ function PortalFeatures() {
     {
       src: portalExample2,
       alt: "Portal just5stars - Gestión de ubicaciones y expositores",
-      title: "Gestión de Ubicaciones",
-      description: "Administra y configura expositores por ubicación de forma sencilla"
-    }
-  ];
-
-  return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            El Portal que Necesita tu Cadena
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Diseñado específicamente para empresas con múltiples ubicaciones que necesitan 
-            gestionar y analizar el rendimiento de sus expositores NFC de forma centralizada.
+      title: "Gestión de  expositores NFC de forma centralizada.
           </p>
         </div>
         

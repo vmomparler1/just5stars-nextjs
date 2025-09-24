@@ -1,24 +1,7 @@
-import nodemailer from "nodemailer";
+// Using Replit Mail integration instead of SMTP - blueprint:replitmail
+import { sendEmail as sendReplitEmail, type SmtpMessage } from "./replitmail";
 
-// Create a transporter with SMTP settings
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: true,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-    tls: {
-      rejectUnauthorized: false, // For development testing only - set to true in production
-    },
-    // Add timeout configurations for better performance
-    connectionTimeout: 30000, // 30 seconds
-    greetingTimeout: 15000, // 15 seconds
-    socketTimeout: 45000, // 45 seconds
-  });
-};
+// Email service now uses Replit Mail integration for reliable delivery
 
 export interface EmailOptions {
   to: string;
@@ -40,43 +23,33 @@ export interface EmailServiceResponse {
   error?: string;
 }
 
-// Helper function to create a timeout promise
-const createTimeoutPromise = (ms: number): Promise<never> => {
-  return new Promise((_, reject) => {
-    setTimeout(() => reject(new Error(`Email sending timed out after ${ms}ms`)), ms);
-  });
-};
+// Helper function for converting attachments (previously used for timeout promises)
 
 export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResponse> => {
   try {
-    const transporter = createTransporter();
-
     console.log(`Attempting to send email to: ${options.to}`);
 
-    // Create the email sending promise
-    const mailOptions: any = {
-      from: options.from || process.env.SMTP_FROM || "info@just5stars.com",
+    // Convert attachments to the format expected by Replit Mail
+    const replitAttachments = options.attachments?.map(att => ({
+      filename: att.filename,
+      content: att.content.toString('base64'),
+      contentType: att.contentType,
+      encoding: 'base64' as const
+    }));
+
+    // Prepare message for Replit Mail
+    const message: SmtpMessage = {
       to: options.to,
-      replyTo: options.replyTo,
-      bcc: options.bcc,
       subject: options.subject,
       text: options.text,
       html: options.html,
+      attachments: replitAttachments
     };
 
-    if (options.attachments) {
-      mailOptions.attachments = options.attachments;
-    }
-
-    const sendPromise = transporter.sendMail(mailOptions);
-
-    // Race between sending email and timeout (60 seconds max)
-    await Promise.race([
-      sendPromise,
-      createTimeoutPromise(60000)
-    ]);
-
-    console.log(`Email sent successfully to: ${options.to}`);
+    // Send email using Replit Mail integration
+    const result = await sendReplitEmail(message);
+    
+    console.log(`Email sent successfully to: ${options.to}`, result);
     return { success: true };
   } catch (error) {
     console.error("Error sending email:", error);

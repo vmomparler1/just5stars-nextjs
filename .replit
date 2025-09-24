@@ -25,8 +25,13 @@ externalPort = 3000
 localPort = 41979
 externalPort = 3001
 
+[[ports]]
+localPort = 44767
+externalPort = 3002
+
 [agent]
 expertMode = true
+integrations = ["replitmail:1.0.0"]
 
 [workflows]
 runButton = "Project"

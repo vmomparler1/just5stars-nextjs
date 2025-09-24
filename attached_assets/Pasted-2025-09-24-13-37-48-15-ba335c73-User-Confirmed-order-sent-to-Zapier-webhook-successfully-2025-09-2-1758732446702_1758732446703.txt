@@ -1,0 +1,148 @@
+2025-09-24 13:37:48.15
+ba335c73
+User
+✅ Confirmed order sent to Zapier webhook successfully
+2025-09-24 13:37:48.15
+ba335c73
+User
+📧 Sending customer confirmation email...
+2025-09-24 13:37:48.15
+ba335c73
+User
+Sending customer confirmation email for order: e8d9c5c8b15dc48a0a8f9f5528fa93a0
+2025-09-24 13:37:50.67
+ba335c73
+User
+Attempting to send email to: eperezcabezos@gmail.com
+2025-09-24 13:37:50.80
+ba335c73
+User
+Error sending email: Error: connect ECONNREFUSED 178.33.162.21:465
+2025-09-24 13:37:50.80
+ba335c73
+User
+at (Error: connect ECONNREFUSED 178.33.162.21:465) {
+2025-09-24 13:37:50.80
+ba335c73
+User
+errno: -111,
+2025-09-24 13:37:50.80
+ba335c73
+User
+code: 'ESOCKET',
+2025-09-24 13:37:50.80
+ba335c73
+User
+syscall: 'connect',
+2025-09-24 13:37:50.80
+ba335c73
+User
+address: '178.33.162.21',
+2025-09-24 13:37:50.80
+ba335c73
+User
+port: 465,
+2025-09-24 13:37:50.80
+ba335c73
+User
+command: 'CONN'
+2025-09-24 13:37:50.80
+ba335c73
+User
+}
+2025-09-24 13:37:50.80
+ba335c73
+User
+❌ Failed to send customer confirmation email: connect ECONNREFUSED 178.33.162.21:465
+2025-09-24 13:37:50.80
+ba335c73
+User
+❌ Failed to send customer confirmation email: {"error":"connect ECONNREFUSED 178.33.162.21:465"}
+2025-09-24 13:37:53.41
+ba335c73
+User
+Invalid created_at date: SAC & BAGS INVESTEMENT S.L.
+2025-09-24 13:40:10.10
+ba335c73
+User
+Attempting to send email to: info@just5stars.com
+2025-09-24 13:40:10.20
+ba335c73
+User
+Error sending email: Error: connect ECONNREFUSED 178.33.162.21:465
+2025-09-24 13:40:10.20
+ba335c73
+User
+at (Error: connect ECONNREFUSED 178.33.162.21:465) {
+2025-09-24 13:40:10.20
+ba335c73
+User
+errno: -111,
+2025-09-24 13:40:10.20
+ba335c73
+User
+code: 'ESOCKET',
+2025-09-24 13:40:10.20
+ba335c73
+User
+syscall: 'connect',
+2025-09-24 13:40:10.20
+ba335c73
+User
+address: '178.33.162.21',
+2025-09-24 13:40:10.20
+ba335c73
+User
+port: 465,
+2025-09-24 13:40:10.20
+ba335c73
+User
+command: 'CONN'
+2025-09-24 13:40:10.20
+ba335c73
+User
+}
+2025-09-24 13:40:27.78
+ba335c73
+User
+Attempting to send email to: info@just5stars.com
+2025-09-24 13:40:27.89
+ba335c73
+User
+Error sending email: Error: connect ECONNREFUSED 178.33.162.21:465
+2025-09-24 13:40:27.89
+ba335c73
+User
+at (Error: connect ECONNREFUSED 178.33.162.21:465) {
+2025-09-24 13:40:27.89
+ba335c73
+User
+errno: -111,
+2025-09-24 13:40:27.89
+ba335c73
+User
+code: 'ESOCKET',
+2025-09-24 13:40:27.89
+ba335c73
+User
+syscall: 'connect',
+2025-09-24 13:40:27.89
+ba335c73
+User
+address: '178.33.162.21',
+2025-09-24 13:40:27.89
+ba335c73
+User
+port: 465,
+2025-09-24 13:40:27.89
+ba335c73
+User
+command: 'CONN'
+2025-09-24 13:40:27.89
+ba335c73
+User
+}
+2025-09-24 13:45:36.01
+ba335c73
+User
+Invalid created_at date: Manso 37 local peluqueria On line

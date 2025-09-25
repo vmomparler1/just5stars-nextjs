@@ -1,11 +1,23 @@
 import nodemailer from "nodemailer";
 
-// Create a transporter with SMTP settings
-const createTransporter = () => {
-  return nodemailer.createTransport({
+// Debug SMTP environment variables on startup
+console.log('SMTP Configuration Check:');
+console.log('SMTP_HOST:', process.env.SMTP_HOST ? '✓ Set' : '✗ Missing');
+console.log('SMTP_PORT:', process.env.SMTP_PORT ? '✓ Set' : '✗ Missing');
+console.log('SMTP_USER:', process.env.SMTP_USER ? '✓ Set' : '✗ Missing');
+console.log('SMTP_PASS:', process.env.SMTP_PASS ? '✓ Set' : '✗ Missing');
+
+// Create a transporter with SMTP settings - try multiple configurations
+const createTransporter = (usePort587 = false) => {
+  const port = usePort587 ? 587 : Number(process.env.SMTP_PORT);
+  const secure = usePort587 ? false : (port === 465); // 587 uses STARTTLS, 465 uses SSL
+  
+  console.log(`Creating SMTP transporter - Host: ${process.env.SMTP_HOST}, Port: ${port}, Secure: ${secure}`);
+  
+  return nodemailer.createTransporter({
     host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT),
-    secure: true,
+    port: port,
+    secure: secure,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -48,29 +60,26 @@ const createTimeoutPromise = (ms: number): Promise<never> => {
 };
 
 export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResponse> => {
-  try {
-    const transporter = createTransporter();
+  const mailOptions: any = {
+    from: options.from || process.env.SMTP_FROM || "info@just5stars.com",
+    to: options.to,
+    replyTo: options.replyTo,
+    bcc: options.bcc,
+    subject: options.subject,
+    text: options.text,
+    html: options.html,
+  };
 
+  if (options.attachments) {
+    mailOptions.attachments = options.attachments;
+  }
+
+  // First try with the default port (usually 465)
+  try {
+    const transporter = createTransporter(false);
     console.log(`Attempting to send email to: ${options.to}`);
 
-    // Create the email sending promise
-    const mailOptions: any = {
-      from: options.from || process.env.SMTP_FROM || "info@just5stars.com",
-      to: options.to,
-      replyTo: options.replyTo,
-      bcc: options.bcc,
-      subject: options.subject,
-      text: options.text,
-      html: options.html,
-    };
-
-    if (options.attachments) {
-      mailOptions.attachments = options.attachments;
-    }
-
     const sendPromise = transporter.sendMail(mailOptions);
-
-    // Race between sending email and timeout (60 seconds max)
     await Promise.race([
       sendPromise,
       createTimeoutPromise(60000)
@@ -79,11 +88,28 @@ export const sendEmail = async (options: EmailOptions): Promise<EmailServiceResp
     console.log(`Email sent successfully to: ${options.to}`);
     return { success: true };
   } catch (error) {
-    console.error("Error sending email:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : "Failed to send email" 
-    };
+    console.error("Error sending email with default port:", error);
+    
+    // If port 465 fails, try port 587
+    console.log("Retrying with port 587 (STARTTLS)...");
+    try {
+      const transporter587 = createTransporter(true);
+      
+      const sendPromise587 = transporter587.sendMail(mailOptions);
+      await Promise.race([
+        sendPromise587,
+        createTimeoutPromise(60000)
+      ]);
+
+      console.log(`Email sent successfully to: ${options.to} using port 587`);
+      return { success: true };
+    } catch (error587) {
+      console.error("Error sending email with port 587:", error587);
+      return { 
+        success: false, 
+        error: `Both ports failed - Port ${process.env.SMTP_PORT}: ${error instanceof Error ? error.message : 'Unknown error'}, Port 587: ${error587 instanceof Error ? error587.message : 'Unknown error'}` 
+      };
+    }
   }
 };
 

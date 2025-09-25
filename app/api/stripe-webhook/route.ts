@@ -330,12 +330,7 @@ async function handleCheckoutCompleted(session: any) {
       try {
         console.log('📧 Sending customer confirmation email...');
         
-        // Determine the correct hostname for the current environment
-        const hostname = process.env.NODE_ENV === 'production' 
-          ? 'https://just5stars.com'
-          : `https://${process.env.REPLIT_DEV_DOMAIN}` || 'http://localhost:5000';
-        
-        const customerEmailResponse = await fetch(`${hostname}/api/send-customer-confirmation`, {
+        const customerEmailResponse = await fetch(`${process.env.OWN_HOSTNAME}/api/send-customer-confirmation`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

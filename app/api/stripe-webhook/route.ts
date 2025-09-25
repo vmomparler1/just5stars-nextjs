@@ -329,7 +329,13 @@ async function handleCheckoutCompleted(session: any) {
       // Send customer confirmation email with BCC to business
       try {
         console.log('📧 Sending customer confirmation email...');
-        const customerEmailResponse = await fetch('http://localhost:3000/api/send-customer-confirmation', {
+        
+        // Determine the correct hostname for the current environment
+        const hostname = process.env.NODE_ENV === 'production' 
+          ? 'https://just5stars.com'
+          : `https://${process.env.REPLIT_DEV_DOMAIN}` || 'http://localhost:5000';
+        
+        const customerEmailResponse = await fetch(`${hostname}/api/send-customer-confirmation`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

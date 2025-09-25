@@ -3,6 +3,7 @@ run = "npm run dev"
 
 [nix]
 channel = "stable-24_05"
+packages = ["netcat-openbsd"]
 
 [deployment]
 build = ["sh", "-c", "npm run build"]

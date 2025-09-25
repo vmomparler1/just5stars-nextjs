@@ -9,6 +9,26 @@ build = ["sh", "-c", "npm run build"]
 run = ["sh", "-c", "npm run start"]
 deploymentTarget = "cloudrun"
 
+[[ports]]
+localPort = 3000
+externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 33807
+externalPort = 3003
+
+[[ports]]
+localPort = 34979
+externalPort = 3000
+
+[[ports]]
+localPort = 41979
+externalPort = 3001
+
 [agent]
 expertMode = true
 
@@ -35,7 +55,3 @@ waitForPort = 5000
 
 [workflows.workflow.metadata]
 outputType = "webview"
-
-[[ports]]
-localPort = 5000
-externalPort = 80

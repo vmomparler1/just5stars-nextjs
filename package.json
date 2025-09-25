@@ -13,7 +13,6 @@
     "@libsql/client": "^0.15.9",
     "@types/nodemailer": "^6.4.17",
     "crypto-js": "^4.2.0",
-    "dotenv": "^17.2.2",
     "facebook-nodejs-business-sdk": "^23.0.0",
     "next": "15.3.5",
     "nodemailer": "^7.0.5",

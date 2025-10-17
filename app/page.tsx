@@ -17,6 +17,7 @@ export default function Home() {
   return (
     <main>
       <Navbar />
+      
       <DiscountRibbon />
       <Hero />
       <FeaturedIn />

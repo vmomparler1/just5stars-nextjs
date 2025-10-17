@@ -42,15 +42,17 @@ function GoogleStandHero() {
               Especialistas en Reseñas
             </div>
             <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Expositores
+              Expositor
               <br />
               <span className="bg-gradient-to-r from-[#7f6d2a] to-[#fec700] bg-clip-text text-transparent">Reseñas</span>
+              <br />
+              Google
               <br />
               NFC & QR
             </h1>
             <div>
               <p className="text-xl text-gray-600 leading-relaxed">
-                Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Simple, efectivo y elegante.
+                Acerca el móvil y tus clientes te dejan una reseña en Google en 5 segundos. Simple, efectivo y elegante.
               </p>
               <ul className="mt-6 space-y-3">
                 <li className="flex items-center">
@@ -64,6 +66,14 @@ function GoogleStandHero() {
                 <li className="flex items-center">
                   <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
                   <span className="text-lg">Configuración previa para que enlace a tu perfil de reseñas</span>
+                </li>
+                <li className="flex items-center">
+                  <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
+                  <span className="text-lg">Un único pago</span>
+                </li>
+                <li className="flex items-center">
+                  <CheckIcon className="w-5 h-5 text-[#7f6d2a] mr-3" />
+                  <span className="text-lg">No requiere de aplicaciones</span>
                 </li>
               </ul>
             </div>

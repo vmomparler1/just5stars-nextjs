@@ -1,7 +1,7 @@
 {
   "stand_only": {
     "id": "stand_only",
-    "title": "Expositor NFC con código QR",
+    "title": "Expositor Reseñas Google NFC & QR",
     "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas.",
     "image": "/components/Products/stand_02.png",
     "cta_text": "Comprar Ahora",

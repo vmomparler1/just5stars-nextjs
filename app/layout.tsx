@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "just5stars - SEO local y marketing digital para pequeños negocios",
-  description: "Transforma tu negocio con nuestro sistema probado que ofrece consistentemente resultados de 5 estrellas.",
+  title: "just5stars - Expositor Reseñas Google NFC & QR",
+  description: "Expositor de reseñas de Google con NFC y QR. Acerca el móvil y abre tu perfil en 5 s. Envío rápido, sin suscripciones. Blanco o negro.",
 };
 
 export default function RootLayout({

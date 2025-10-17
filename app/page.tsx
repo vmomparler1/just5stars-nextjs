@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import FeaturedIn from "./components/FeaturedIn";
@@ -15,6 +17,7 @@ import CookiesBanner from "./components/CookiesBanner";
 import Image from "next/image";
 import { StarIcon, CheckIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import heroImage from "./components/Hero/hero_just5.png";
+import { capturePriceParameter } from "./utils/priceTracking";
 
 
 // Custom Hero component specifically for Google stands
@@ -78,7 +81,7 @@ function GoogleStandHero() {
             <div className="relative z-10">
               <Image
                 src={heroImage}
-                alt="Expositores NFC para Google"
+                alt="Expositores NFC para reseñas"
                 width={600}
                 height={600}
                 className="w-full h-auto rounded-2xl shadow-2xl"
@@ -93,7 +96,22 @@ function GoogleStandHero() {
   );
 }
 
-export default function StandGooglePage() {
+export default function ExpositorResenasNFCPage() {
+  const [mounted, setMounted] = useState(false);
+
+  // Ensure we're on the client side before running any client-specific logic
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Capture price parameter from URL when component mounts
+  useEffect(() => {
+    if (!mounted) return; // Only run on client side after mount
+
+    // Capture price parameter when page loads
+    capturePriceParameter();
+  }, [mounted]);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@graph": [
@@ -101,7 +119,7 @@ export default function StandGooglePage() {
         "@type": "Product",
         "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-only",
         "name": "Expositor Reseñas NFC & QR ",
-        "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Tecnología NFC + Código QR preconfigurado a tu perfil de reseñas.",
+        "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Tecnología NFC + Código QR preconfigurado a tu perfil.",
         "brand": {
           "@type": "Brand",
           "name": "just5stars"
@@ -116,7 +134,7 @@ export default function StandGooglePage() {
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
-            "name": "Just5Stars"
+            "name": "just5stars"
           }
         },
         "features": [
@@ -131,7 +149,7 @@ export default function StandGooglePage() {
         "description": "Incluye 3 expositores + gestión de tu SEO Local. Auditoría inicial, recomendaciones y seguimiento incluidos.",
         "brand": {
           "@type": "Brand",
-          "name": "Just5Stars"
+          "name": "just5stars"
         },
         "category": "Marketing Digital",
         "offers": {
@@ -150,7 +168,7 @@ export default function StandGooglePage() {
           "3 Expositores con Tecnología NFC + Código QR",
           "Programado previamente para enlazar a tu página de reseñas",
           "Auditoría inicial de tu GBP",
-          "Recomendaciones para mejorar el posicionamiento Maps",
+          "Recomendaciones para mejorar el posicionamiento en Maps",
           "Seguimiento de la evolución en el ranking"
         ]
       },
@@ -179,8 +197,8 @@ export default function StandGooglePage() {
         "features": [
           "3 Expositores con Tecnología NFC + Código QR",
           "Programado previamente para enlazar a tu página de reseñas",
-          "Auditoría inicial de tu GBP",
-          "Recomendaciones para mejorar el posicionamiento en Maps",
+          "Auditoría inicial de tu perfil del GBP",
+          "Recomendaciones para mejorar el posicionamiento Maps",
           "Seguimiento de la evolución en el ranking",
           "Creación y mantenimiento de la web",
           "SEO web"
@@ -199,11 +217,12 @@ export default function StandGooglePage() {
         <Navbar />
         <DiscountRibbon />
         <GoogleStandHero />
-        <FeaturedIn />
+
         <NFCExpositors />
         <Products onlyStand={true} />
         <VideoSection />
         <SuccessStories />
+        <FeaturedIn />
         <CTA />
         <Footer />
         <WhatsAppButton />
@@ -211,4 +230,4 @@ export default function StandGooglePage() {
       </main>
     </>
   );
-} 
+}

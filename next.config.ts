@@ -16,6 +16,11 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        source: '/expositor-resenas-nfc',
+        destination: '/',
+        permanent: true,
+      },
+      {
         source: '/stand-google',
         destination: '/expositor-resenas-nfc',
         permanent: true,

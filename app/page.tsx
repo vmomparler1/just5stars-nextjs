@@ -127,8 +127,8 @@ export default function ExpositorResenasNFCPage() {
     "@graph": [
       {
         "@type": "Product",
-        "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-only",
-        "name": "Expositor Reseñas NFC & QR ",
+        "@id": "https://just5stars.com/",
+        "name": "Expositor Reseñas Google NFC & QR ",
         "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Tecnología NFC + Código QR preconfigurado a tu perfil.",
         "brand": {
           "@type": "Brand",
@@ -140,7 +140,7 @@ export default function ExpositorResenasNFCPage() {
           "url": "https://just5stars.com/expositor-resenas-nfc",
           "priceCurrency": "EUR",
           "price": "39.80",
-          "priceValidUntil": "2025-12-31",
+          "priceValidUntil": "2026-12-31",
           "availability": "https://schema.org/InStock",
           "seller": {
             "@type": "Organization",
@@ -150,73 +150,23 @@ export default function ExpositorResenasNFCPage() {
         "features": [
           "Tecnología NFC + Código QR",
           "Programado previamente para enlazar a tu página de reseñas"
-        ]
-      },
-      {
-        "@type": "Product",
-        "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-visibility",
-        "name": "3 Expositores + SEO Local",
-        "description": "Incluye 3 expositores + gestión de tu SEO Local. Auditoría inicial, recomendaciones y seguimiento incluidos.",
-        "brand": {
-          "@type": "Brand",
-          "name": "just5stars"
+        ],
+        "review": {
+          "@type": "Review",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": "5.0"
+          },
+          "reviewCount": "79"
         },
-        "category": "Marketing Digital",
-        "offers": {
-          "@type": "Offer",
-          "url": "https://just5stars.com/expositor-resenas-nfc",
-          "priceCurrency": "EUR",
-          "price": "59.80",
-          "priceValidUntil": "2025-12-31",
-          "availability": "https://schema.org/InStock",
-          "seller": {
-            "@type": "Organization",
-            "name": "Just5Stars"
-          }
-        },
-        "features": [
-          "3 Expositores con Tecnología NFC + Código QR",
-          "Programado previamente para enlazar a tu página de reseñas",
-          "Auditoría inicial de tu GBP",
-          "Recomendaciones para mejorar el posicionamiento en Maps",
-          "Seguimiento de la evolución en el ranking"
-        ]
-      },
-      {
-        "@type": "Product",
-        "@id": "https://just5stars.com/expositor-resenas-nfc#product-stand-visibility-web",
-        "name": "3 Expositores + SEO Local + Web",
-        "description": "Incluye 3 expositores + gestión completa de tu presencia digital. Servicio completo con creación y mantenimiento web más SEO.",
-        "brand": {
-          "@type": "Brand",
-          "name": "just5stars"
-        },
-        "category": "Marketing Digital",
-        "offers": {
-          "@type": "Offer",
-          "url": "https://just5stars.com/expositor-resenas-nfc",
-          "priceCurrency": "EUR",
-          "price": "299.80",
-          "priceValidUntil": "2025-12-31",
-          "availability": "https://schema.org/InStock",
-          "seller": {
-            "@type": "Organization",
-            "name": "just5stars"
-          }
-        },
-        "features": [
-          "3 Expositores con Tecnología NFC + Código QR",
-          "Programado previamente para enlazar a tu página de reseñas",
-          "Auditoría inicial de tu perfil del GBP",
-          "Recomendaciones para mejorar el posicionamiento Maps",
-          "Seguimiento de la evolución en el ranking",
-          "Creación y mantenimiento de la web",
-          "SEO web"
-        ]
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5.0",
+          "reviewCount": "79"
+        }
       }
     ]
   };
-
   return (
     <>
       <script

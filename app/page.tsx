@@ -130,6 +130,7 @@ export default function ExpositorResenasNFCPage() {
         "@id": "https://just5stars.com/",
         "name": "Expositor Reseñas Google NFC & QR ",
         "description": "Con solo acercar el móvil, tus clientes acceden a tu perfil público de reseñas. Tecnología NFC + Código QR preconfigurado a tu perfil.",
+        "image": "public/images/just5stars_stands.jpg",
         "brand": {
           "@type": "Brand",
           "name": "just5stars"
@@ -151,14 +152,6 @@ export default function ExpositorResenasNFCPage() {
           "Tecnología NFC + Código QR",
           "Programado previamente para enlazar a tu página de reseñas"
         ],
-        "review": {
-          "@type": "Review",
-          "reviewRating": {
-            "@type": "Rating",
-            "ratingValue": "5.0"
-          },
-          "reviewCount": "79"
-        },
         "aggregateRating": {
           "@type": "AggregateRating",
           "ratingValue": "5.0",

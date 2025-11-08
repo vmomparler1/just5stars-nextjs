@@ -1,7 +1,12 @@
-
+import type { Metadata } from "next";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import LastUpdatedDate from '../components/LastUpdatedDate';
+
+export const metadata: Metadata = {
+  title: "Ética de Reseñas y Cumplimiento | just5stars",
+  description: "Nuestra política ética sobre reseñas. Cumplimos estrictamente las políticas de Google y otras plataformas sin manipular ni comprar reseñas.",
+};
 
 export default function EticaResenasPage() {
   return (

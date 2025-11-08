@@ -1,7 +1,12 @@
-
+import type { Metadata } from "next";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import LastUpdatedDate from '../components/LastUpdatedDate';
+
+export const metadata: Metadata = {
+  title: "Aviso Legal | just5stars",
+  description: "Aviso legal de just5stars. Información identificativa, condiciones de uso y responsabilidades del sitio web.",
+};
 
 export default function AvisoLegalPage() {
   return (

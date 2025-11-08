@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import LastUpdatedDate from '../components/LastUpdatedDate';
+
+export const metadata: Metadata = {
+  title: "Términos y Condiciones | just5stars",
+  description: "Términos y condiciones de servicio de just5stars - Expositor de reseñas Google NFC & QR",
+};
 
 export default function TermsAndConditionsPage() {
   return (

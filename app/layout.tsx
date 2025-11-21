@@ -29,6 +29,9 @@ export const metadata: Metadata = {
       },
     ],
   },
+  alternates: {
+    canonical: "https://just5stars.com/",
+  },
 };
 
 export default function RootLayout({

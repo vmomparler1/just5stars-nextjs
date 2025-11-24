@@ -15,10 +15,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "just5stars - Expositor Reseñas Google NFC & QR",
+  title: "Expositor Reseñas Google NFC & QR - just5stars",
   description: "Expositor de reseñas de Google con NFC y QR. Acerca el móvil y abre tu perfil en 5 s. Envío rápido, sin suscripciones. Blanco o negro.",
   openGraph: {
-    title: "just5stars - Expositor Reseñas Google NFC & QR",
+    title: "Expositor Reseñas Google NFC & QR - just5stars",
     description: "Expositor de reseñas de Google con NFC y QR. Acerca el móvil y abre tu perfil en 5 s. Envío rápido, sin suscripciones. Blanco o negro.",
     images: [
       {

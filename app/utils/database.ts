@@ -13,6 +13,12 @@ export enum OrderStatus {
   CANCELLED = 'cancelled'
 }
 
+// Order source enum
+export enum OrderSource {
+  WEBSITE = 'website',
+  SHOPIFY = 'shopify'
+}
+
 // Order data interface
 export interface OrderData {
   id?: string;
@@ -45,6 +51,9 @@ export interface OrderData {
   stripe_shipping_country?: string;
   status: OrderStatus;
   confirmation_email_sent?: boolean;
+  order_source?: OrderSource;
+  shopify_order_id?: string;
+  shopify_order_number?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -85,10 +94,34 @@ export async function initializeDatabase() {
         stripe_shipping_country TEXT,
         status TEXT NOT NULL DEFAULT 'pending',
         confirmation_email_sent BOOLEAN DEFAULT 0,
+        order_source TEXT DEFAULT 'website',
+        shopify_order_id TEXT,
+        shopify_order_number TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // Add order_source column if it doesn't exist (for existing tables)
+    try {
+      await client.execute(`ALTER TABLE orders ADD COLUMN order_source TEXT DEFAULT 'website'`);
+    } catch (e) {
+      // Column already exists, ignore
+    }
+
+    // Add shopify_order_id column if it doesn't exist
+    try {
+      await client.execute(`ALTER TABLE orders ADD COLUMN shopify_order_id TEXT`);
+    } catch (e) {
+      // Column already exists, ignore
+    }
+
+    // Add shopify_order_number column if it doesn't exist
+    try {
+      await client.execute(`ALTER TABLE orders ADD COLUMN shopify_order_number TEXT`);
+    } catch (e) {
+      // Column already exists, ignore
+    }
 
     // Create index on email for faster lookups
     await client.execute(`

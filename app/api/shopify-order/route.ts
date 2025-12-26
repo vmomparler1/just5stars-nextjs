@@ -25,21 +25,22 @@ function getProductName(productId: string, variantId: string): string {
   return 'Producto Shopify';
 }
 
-function extractBusinessInfo(properties: Array<{ name: string; value: string }> | undefined): { businessName: string; address: string } {
+function extractBusinessInfo(properties: Array<{ name: string; value: string }> | undefined): { businessName: string; address: string; fullQuery: string } {
   if (!properties || properties.length === 0) {
-    return { businessName: '', address: '' };
+    return { businessName: '', address: '', fullQuery: '' };
   }
   
   const empresaProperty = properties.find(p => p.name === 'Empresa');
   if (!empresaProperty || !empresaProperty.value) {
-    return { businessName: '', address: '' };
+    return { businessName: '', address: '', fullQuery: '' };
   }
   
   const parts = empresaProperty.value.split(' - ');
   const businessName = parts[0]?.trim() || '';
   const address = parts.slice(1).join(' - ').trim() || '';
+  const fullQuery = empresaProperty.value;
   
-  return { businessName, address };
+  return { businessName, address, fullQuery };
 }
 
 async function getGooglePlaceId(address: string): Promise<string | null> {
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
     const lineItems = shopifyOrder.line_items || [];
     
     let extractedBusinessName = '';
-    let extractedAddress = '';
+    let extractedFullQuery = '';
     
     for (const item of lineItems) {
       if (item.properties && item.properties.length > 0) {
@@ -150,7 +151,7 @@ export async function POST(request: NextRequest) {
         console.log('Extracted business info:', info);
         if (info.businessName) {
           extractedBusinessName = info.businessName;
-          extractedAddress = info.address;
+          extractedFullQuery = info.fullQuery;
           break;
         }
       }
@@ -158,14 +159,14 @@ export async function POST(request: NextRequest) {
     
     const businessName = extractedBusinessName || shippingAddress.company || billingAddress.company || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Shopify Customer';
     console.log('Final business name:', businessName);
-    console.log('Extracted address for Place ID lookup:', extractedAddress);
+    console.log('Full query for Place ID lookup:', extractedFullQuery);
     
     let googlePlaceId: string | null = null;
-    if (extractedAddress) {
-      googlePlaceId = await getGooglePlaceId(extractedAddress);
+    if (extractedFullQuery) {
+      googlePlaceId = await getGooglePlaceId(extractedFullQuery);
       console.log('Google Place ID result:', googlePlaceId);
     } else {
-      console.log('No address to look up for Place ID');
+      console.log('No query to look up for Place ID');
     }
     
     const productNames = lineItems.map((item: any) => {

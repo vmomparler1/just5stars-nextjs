@@ -43,17 +43,24 @@ function extractBusinessInfo(properties: Array<{ name: string; value: string }> 
 }
 
 async function getGooglePlaceId(address: string): Promise<string | null> {
-  if (!address || !GOOGLE_MAPS_API_KEY) {
+  if (!address) {
+    console.log('No address provided for Place ID lookup');
+    return null;
+  }
+  
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.log('GOOGLE_MAPS_API_KEY is not configured');
     return null;
   }
   
   try {
     const encodedAddress = encodeURIComponent(address);
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedAddress}&inputtype=textquery&fields=place_id&key=${GOOGLE_MAPS_API_KEY}`
-    );
+    const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedAddress}&inputtype=textquery&fields=place_id&key=${GOOGLE_MAPS_API_KEY}`;
+    console.log('Calling Google Places API...');
     
+    const response = await fetch(url);
     const data = await response.json();
+    console.log('Google Places API response:', JSON.stringify(data));
     
     if (data.candidates && data.candidates.length > 0) {
       return data.candidates[0].place_id;

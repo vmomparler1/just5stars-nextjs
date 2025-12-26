@@ -138,7 +138,9 @@ export async function POST(request: NextRequest) {
     
     for (const item of lineItems) {
       if (item.properties && item.properties.length > 0) {
+        console.log('Line item properties:', JSON.stringify(item.properties));
         const info = extractBusinessInfo(item.properties);
+        console.log('Extracted business info:', info);
         if (info.businessName) {
           extractedBusinessName = info.businessName;
           extractedAddress = info.address;
@@ -148,10 +150,15 @@ export async function POST(request: NextRequest) {
     }
     
     const businessName = extractedBusinessName || shippingAddress.company || billingAddress.company || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Shopify Customer';
+    console.log('Final business name:', businessName);
+    console.log('Extracted address for Place ID lookup:', extractedAddress);
     
     let googlePlaceId: string | null = null;
     if (extractedAddress) {
       googlePlaceId = await getGooglePlaceId(extractedAddress);
+      console.log('Google Place ID result:', googlePlaceId);
+    } else {
+      console.log('No address to look up for Place ID');
     }
     
     const productNames = lineItems.map((item: any) => {
@@ -163,17 +170,19 @@ export async function POST(request: NextRequest) {
     const productIds = lineItems.map((item: any) => item.product_id || item.sku).join(', ') || '';
     const totalQuantity = lineItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
     
-    const standColors = lineItems.map((item: any) => {
+    const standColors: Array<{color: string}> = [];
+    for (const item of lineItems) {
       const productId = String(item.product_id);
       const variantId = String(item.variant_id);
-      const productName = getProductName(productId, variantId);
-      const isBlack = productName.toLowerCase().includes('negro');
-      return {
-        product: productName,
-        variant: isBlack ? 'Negro' : 'Blanco',
-        quantity: item.quantity || 1
-      };
-    });
+      
+      if (productId === '10455931093325') {
+        const color = variantId === '53055309218125' ? 'negro' : 'blanco';
+        for (let i = 0; i < (item.quantity || 1); i++) {
+          standColors.push({ color });
+        }
+      }
+    }
+    console.log('Stand colors:', JSON.stringify(standColors));
 
     const totalPrice = parseFloat(shopifyOrder.total_price) || 0;
     const discountAmount = parseFloat(shopifyOrder.total_discounts) || 0;

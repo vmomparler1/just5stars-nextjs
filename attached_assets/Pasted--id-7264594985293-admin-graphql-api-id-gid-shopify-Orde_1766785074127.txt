@@ -1,0 +1,561 @@
+{
+  "id": 7264594985293,
+  "admin_graphql_api_id": "gid://shopify/Order/7264594985293",
+  "app_id": 580111,
+  "browser_ip": "62.42.45.161",
+  "buyer_accepts_marketing": false,
+  "cancel_reason": null,
+  "cancelled_at": null,
+  "cart_token": "hWN6tIlbEzlcHOMrRm9gVtPH",
+  "checkout_id": 45883184906573,
+  "checkout_token": "b15f7965ed280360d58822c48750e3dd",
+  "client_details": {
+    "accept_language": "es-ES",
+    "browser_height": null,
+    "browser_ip": "62.42.45.161",
+    "browser_width": null,
+    "session_hash": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+  },
+  "closed_at": null,
+  "confirmation_number": "KWKCZAJ5V",
+  "confirmed": true,
+  "contact_email": "vgimeno1@gmail.com",
+  "created_at": "2025-12-26T22:36:56+01:00",
+  "currency": "EUR",
+  "current_shipping_price_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    }
+  },
+  "current_subtotal_price": "33.83",
+  "current_subtotal_price_set": {
+    "shop_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    }
+  },
+  "current_total_additional_fees_set": null,
+  "current_total_discounts": "5.97",
+  "current_total_discounts_set": {
+    "shop_money": {
+      "amount": "5.97",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "5.97",
+      "currency_code": "EUR"
+    }
+  },
+  "current_total_duties_set": null,
+  "current_total_price": "33.83",
+  "current_total_price_set": {
+    "shop_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    }
+  },
+  "current_total_tax": "5.87",
+  "current_total_tax_set": {
+    "shop_money": {
+      "amount": "5.87",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "5.87",
+      "currency_code": "EUR"
+    }
+  },
+  "customer_locale": "es-ES",
+  "device_id": null,
+  "discount_codes": [],
+  "duties_included": false,
+  "email": "vgimeno1@gmail.com",
+  "estimated_taxes": false,
+  "financial_status": "paid",
+  "fulfillment_status": null,
+  "landing_site": "/product/expositor",
+  "landing_site_ref": null,
+  "location_id": null,
+  "merchant_business_entity_id": "MTg5ODEyOTI2Nzk3",
+  "merchant_of_record_app_id": null,
+  "name": "#1011",
+  "note": null,
+  "note_attributes": [],
+  "number": 11,
+  "order_number": 1011,
+  "order_status_url": "https://shop.just5stars.com/89812926797/orders/11b35cb867df996331e0f9b3476f0a3c/authenticate?key=75fb2a22f30321d818930232d702073c",
+  "original_total_additional_fees_set": null,
+  "original_total_duties_set": null,
+  "payment_gateway_names": [
+    "shopify_payments"
+  ],
+  "phone": null,
+  "po_number": null,
+  "presentment_currency": "EUR",
+  "processed_at": "2025-12-26T22:36:54+01:00",
+  "reference": null,
+  "referring_site": "https://myotape.com/",
+  "source_identifier": null,
+  "source_name": "web",
+  "source_url": null,
+  "subtotal_price": "33.83",
+  "subtotal_price_set": {
+    "shop_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    }
+  },
+  "tags": "",
+  "tax_exempt": false,
+  "tax_lines": [
+    {
+      "price": "5.87",
+      "rate": 0.21,
+      "title": "ES IVA",
+      "price_set": {
+        "shop_money": {
+          "amount": "5.87",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "5.87",
+          "currency_code": "EUR"
+        }
+      },
+      "channel_liable": false
+    }
+  ],
+  "taxes_included": true,
+  "test": true,
+  "token": "11b35cb867df996331e0f9b3476f0a3c",
+  "total_cash_rounding_payment_adjustment_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    }
+  },
+  "total_cash_rounding_refund_adjustment_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    }
+  },
+  "total_discounts": "5.97",
+  "total_discounts_set": {
+    "shop_money": {
+      "amount": "5.97",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "5.97",
+      "currency_code": "EUR"
+    }
+  },
+  "total_line_items_price": "39.80",
+  "total_line_items_price_set": {
+    "shop_money": {
+      "amount": "39.80",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "39.80",
+      "currency_code": "EUR"
+    }
+  },
+  "total_outstanding": "0.00",
+  "total_price": "33.83",
+  "total_price_set": {
+    "shop_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "33.83",
+      "currency_code": "EUR"
+    }
+  },
+  "total_shipping_price_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "EUR"
+    }
+  },
+  "total_tax": "5.87",
+  "total_tax_set": {
+    "shop_money": {
+      "amount": "5.87",
+      "currency_code": "EUR"
+    },
+    "presentment_money": {
+      "amount": "5.87",
+      "currency_code": "EUR"
+    }
+  },
+  "total_tip_received": "0.00",
+  "total_weight": 400,
+  "updated_at": "2025-12-26T22:36:58+01:00",
+  "user_id": null,
+  "billing_address": {
+    "first_name": "Nombre fact",
+    "address1": "Avinguda del Port 207",
+    "phone": null,
+    "city": "València",
+    "zip": "46022",
+    "province": "Valencia",
+    "country": "Spain",
+    "last_name": "App fact",
+    "address2": "pta 27",
+    "company": "Empr y NIF fact",
+    "latitude": 39.46240100000001,
+    "longitude": -0.340312,
+    "name": "Nombre fact App fact",
+    "country_code": "ES",
+    "province_code": "V"
+  },
+  "customer": {
+    "id": 9513913450829,
+    "created_at": "2025-12-08T21:18:31+01:00",
+    "updated_at": "2025-12-09T11:28:50+01:00",
+    "first_name": "Nombre fact",
+    "last_name": "App fact",
+    "state": "disabled",
+    "note": null,
+    "verified_email": true,
+    "multipass_identifier": null,
+    "tax_exempt": false,
+    "email": "vgimeno1@gmail.com",
+    "phone": null,
+    "currency": "EUR",
+    "tax_exemptions": [],
+    "admin_graphql_api_id": "gid://shopify/Customer/9513913450829",
+    "default_address": {
+      "id": 11591431258445,
+      "customer_id": 9513913450829,
+      "first_name": "Nombre entrega",
+      "last_name": "App entrega",
+      "company": "Empresa entrega y NIF",
+      "address1": "Calle de la Travesía",
+      "address2": "S/N",
+      "city": "Valencia",
+      "province": "Valencia",
+      "country": "Spain",
+      "zip": "46024",
+      "phone": null,
+      "name": "Nombre entrega App entrega",
+      "province_code": "V",
+      "country_code": "ES",
+      "country_name": "Spain",
+      "default": true
+    }
+  },
+  "discount_applications": [
+    {
+      "target_type": "line_item",
+      "type": "automatic",
+      "value": "15.0",
+      "value_type": "percentage",
+      "allocation_method": "across",
+      "target_selection": "all",
+      "title": "15% dto. adicional por cantidad"
+    }
+  ],
+  "fulfillments": [],
+  "line_items": [
+    {
+      "id": 17521980997965,
+      "admin_graphql_api_id": "gid://shopify/LineItem/17521980997965",
+      "attributed_staffs": [],
+      "current_quantity": 1,
+      "fulfillable_quantity": 1,
+      "fulfillment_service": "manual",
+      "fulfillment_status": null,
+      "gift_card": false,
+      "grams": 200,
+      "name": "Expositor Reseñas Google NFC QR - Negro",
+      "price": "19.90",
+      "price_set": {
+        "shop_money": {
+          "amount": "19.90",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "19.90",
+          "currency_code": "EUR"
+        }
+      },
+      "product_exists": true,
+      "product_id": 10455931093325,
+      "properties": [
+        {
+          "name": "Empresa",
+          "value": "Ramirez Flats Valencia - Av. del Port, 20, El Pla del Real, 46021 València, Valencia, España"
+        },
+        {
+          "name": "Google_Place_ID",
+          "value": "ChIJGaALHb9IYA0RBgKgRU-Wahk"
+        }
+      ],
+      "quantity": 1,
+      "requires_shipping": true,
+      "sales_line_item_group_id": null,
+      "sku": null,
+      "taxable": true,
+      "title": "Expositor Reseñas Google NFC QR",
+      "total_discount": "0.00",
+      "total_discount_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        }
+      },
+      "variant_id": 53055309218125,
+      "variant_inventory_management": "shopify",
+      "variant_title": "Negro",
+      "vendor": "just5stars",
+      "tax_lines": [
+        {
+          "channel_liable": false,
+          "price": "2.93",
+          "price_set": {
+            "shop_money": {
+              "amount": "2.93",
+              "currency_code": "EUR"
+            },
+            "presentment_money": {
+              "amount": "2.93",
+              "currency_code": "EUR"
+            }
+          },
+          "rate": 0.21,
+          "title": "ES IVA"
+        }
+      ],
+      "duties": [],
+      "discount_allocations": [
+        {
+          "amount": "2.99",
+          "amount_set": {
+            "shop_money": {
+              "amount": "2.99",
+              "currency_code": "EUR"
+            },
+            "presentment_money": {
+              "amount": "2.99",
+              "currency_code": "EUR"
+            }
+          },
+          "discount_application_index": 0
+        }
+      ]
+    },
+    {
+      "id": 17521981030733,
+      "admin_graphql_api_id": "gid://shopify/LineItem/17521981030733",
+      "attributed_staffs": [],
+      "current_quantity": 1,
+      "fulfillable_quantity": 1,
+      "fulfillment_service": "manual",
+      "fulfillment_status": null,
+      "gift_card": false,
+      "grams": 200,
+      "name": "Expositor Reseñas Google NFC QR - Blanco",
+      "price": "19.90",
+      "price_set": {
+        "shop_money": {
+          "amount": "19.90",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "19.90",
+          "currency_code": "EUR"
+        }
+      },
+      "product_exists": true,
+      "product_id": 10455931093325,
+      "properties": [
+        {
+          "name": "Empresa",
+          "value": "Aeropuerto Internacional de Hong Kong - 1 Sky Plaza Rd, Chek Lap Kok, Hong Kong"
+        },
+        {
+          "name": "Google_Place_ID",
+          "value": "ChIJncZGzPPiAzQRnjaSGIKQ9fk"
+        }
+      ],
+      "quantity": 1,
+      "requires_shipping": true,
+      "sales_line_item_group_id": null,
+      "sku": null,
+      "taxable": true,
+      "title": "Expositor Reseñas Google NFC QR",
+      "total_discount": "0.00",
+      "total_discount_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        }
+      },
+      "variant_id": 53055309185357,
+      "variant_inventory_management": "shopify",
+      "variant_title": "Blanco",
+      "vendor": "just5stars",
+      "tax_lines": [
+        {
+          "channel_liable": false,
+          "price": "2.94",
+          "price_set": {
+            "shop_money": {
+              "amount": "2.94",
+              "currency_code": "EUR"
+            },
+            "presentment_money": {
+              "amount": "2.94",
+              "currency_code": "EUR"
+            }
+          },
+          "rate": 0.21,
+          "title": "ES IVA"
+        }
+      ],
+      "duties": [],
+      "discount_allocations": [
+        {
+          "amount": "2.98",
+          "amount_set": {
+            "shop_money": {
+              "amount": "2.98",
+              "currency_code": "EUR"
+            },
+            "presentment_money": {
+              "amount": "2.98",
+              "currency_code": "EUR"
+            }
+          },
+          "discount_application_index": 0
+        }
+      ]
+    }
+  ],
+  "payment_terms": null,
+  "refunds": [],
+  "shipping_address": {
+    "first_name": "Nombre entrega",
+    "address1": "Calle de la Travesía",
+    "phone": null,
+    "city": "Valencia",
+    "zip": "46024",
+    "province": "Valencia",
+    "country": "Spain",
+    "last_name": "App entrega",
+    "address2": "S/N",
+    "company": "Empresa entrega y NIF",
+    "latitude": 39.4577867,
+    "longitude": -0.3313018,
+    "name": "Nombre entrega App entrega",
+    "country_code": "ES",
+    "province_code": "V"
+  },
+  "shipping_lines": [
+    {
+      "id": 5916446884173,
+      "carrier_identifier": null,
+      "code": "Estándar",
+      "current_discounted_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        }
+      },
+      "discounted_price": "0.00",
+      "discounted_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        }
+      },
+      "is_removed": false,
+      "phone": null,
+      "price": "0.00",
+      "price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "EUR"
+        }
+      },
+      "requested_fulfillment_service_id": null,
+      "source": "shopify",
+      "title": "Estándar",
+      "tax_lines": [
+        {
+          "channel_liable": false,
+          "price": "0.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "EUR"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "EUR"
+            }
+          },
+          "rate": 0.21,
+          "title": "ES IVA"
+        }
+      ],
+      "discount_allocations": []
+    }
+  ],
+  "returns": [],
+  "line_item_groups": []
+}

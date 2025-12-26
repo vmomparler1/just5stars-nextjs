@@ -3,7 +3,6 @@ import crypto from "crypto";
 import { initializeDatabase, client, OrderStatus, OrderSource } from "@/app/utils/database";
 
 const SHOPIFY_WEBHOOK_SECRET = process.env.SHOPIFY_WEBHOOK_SECRET;
-const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 
 let isDbInitialized = false;
 
@@ -25,53 +24,32 @@ function getProductName(productId: string, variantId: string): string {
   return 'Producto Shopify';
 }
 
-function extractBusinessInfo(properties: Array<{ name: string; value: string }> | undefined): { businessName: string; address: string; fullQuery: string } {
+interface BusinessInfo {
+  business_number: number;
+  business_name: string;
+  business_postcode: string;
+  business_country: string;
+  google_business_id: string;
+  copy_from_first: boolean;
+}
+
+function extractBusinessFromProperties(properties: Array<{ name: string; value: string }> | undefined): { businessName: string; googlePlaceId: string } {
   if (!properties || properties.length === 0) {
-    return { businessName: '', address: '', fullQuery: '' };
+    return { businessName: '', googlePlaceId: '' };
   }
   
   const empresaProperty = properties.find(p => p.name === 'Empresa');
-  if (!empresaProperty || !empresaProperty.value) {
-    return { businessName: '', address: '', fullQuery: '' };
+  const placeIdProperty = properties.find(p => p.name === 'Google_Place_ID');
+  
+  let businessName = '';
+  if (empresaProperty && empresaProperty.value) {
+    const parts = empresaProperty.value.split(' - ');
+    businessName = parts[0]?.trim() || '';
   }
   
-  const parts = empresaProperty.value.split(' - ');
-  const businessName = parts[0]?.trim() || '';
-  const address = parts.slice(1).join(' - ').trim() || '';
-  const fullQuery = empresaProperty.value;
+  const googlePlaceId = placeIdProperty?.value || '';
   
-  return { businessName, address, fullQuery };
-}
-
-async function getGooglePlaceId(address: string): Promise<string | null> {
-  if (!address) {
-    console.log('No address provided for Place ID lookup');
-    return null;
-  }
-  
-  if (!GOOGLE_MAPS_API_KEY) {
-    console.log('GOOGLE_MAPS_API_KEY is not configured');
-    return null;
-  }
-  
-  try {
-    const encodedAddress = encodeURIComponent(address);
-    const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodedAddress}&inputtype=textquery&fields=place_id&key=${GOOGLE_MAPS_API_KEY}`;
-    console.log('Calling Google Places API...');
-    
-    const response = await fetch(url);
-    const data = await response.json();
-    console.log('Google Places API response:', JSON.stringify(data));
-    
-    if (data.candidates && data.candidates.length > 0) {
-      return data.candidates[0].place_id;
-    }
-    
-    return null;
-  } catch (error) {
-    console.error('Error fetching Google Place ID:', error);
-    return null;
-  }
+  return { businessName, googlePlaceId };
 }
 
 function verifyShopifyWebhook(body: string, hmacHeader: string): boolean {
@@ -135,39 +113,63 @@ export async function POST(request: NextRequest) {
     
     const shippingAddress = shopifyOrder.shipping_address || {};
     const billingAddress = shopifyOrder.billing_address || {};
-    
-    const businessPostcode = shippingAddress.zip || billingAddress.zip || '';
-    const businessCountry = shippingAddress.country || billingAddress.country || 'ES';
 
     const lineItems = shopifyOrder.line_items || [];
     
-    let extractedBusinessName = '';
-    let extractedFullQuery = '';
+    const allBusinesses: BusinessInfo[] = [];
+    const standColors: Array<{color: string}> = [];
+    let businessNumber = 0;
+    let firstBusinessName = '';
+    let firstGooglePlaceId = '';
     
     for (const item of lineItems) {
-      if (item.properties && item.properties.length > 0) {
-        console.log('Line item properties:', JSON.stringify(item.properties));
-        const info = extractBusinessInfo(item.properties);
-        console.log('Extracted business info:', info);
-        if (info.businessName) {
-          extractedBusinessName = info.businessName;
-          extractedFullQuery = info.fullQuery;
-          break;
+      const productId = String(item.product_id);
+      const variantId = String(item.variant_id);
+      
+      if (productId === '10455931093325') {
+        const color = variantId === '53055309218125' ? 'negro' : 'blanco';
+        
+        for (let i = 0; i < (item.quantity || 1); i++) {
+          standColors.push({ color });
+        }
+        
+        if (item.properties && item.properties.length > 0) {
+          const { businessName, googlePlaceId } = extractBusinessFromProperties(item.properties);
+          console.log('Extracted from properties:', { businessName, googlePlaceId });
+          
+          if (businessName || googlePlaceId) {
+            businessNumber++;
+            
+            const isFirstBusiness = businessNumber === 1;
+            if (isFirstBusiness) {
+              firstBusinessName = businessName;
+              firstGooglePlaceId = googlePlaceId;
+            }
+            
+            const isCopyFromFirst = !isFirstBusiness && 
+              businessName === firstBusinessName && 
+              googlePlaceId === firstGooglePlaceId;
+            
+            allBusinesses.push({
+              business_number: businessNumber,
+              business_name: businessName,
+              business_postcode: shippingAddress.zip || '',
+              business_country: shippingAddress.country || 'España',
+              google_business_id: googlePlaceId,
+              copy_from_first: isCopyFromFirst
+            });
+          }
         }
       }
     }
     
-    const businessName = extractedBusinessName || shippingAddress.company || billingAddress.company || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Shopify Customer';
-    console.log('Final business name:', businessName);
-    console.log('Full query for Place ID lookup:', extractedFullQuery);
+    console.log('All businesses:', JSON.stringify(allBusinesses));
+    console.log('Stand colors:', JSON.stringify(standColors));
     
-    let googlePlaceId: string | null = null;
-    if (extractedFullQuery) {
-      googlePlaceId = await getGooglePlaceId(extractedFullQuery);
-      console.log('Google Place ID result:', googlePlaceId);
-    } else {
-      console.log('No query to look up for Place ID');
-    }
+    const businessName = firstBusinessName || shippingAddress.company || billingAddress.company || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim() || 'Shopify Customer';
+    const businessPostcode = shippingAddress.zip || billingAddress.zip || '';
+    const businessCountry = shippingAddress.country || billingAddress.country || 'ES';
+    const googlePlaceId = firstGooglePlaceId || null;
     
     const productNames = lineItems.map((item: any) => {
       const productId = String(item.product_id);
@@ -177,20 +179,6 @@ export async function POST(request: NextRequest) {
     
     const productIds = lineItems.map((item: any) => item.product_id || item.sku).join(', ') || '';
     const totalQuantity = lineItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
-    
-    const standColors: Array<{color: string}> = [];
-    for (const item of lineItems) {
-      const productId = String(item.product_id);
-      const variantId = String(item.variant_id);
-      
-      if (productId === '10455931093325') {
-        const color = variantId === '53055309218125' ? 'negro' : 'blanco';
-        for (let i = 0; i < (item.quantity || 1); i++) {
-          standColors.push({ color });
-        }
-      }
-    }
-    console.log('Stand colors:', JSON.stringify(standColors));
 
     const totalPrice = parseFloat(shopifyOrder.total_price) || 0;
     const discountAmount = parseFloat(shopifyOrder.total_discounts) || 0;
@@ -233,7 +221,7 @@ export async function POST(request: NextRequest) {
         null,
         null,
         null,
-        null,
+        allBusinesses.length > 0 ? JSON.stringify(allBusinesses) : null,
         null,
         null,
         shippingAddress.name || `${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`.trim(),

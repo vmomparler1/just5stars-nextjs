@@ -1,12 +1,11 @@
-
 {
   "stands": {
     "blanco": {
-      "inStock": true,
+      "inStock": false,
       "label": "Blanco"
     },
     "negro": {
-      "inStock": true,
+      "inStock": false,
       "label": "Negro"
     }
   }

@@ -126,6 +126,7 @@ export async function POST(request: NextRequest) {
       const productId = String(item.product_id);
       const variantId = String(item.variant_id);
       
+      // Handle Expositor (Stand) products
       if (productId === '10455931093325') {
         const color = variantId === '53055309218125' ? 'negro' : 'blanco';
         
@@ -135,7 +136,42 @@ export async function POST(request: NextRequest) {
         
         if (item.properties && item.properties.length > 0) {
           const { businessName, googlePlaceId } = extractBusinessFromProperties(item.properties);
-          console.log('Extracted from properties:', { businessName, googlePlaceId });
+          console.log('Extracted from stand properties:', { businessName, googlePlaceId });
+          
+          if (businessName || googlePlaceId) {
+            businessNumber++;
+            
+            const isFirstBusiness = businessNumber === 1;
+            if (isFirstBusiness) {
+              firstBusinessName = businessName;
+              firstGooglePlaceId = googlePlaceId;
+            }
+            
+            const isCopyFromFirst = !isFirstBusiness && 
+              businessName === firstBusinessName && 
+              googlePlaceId === firstGooglePlaceId;
+            
+            allBusinesses.push({
+              business_number: businessNumber,
+              business_name: businessName,
+              business_postcode: shippingAddress.zip || '',
+              business_country: shippingAddress.country || 'España',
+              google_business_id: googlePlaceId,
+              copy_from_first: isCopyFromFirst
+            });
+          }
+        }
+      }
+      // Handle Metacrilato/Placa (Plaque) products
+      else if (productId === '10382133395789') {
+        // Add plaque to standColors with color 'blanco' (plaques are white)
+        for (let i = 0; i < (item.quantity || 1); i++) {
+          standColors.push({ color: 'blanco' });
+        }
+        
+        if (item.properties && item.properties.length > 0) {
+          const { businessName, googlePlaceId } = extractBusinessFromProperties(item.properties);
+          console.log('Extracted from plaque properties:', { businessName, googlePlaceId });
           
           if (businessName || googlePlaceId) {
             businessNumber++;

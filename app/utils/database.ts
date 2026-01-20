@@ -138,6 +138,22 @@ export async function initializeDatabase() {
       CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at)
     `);
 
+    // Create unique index on shopify_order_id to prevent duplicate Shopify orders
+    try {
+      await client.execute(`
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_shopify_order_id ON orders(shopify_order_id) WHERE shopify_order_id IS NOT NULL
+      `);
+    } catch (e) {
+      // Index might already exist or partial index not supported, try regular unique index
+      try {
+        await client.execute(`
+          CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_shopify_order_id ON orders(shopify_order_id)
+        `);
+      } catch (e2) {
+        // Index already exists, ignore
+      }
+    }
+
     console.log('Database initialized successfully');
   } catch (error) {
     console.error('Error initializing database:', error);

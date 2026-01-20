@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { initializeDatabase, client, OrderStatus, OrderSource } from "@/app/utils/database";
 
+function generateUUID(): string {
+  return crypto.randomBytes(16).toString('hex');
+}
+
 const SHOPIFY_WEBHOOK_SECRET = process.env.SHOPIFY_WEBHOOK_SECRET;
 
 let isDbInitialized = false;
@@ -225,20 +229,23 @@ export async function POST(request: NextRequest) {
     const utmSource = shopifyOrder.landing_site_ref || null;
     const refSource = shopifyOrder.referring_site || null;
 
+    const orderId = generateUUID();
+    
     const result = await client.execute({
       sql: `
         INSERT INTO orders (
-          product_name, product_id, quantity, price, discount_amount, voucher_code,
+          id, product_name, product_id, quantity, price, discount_amount, voucher_code,
           customer_email, customer_phone, business_name, business_postcode, business_country,
           google_business_id, stand_colors, utm_source, utm_medium, utm_campaign, utm_term, utm_content,
           all_businesses, stripe_payment_intent_id, stripe_session_id, stripe_shipping_name,
           stripe_shipping_address_1, stripe_shipping_address_2, stripe_shipping_city, 
           stripe_shipping_postal_code, stripe_shipping_country, status, order_source,
           shopify_order_id, shopify_order_number
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        RETURNING id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(shopify_order_id) DO NOTHING
       `,
       args: [
+        orderId,
         productNames,
         productIds,
         totalQuantity,
@@ -273,8 +280,7 @@ export async function POST(request: NextRequest) {
       ]
     });
 
-    const orderId = result.rows[0][0] as string;
-    console.log('Shopify order stored successfully:', orderId, 'Shopify ID:', shopifyOrder.id);
+    console.log('Shopify order stored successfully:', orderId, 'Shopify ID:', shopifyOrder.id, 'Rows affected:', result.rowsAffected);
 
     return NextResponse.json({ 
       success: true, 

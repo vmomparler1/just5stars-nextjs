@@ -211,13 +211,23 @@ export async function POST(request: NextRequest) {
     const businessCountry = shippingAddress.country || billingAddress.country || 'ES';
     const googlePlaceId = firstGooglePlaceId || null;
     
-    const productNames = lineItems.map((item: any) => {
+    const expandedProductNames: string[] = [];
+    const expandedProductIds: string[] = [];
+    
+    for (const item of lineItems) {
       const productId = String(item.product_id);
       const variantId = String(item.variant_id);
-      return getProductName(productId, variantId);
-    }).join(', ') || 'Producto Shopify';
+      const productName = getProductName(productId, variantId);
+      const quantity = item.quantity || 1;
+      
+      for (let i = 0; i < quantity; i++) {
+        expandedProductNames.push(productName);
+        expandedProductIds.push(item.product_id || item.sku);
+      }
+    }
     
-    const productIds = lineItems.map((item: any) => item.product_id || item.sku).join(', ') || '';
+    const productNames = expandedProductNames.join(', ') || 'Producto Shopify';
+    const productIds = expandedProductIds.join(', ') || '';
     const totalQuantity = lineItems.reduce((sum: number, item: any) => sum + (item.quantity || 1), 0);
 
     const totalPrice = parseFloat(shopifyOrder.total_price) || 0;

@@ -139,31 +139,35 @@ export async function POST(request: NextRequest) {
           standColors.push({ color });
         }
         
+        // Extract business info from properties, or use defaults if not provided
+        let businessName = 'None';
+        let googlePlaceId = '';
+        
         if (item.properties && item.properties.length > 0) {
-          const { businessName, googlePlaceId } = extractBusinessFromProperties(item.properties);
-          console.log('Extracted from stand properties:', { businessName, googlePlaceId });
+          const extracted = extractBusinessFromProperties(item.properties);
+          console.log('Extracted from stand properties:', extracted);
+          if (extracted.businessName) businessName = extracted.businessName;
+          if (extracted.googlePlaceId) googlePlaceId = extracted.googlePlaceId;
+        }
+        
+        // Always expand business entries based on quantity
+        for (let i = 0; i < quantity; i++) {
+          businessNumber++;
           
-          if (businessName || googlePlaceId) {
-            // Expand business entries based on quantity
-            for (let i = 0; i < quantity; i++) {
-              businessNumber++;
-              
-              const isFirstBusiness = businessNumber === 1;
-              if (isFirstBusiness) {
-                firstBusinessName = businessName;
-                firstGooglePlaceId = googlePlaceId;
-              }
-              
-              allBusinesses.push({
-                business_number: businessNumber,
-                business_name: businessName,
-                business_postcode: shippingAddress.zip || '',
-                business_country: shippingAddress.country || 'España',
-                google_business_id: googlePlaceId,
-                copy_from_first: !isFirstBusiness
-              });
-            }
+          const isFirstBusiness = businessNumber === 1;
+          if (isFirstBusiness) {
+            firstBusinessName = businessName;
+            firstGooglePlaceId = googlePlaceId;
           }
+          
+          allBusinesses.push({
+            business_number: businessNumber,
+            business_name: businessName,
+            business_postcode: businessName === 'None' ? '-' : (shippingAddress.zip || ''),
+            business_country: businessName === 'None' ? 'Spain' : (shippingAddress.country || 'España'),
+            google_business_id: googlePlaceId,
+            copy_from_first: !isFirstBusiness
+          });
         }
       }
       // Handle Metacrilato/Placa (Plaque) products
@@ -175,31 +179,35 @@ export async function POST(request: NextRequest) {
           standColors.push({ color: 'blanco' });
         }
         
+        // Extract business info from properties, or use defaults if not provided
+        let businessName = 'None';
+        let googlePlaceId = '';
+        
         if (item.properties && item.properties.length > 0) {
-          const { businessName, googlePlaceId } = extractBusinessFromProperties(item.properties);
-          console.log('Extracted from plaque properties:', { businessName, googlePlaceId });
+          const extracted = extractBusinessFromProperties(item.properties);
+          console.log('Extracted from plaque properties:', extracted);
+          if (extracted.businessName) businessName = extracted.businessName;
+          if (extracted.googlePlaceId) googlePlaceId = extracted.googlePlaceId;
+        }
+        
+        // Always expand business entries based on quantity
+        for (let i = 0; i < quantity; i++) {
+          businessNumber++;
           
-          if (businessName || googlePlaceId) {
-            // Expand business entries based on quantity
-            for (let i = 0; i < quantity; i++) {
-              businessNumber++;
-              
-              const isFirstBusiness = businessNumber === 1;
-              if (isFirstBusiness) {
-                firstBusinessName = businessName;
-                firstGooglePlaceId = googlePlaceId;
-              }
-              
-              allBusinesses.push({
-                business_number: businessNumber,
-                business_name: businessName,
-                business_postcode: shippingAddress.zip || '',
-                business_country: shippingAddress.country || 'España',
-                google_business_id: googlePlaceId,
-                copy_from_first: !isFirstBusiness
-              });
-            }
+          const isFirstBusiness = businessNumber === 1;
+          if (isFirstBusiness) {
+            firstBusinessName = businessName;
+            firstGooglePlaceId = googlePlaceId;
           }
+          
+          allBusinesses.push({
+            business_number: businessNumber,
+            business_name: businessName,
+            business_postcode: businessName === 'None' ? '-' : (shippingAddress.zip || ''),
+            business_country: businessName === 'None' ? 'Spain' : (shippingAddress.country || 'España'),
+            google_business_id: googlePlaceId,
+            copy_from_first: !isFirstBusiness
+          });
         }
       }
     }
